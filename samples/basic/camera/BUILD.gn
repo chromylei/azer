@@ -1,0 +1,15 @@
+import("//build/templates/afx.gni")
+
+afx("azer_sample_camera_effect") {
+  source = "camera.afx"
+  filename = "camera"
+}
+
+executable("azer_sample_camera") {
+  sources = ["main.cc"]
+  deps = [
+    "//base:appinit",
+    ":azer_sample_camera_effect",
+    "//samples:samples_common",
+  ]
+}

@@ -1,0 +1,57 @@
+#import "azer/effect/afx/baselight.afxi"
+
+uniform mat4 wvp;
+uniform mat4 world;
+uniform sampler2D DiffuseTex;
+uniform sampler2D BumpMapTex;
+uniform sampler2D SpecularMapTex;
+uniform DirectionalLight dirlight;
+uniform float specular_power;
+uniform vec4 camera_pos;
+
+struct VsOutput {
+  vec4 __afx_position;
+  vec2 texcoord;
+  vec4 normal;
+  vec4 tangent;
+  vec4 binormal;
+  vec4 viewdir;
+};
+
+VsOutput vs_main(vec3 position, vec2 texcoord, vec3 normal,
+	 	 vec3 tangent, vec3 binormal) {
+  VsOutput o;
+  o.__afx_position = vec4(position, 1) * wvp;
+  vec4 world_pos = vec4(position, 1) * world;
+  o.texcoord = texcoord;
+  o.normal = normalize(vec4(normal, 0) * world);
+  o.tangent = normalize(vec4(normal, 0) * world);
+  o.binormal = normalize(vec4(normal, 0) * world);
+  o.viewdir = normalize(world_pos  - camera_pos);
+  return o;
+}
+
+vec4 TBNNormal(vec4 tangent, vec4 binormal, vec4 normal, vec4 n) {
+  n = n * 2 - 1;
+  return n.x * tangent + n.y * binormal + n.z * normal;
+}
+
+vec4 ps_main(VsOutput o) {
+  vec4 normal = texture2D(BumpMapTex, o.texcoord);
+  vec4 diffuse =  texture2D(DiffuseTex, o.texcoord);
+  normal = TBNNormal(o.tangent, o.binormal, o.normal, normal);
+  vec4 color = vec4(CalcDirectionalLight(dirlight, normal) * diffuse.xyz, 1);
+  vec4 specular_intensity = texture2D(SpecularMapTex, o.texcoord);
+
+  vec4 lightdir = dirlight.directional;
+  float light_intensity = dot(-lightdir, o.normal);
+  if (light_intensity > 0) {
+    vec4 reflection = normalize(2 * light_intensity * o.normal + lightdir);
+    if (dot(reflection, o.viewdir) > 0) {
+    float specular = pow(dot(reflection, o.viewdir), specular_power);
+      color += specular;
+    }
+  }
+  return clamp(color, 0, 1);
+}
+

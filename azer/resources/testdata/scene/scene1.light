@@ -1,0 +1,39 @@
+[
+  {
+    "name": "light1",
+    "type": "directional",
+    "ambient": [0.1, 0.21, 0.41, 1],
+    "diffuse": [0.5, 0.6, 0.7, 1],
+    "directional": [0, 1, 0, 0],
+  },
+
+  {
+    "name": "light2",
+    "type": "point",
+    "ambient": [0.3, 0.3, 0.3, 1],
+    "diffuse": [0.4, 0.4, 0.4, 1],
+    "position": [0, 8, -8, 1],
+    "range": 1000.0,
+    "attenuation" : {
+      "cvalue": 1.0,
+      "linear": 2.0,
+      "quad": 3.0,
+    },
+  },
+
+  {
+    "name": "light3",
+    "type": "spot",
+    "ambient": [0.3, 0.4, 0.5, 1],
+    "diffuse": [0.5, 0.8, 0.7, 1],
+    "directional": [0, 1, 0, 0],
+    "position": [0, -8, 8, 1],
+    "range": 3000.0,
+    "cone": 45.0,
+    "attenuation" : {
+      "cvalue": 10.0,
+      "linear": 20.0,
+      "quad": 30.0,
+    },
+  },
+]

@@ -1,0 +1,31 @@
+
+== Resource 模块的基本功能 ==
+Resource 模块的基本功能包括
+1. 加载各类资源，包括 Texture, Mesh, Skeleton, Animation, Material, Scene, GpuProgram 等等
+2. 管理此类资源的生命周期
+3. ....
+
+== File Format ==
+Resource Manager 的文本文件格式全部采用 JSON，其他的向 Texture, Mesh, Skeleton, Animation 则采用二进制格式, GpuProgram 采用 afx 格式存储
+
+== Resource Manager 设计思路 ==
+ResourceManager 仅完成最简单的功能
+1. 避免 Texture 的重复加载
+2. 显式的释放 Texture
+
+在每一个游戏场景当中，都有一个对应的 Resource Manager， 里面定义了这个场景当中所需要的所有资源。当 player 离开场景，游戏引擎会挑选适当的时机将所有的 Resource Manager 当中的资源释放掉（适当的时机：例如内存不够用了，或者离开场景足够远的距离，短时间内这些资源不会被用到了，诸如此类）
+
+== Scene ==
+Scene 也是一类特殊的资源，
+他的内容包括用到的 Texture, Light, Mateiral, GpuProgram, Mesh, 等等，各类 Object 的坐标(Scene的坐标系统内)。
+
+== Mesh 文件格式 ==
+  struct {
+    char iden[4];
+    int32 version;
+    int32 group_num;
+    int32 
+  }
+
+  struct group {
+  };

@@ -1,0 +1,39 @@
+#import "azer/effect/afx/baselight.afxi"
+
+struct VsOutput {
+  vec4 __afx_position;
+  vec2 texcoord;
+  vec4 normal;
+  vec4 viewpos;
+};
+
+uniform mat4 wvp;
+uniform mat4 world;
+uniform mat4 projtex_wvp;
+uniform sampler2D MyTex;
+uniform sampler2D ProjTex;
+uniform DirectionalLight dirlight;
+
+VsOutput vs_main(vec3 position, vec2 texcoord, vec3 normal) {
+  VsOutput o;
+  o.__afx_position = vec4(position, 1) * wvp;
+  o.texcoord = texcoord;
+  o.normal = normalize(vec4(normal, 0) * world);
+  o.viewpos = vec4(position, 1) * world;
+  o.viewpos = o.viewpos *  projtex_wvp;
+  return o;
+}
+
+vec4 ps_main(VsOutput o) {
+  vec4 color = texture2D(MyTex, o.texcoord);
+  vec4 intensity=  CalcDirectionalLight(dirlight, o.normal);
+  vec2 projpos;
+  projpos.x = o.viewpos.x / o.viewpos.w / 2.0 + 0.5;
+  projpos.y = o.viewpos.y / o.viewpos.w / -2.0 + 0.5;
+  if (clamp(projpos, 0.0, 1.0) == projpos) {
+    return (clamp(intensity + texture2D(ProjTex, projpos), 0, 1)) * color;
+  } else {
+    return color * intensity;
+  }
+}
+

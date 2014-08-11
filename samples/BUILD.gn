@@ -1,0 +1,30 @@
+
+import("//build/templates/afx.gni")
+
+group("samples") {
+  deps = [
+    "basic/triangle:azer_sample_triangle",
+    "basic/trianglestrip:azer_sample_trianglestrip",
+    "basic/lockvb:azer_sample_lockvb",
+    "basic/wxwidget:azer_wxwidget",
+    "basic/camera:azer_sample_camera",
+    "basic/transform:azer_sample_transform",
+    "basic/texture:azer_sample_texture",
+    "basic/indices:azer_sample_indices",
+    "basic/xfile:azer_sample_xfile",
+    "basic/mesh:azer_sample_mesh",
+#    "basic/fps:azer_sample_fps",
+#    "basic/scene:azer_sample_scene",
+    "basic/hierarchy:azer_sample_hierarchy",
+#    "basic/meshtrans:azer_sample_meshtrans",
+  ]
+}
+
+static_library("samples_common") {
+ sources = [
+   "common/dummy.cc",
+   "common/camera_control.cc",
+ ]
+ deps = ["//azer:azer", "//base:base"]
+}
+

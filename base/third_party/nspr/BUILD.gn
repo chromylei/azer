@@ -1,0 +1,20 @@
+
+static_library("nspr") {
+  sources = [
+    "prcpucfg.h",
+    "prcpucfg_freebsd.h",
+    "prcpucfg_linux.h",
+    "prcpucfg_mac.h",
+    "prcpucfg_nacl.h",
+    "prcpucfg_openbsd.h",
+    "prcpucfg_solaris.h",
+    "prcpucfg_win.h",
+    "prtime.cc",
+    "prtime.h",
+    "prtypes.h",
+  ]
+
+  # In GYP this project is part of base, so it uses the base implementation
+  # define. TODO(brettw) rename this define.
+  defines = [ "BASE_IMPLEMENTATION" ]
+}

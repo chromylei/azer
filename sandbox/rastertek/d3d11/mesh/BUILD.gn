@@ -1,0 +1,8 @@
+
+executable("rastertek_mesh_trans") {
+  sources = ["main.cc"]
+  deps = ["//azer:azer", "//base:base",
+    "//base:appinit",
+    "../common:rastertek_d3d11_common"
+  ]
+}

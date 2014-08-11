@@ -1,0 +1,55 @@
+#
+# precompile("wxbase_config") {
+#   prehead = ""
+#   precpp  = ""
+#   cppconfigs  = []
+# }
+#
+template("precompile") {
+  assert(defined(precpp))
+  assert(defined(prehead))
+
+  pchdir = rebase_path("$target_gen_dir", "$root_build_dir", ".")
+
+  library_name = target_name
+  mkdir_target = target_name + "_path"
+  prec_target = target_name + "_prec"
+  config_target = target_name + "_config"
+  custom(mkdir_target) {
+    hard_dep = true
+    script = "//build/tools/shell/mkdir.py"
+    outputs = ["$pchdir"]
+    args = ["$pchdir"]
+  }
+
+  source_set(prec_target) {
+    hard_dep = true
+    sources = [precpp]
+    cflags = [
+      "/Yc\"$prehead\""
+      "/Fp\"$pchdir/$library_name.pch\""
+    ]
+    include_dirs = ["$pchdir"]
+    deps = [":$mkdir_target"]
+  }
+
+  config(config_target) {
+    cxx_flags = [
+      "/Yu\"$prehead\""
+      "/Fp\"$pchdir/$target_name.pch\""
+    ]
+  }
+
+  source_set(library_name) {
+    hard_dep = true
+    sources = [precpp]
+    if (defined(direct_dependent_configs)) {
+      direct_dependent_configs += [":$config_target"]
+    } else {
+      direct_dependent_configs = [":$config_target"]
+    }
+    deps = [":$prec_target"]
+    configs -= ["//build/config/win:win32_lean"]
+    if (defined(cppconfigs)) { configs += cppconfigs}
+  }
+}

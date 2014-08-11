@@ -1,0 +1,8 @@
+{
+  "vertex_stage": {
+    "program": "technique/coordinate_grid.vs",
+    "vertex_desc": "vdesc/base.vdesc:coordinate_grid_vdesc",
+  },
+
+  "pixel_stage": "technique/coordinate_grid.ps",
+}

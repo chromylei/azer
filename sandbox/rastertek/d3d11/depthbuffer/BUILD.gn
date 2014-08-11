@@ -1,0 +1,16 @@
+
+import("//build/templates/afx.gni")
+
+afx("rastertek_depthbuffer_effect") {
+  source = "depthbuffer.afx"
+  classname = "DepthBufferEffect"
+  filename = "afx_depthbuffer_effect"
+}
+
+executable("rastertek_d3d11_depthbuffer") {
+  sources = ["main.cc"]
+  deps = ["//azer:azer", "//base:base", "//base:appinit",
+    ":rastertek_depthbuffer_effect"
+    "../common:rastertek_d3d11_common"
+  ]
+}

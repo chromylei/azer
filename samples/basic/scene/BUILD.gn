@@ -1,0 +1,17 @@
+import("//build/templates/afx.gni")
+
+afx("azer_sample_scene_effect") {
+  source = "diffuse.afx"
+  classname = "DiffuseEffect"
+  filename = "diffuse"
+}
+
+executable("azer_sample_scene") {
+  sources = ["main.cc"]
+  deps = [
+    "//base:appinit"
+    ":azer_sample_scene_effect"
+    "//ui/gfx:gfx"
+    "//samples:samples_common"
+  ]
+}

@@ -1,0 +1,24 @@
+// structure variables
+struct VsOutput {
+  float4 __afx_position : SV_POSITION;
+  float2 texcoord : TEXCOORD0;
+  float4 normal : NORMAL;
+};
+
+// uniforms defined
+cbuffer c_buffer {
+  float4x4 wvp;
+  float4x4 world;
+}
+
+
+// globals variables
+VsOutput vs_main(float3 position: POSITION,
+                 float2 texcoord: TEXCOORD,
+                 float3 normal: NORMAL) {
+  VsOutput o;
+  o.__afx_position = mul(float4(position, 1.0), wvp);
+  o.texcoord = texcoord;
+  o.normal = mul(float4(normal, 1.0), world);
+  return o;
+}

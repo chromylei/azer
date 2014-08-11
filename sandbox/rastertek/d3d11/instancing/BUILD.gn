@@ -1,0 +1,17 @@
+
+import("//build/templates/afx.gni")
+
+afx("rastertek_instancing_effect") {
+  source = "instancing.afx"
+  classname = "InstancingEffect"
+  filename = "instancing"
+}
+
+executable("rastertek_d3d11_instancing") {
+  sources = ["main.cc"]
+  deps = ["//azer:azer", "//base:base", "//base:appinit",
+    "//azer/math:math"
+    ":rastertek_instancing_effect"
+    "../common:rastertek_d3d11_common"
+  ]
+}

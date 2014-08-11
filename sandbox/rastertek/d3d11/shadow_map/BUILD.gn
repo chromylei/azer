@@ -1,0 +1,23 @@
+
+import("//build/templates/afx.gni")
+
+afx("rastertek_shadow_map_effect") {
+  source = "shadow_map.afx"
+  classname = "ShadowMapEffect"
+  filename = "afx_shadow_map_effect"
+}
+
+afx("rastertek_depth_effect") {
+  source = "depth.afx"
+  classname = "DepthEffect"
+  filename = "afx_depth_effect"
+}
+
+executable("rastertek_d3d11_shadow_map") {
+  sources = ["main.cc"]
+  deps = ["//azer:azer", "//base:base", "//base:appinit",
+    ":rastertek_shadow_map_effect"
+    ":rastertek_depth_effect"
+    "../common:rastertek_d3d11_common"
+  ]
+}

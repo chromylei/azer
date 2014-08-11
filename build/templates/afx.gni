@@ -1,0 +1,67 @@
+#
+# afx("basic_light") {
+#   source = "a.afx"
+#   # 实际上 afx 文件内部也提供文件名，此处之所以要制定，是为了能够统治
+#   # gn 知道输出文件是什么，否则静态库的文件我们无法知晓
+#   # 目前来看 afx 文件内的文件名是冗余的
+#   # afx 模板目前仅仅用于开发实例，在实际过程中所有的 afx 都是已经开发好的
+#   # 外部直接引用即可
+#   filename = "$filename"
+# }
+#
+#
+
+template("afx") {
+  afxc_path = "afxc.exe"
+  if (!defined(filename)) {
+    filename = target_name
+  }
+
+  hpp = "$filename" + ".afx.h"
+  cpp = "$filename" + ".afx.cc"
+  
+  # afx_gen_dir = rebase_path(target_gen_dir, root_build_dir, ".")
+  afx_gen_dir = rebase_path(target_gen_dir, ".", "")
+  afx_file_path = rebase_path("$source", ".", "")
+  azer_path = rebase_path("$root_build_dir/../../", ".", "")
+  depfile = source
+  
+  custom(target_name+"_afx_cppcode") {
+    hard_dep = true
+    script = "//build/tools/shell/run2.py"
+    outputs = [
+      "$target_gen_dir/$hpp",
+      "$target_gen_dir/$cpp"
+    ]
+    args = [
+      "$afxc_path"
+      "--output_dir=$afx_gen_dir"
+      "--afx=$afx_file_path"
+      "--hlslang"
+      "--includes=$azer_path"
+      "--cpp_filename=$filename"
+    ]
+    deps = ["//azer/afx:afxc"]
+  }
+
+  config("$target_name"+ "_config") {
+    include_dirs = ["$afx_gen_dir"]
+  }
+  source_set(target_name) {
+    hard_dep = true
+    sources = [
+      "$target_gen_dir/$cpp"
+      "$target_gen_dir/$hpp"
+    ]
+    direct_dependent_configs = [":$target_name" + "_config"]
+    deps = [
+      "//azer/render:render"
+      "//azer/math:math"
+      "//base:base"
+      ":$target_name" + "_afx_cppcode"
+    ]
+    if (is_win) {
+      cflags = ["/FI$hpp"]
+    }
+  }
+}

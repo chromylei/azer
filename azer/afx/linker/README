@@ -1,0 +1,16 @@
+
+linker 的主要功能
+1. 根据 include 指令生成依赖树并检测循环依赖
+2. 根据 preprocessor 的指令生成原始代码
+3. 从低端开始分析代码并获得所有需要解析的符号及 package
+4. 重新组织所有的相关的代码并将代码以 AST 形式组织
+5. 根据需要将 AST 生成对应的目标代码
+
+== 依赖书的生成过程 ==
+1. 使用 preprocessor 生成加载所有的代码，并按照引用关系以树的形式进行组织
+   预编译阶段必须按照顺序遍历所有代码文件，若此做是因为存在 #define 制定，引入文件可能是有意义的
+   提供 debug 文件，将分析文件时起作用的宏及宏的定义位置打印出来
+2. 分析根节点源代码文件（根节点指的是引入其它文件的文件）并记录使用到的外部符号
+3. 从 include 的文件当中查找外部符号
+   afxc 的外部符号使用特殊语法 package_name::symbol_name 来标识，afxi 文件的头部必须以 package 定义当前文件的 package_name, package name 类似与 c++ 的 namespace，是可以重复的，同样可以使用 package package_name::subname::subname 来定义子名字空间。
+   文件查找的目录没有默认值，必须制定

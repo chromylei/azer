@@ -1,0 +1,142 @@
+
+
+import("//build/templates/bison.gni")
+import("//build/templates/flex.gni")
+
+config("afx_lexyacc_config") {
+  defines = [
+    "YY_DECL=int yylex(YYSTYPE* yylval, azer::afx::ParseContext* context)"
+  ]
+}
+
+bison("afx_preprocessor_parser") {
+  source = "preprocessor/preprocessor.y"
+  hpp = "preprocessor_tab.h"
+  cpp = "preprocessor_tab.cpp"
+  bison_flags = ["-t" "--report=state", "-Werror"]
+  defines = ["yyparse=preprocessor_yyparse" "yydebug=preprocessor_yydebug"]
+}
+
+bison("afx_effect_parser") {
+  source = "compiler/afxlang.y"
+  hpp = "afxlang_tab.h"
+  cpp = "afxlang_tab.cpp"
+  bison_flags = ["-t" "--report=state", "-Werror"]
+  direct_dependent_configs = [":afx_lexyacc_config"]
+  defines = ["yyparse=afx_yyparse" "yydebug=afx_yydebug"]
+}
+
+flex("afx_effect_lex") {
+  source = "compiler/tokenizer.lex"
+  hpp = "lex.h"
+  cpp = "lex.cc"
+  direct_dependent_configs = [":afx_lexyacc_config"]
+}
+
+static_library("afx") {
+  sources = [
+    "codegen/afx_codegen.cc"
+    "codegen/afx_codegen.h"
+    "codegen/cpp_codegen.cc"
+    "codegen/cpp_codegen.h"
+    "codegen/code_generator.cc"
+    "codegen/code_generator.h"
+    "codegen/hlsl_util.cc"
+    "codegen/hlsl_util.h"
+    "codegen/tex_util.cc"
+    "codegen/tex_util.h"
+    "codegen/hlsl_codegen.cc"
+    "codegen/hlsl_codegen.h"
+    "codegen/util.cc"
+    "codegen/util.h"
+    "compiler/astdump.cc"
+    "compiler/astdump.h"
+    "compiler/astnode.cc"
+    "compiler/astnode.h"
+    "compiler/builtin.cc"
+    "compiler/builtin.h"
+    "compiler/context.cc"
+    "compiler/context.h"
+    "compiler/context_validator.cc"
+    "compiler/context_validator.h"
+    "compiler/debug.h"
+    "compiler/expression_validator.cc"
+    "compiler/expression_validator.h"
+    "compiler/parser.cc"
+    "compiler/parser.h"
+    "compiler/syntax_validator.cc"
+    "compiler/syntax_validator.h"
+    "compiler/type.cc"
+    "compiler/type.h"
+    "compiler/util.cc"
+    "compiler/util.h"
+    "compiler/value.cc"
+    "compiler/value.h"
+    "linker/afx_parser.cc"
+    "linker/afx_parser.h"
+    "linker/dependency_tree.cc"
+    "linker/dependency_tree.h"
+    "linker/depend_calactor.cc"
+    "linker/depend_calactor.h"
+    "linker/linker.cc"
+    "linker/linker.h"
+    "linker/program.cc"
+    "linker/program.h"
+    "linker/technique_parser.cc"
+    "linker/technique_parser.h"
+    "util/file_loader.cc"
+    "util/file_loader.h"
+    "preprocessor/parser.cc"
+    "preprocessor/parser.h"
+    "preprocessor/tokenizer.cc"
+    "preprocessor/tokenizer.h"
+  ]
+  deps = [
+    "//base:base",
+    "//base:base_i18n",
+    "//base:build_info",
+    ":afx_effect_lex",
+    ":afx_effect_parser",
+    ":afx_preprocessor_parser",
+  ]
+}
+
+executable("afxc") {
+  hard_dep = true
+  sources = ["afxc/afxc_main.cc"]
+  deps = [
+    ":afx"
+    "//base:base"
+    "//base:appinit"
+  ]
+}
+
+test("afx_unittest") {
+  sources = [
+    "codegen/afx_codegen_unittest.cc"
+    "codegen/builtin_codegen_unittest.cc"
+    "codegen/cpp_codegen_unittest.cc"
+    "codegen/hlsl_codegen_unittest.cc"
+    "codegen/util_unittest.cc"
+    "compiler/astree_unittest.cc"
+    "compiler/expression_unittest.cc"
+    "compiler/parser_unittest.cc"
+    "compiler/syntax_error_unittest.cc"
+    "compiler/value_unittest.cc"
+    "linker/dependency_tree_unittest.cc"
+    "linker/linker_unittest.cc"
+    "linker/technique_parser_unittest.cc"
+    "preprocessor/parser_unittest.cc"
+    "preprocessor/recursive_unittest.cc"
+    "preprocessor/tokenizer_unittest.cc"
+  ]
+  deps = [
+    "//testing:gtest",
+    "//base:base"
+    "//base:test_main"
+    "//azer/afx:afx",
+  ]
+
+  gen_dir = rebase_path(target_gen_dir, root_build_dir, ".")
+  include_dirs = ["$gen_dir"]
+}

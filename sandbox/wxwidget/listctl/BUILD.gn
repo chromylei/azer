@@ -1,0 +1,6 @@
+executable("wxwidget_listctl") {
+  sources = ["listtest.cpp"]
+  deps = ["//third_party/wxwidget:wxwidget"]
+  configs -= ["//build/config/win:console"]
+  configs += ["//build/config/win:windowed"]
+}

@@ -1,0 +1,117 @@
+
+shared_library("render") {
+  sources = [
+    "../animation/bone.cc",
+    "../animation/skeleton.cc",
+    "../align.h",
+    "../base/hierarchy_transform.h",
+    "../base/movable.h",
+    "../base/string.cc",
+    "../base/string.h",
+    "../base/tree_node.h",
+    "../resources/content.h",
+    "../resources/file_system.cc",
+    "../resources/file_system.h",
+    "../resources/geometry_manager.cc",
+    "../resources/geometry_manager.h",
+    "../resources/json_util.cc",
+    "../resources/json_util.h",
+    "../resources/material_manager.cc",
+    "../resources/material_manager.h",
+    "../resources/mesh.cc",
+    "../resources/mesh.h",
+    "../resources/resource_manager.cc",
+    "../resources/resource_manager.h",
+    "../resources/scene_manager.cc",
+    "../resources/scene_manager.h",
+    "../resources/technique_manager.cc",
+    "../resources/technique_manager.h",
+    "../scene/node.cc",
+    "../scene/node.h",
+    "../scene/scene.cc",
+    "../scene/scene.h",
+    "axis_aligned_box.cc",
+    "axis_aligned_box.h",
+    "blending.h",
+    "camera.cc",
+    "camera.h",
+    "effect.cc",
+    "effect.h",
+    "effect/mirror_map.cc",
+    "effect/mirror_map.h",
+    "effect/projective_map.cc",
+    "effect/projective_map.h",
+    "effect/shadow_map.cc",
+    "effect/shadow_map.h",
+    "frustrum.cc",
+    "frustrum.h",
+    "gpu_constants_table.cc",
+    "gpu_constants_table.h",
+    "light.cc",
+    "light.h",
+    "mesh.cc",
+    "mesh.h",
+    "overlay.cc",
+    "overlay.h",
+    "render_system.h",
+    "render_system.cc",
+    "render_target.h",
+    "render_system_enum.cc",
+    "render_system_enum.h",
+    "texture.h",
+    "vertex_buffer.h",
+    "vertex_data.cc",
+    "vertex_data.h",
+    "util/axis_aligned_box_mesh.cc",
+    "util/axis_aligned_box_mesh.h",
+    "util/coordinate_grid.cc",
+    "util/coordinate_grid.h",
+    "util/dynlib.cc",
+    "util/dynlib.h",
+    "util/render_system_loader.cc",
+    "util/render_system_loader.h",
+    "util/shader_array.cc",
+    "util/shader_array.h",
+    "win/window_host.cc",
+    "win/window_host.h",
+    "win/window_host_win.cc",
+    "win/message_loop_win.cc",
+    "win/message_loop.h",
+  ]
+
+  deps = [
+    "//azer/math:math",
+    "//ui/gfx:gfx",
+    "//base:base",
+  ]
+
+  defines = ["BUILD_AZER_RENDER"]
+  forward_dependent_configs_from = deps
+}
+
+test("render_unittest") {
+  sources = [
+    "../base/tree_node_unittest.cc",
+    "../resources/file_system_unittest.cc",
+    "../resources/resource_manager_unittest.cc",
+    "test/camera_unittest.cc",
+    "test/frustrum_unittest.cc",
+    "test/gpu_constants_table_unittest.cc",
+    "test/light_unittest.cc",
+    "test/vertex_data_unittest.cc",
+    "test/util.cc",
+    "test/util.h",
+  ]
+
+  defines = ["AZER_UNITTEST"]
+
+  deps = [
+    "//azer/math:math",
+    "//base:test_main",
+    "//third_party/glm:glm",
+    "//third_party/gtest:gtest",
+    ":render",
+  ]
+
+  if (is_win) {deps += ["//azer/render_system/d3d11:d3d11_render_system"]}
+}

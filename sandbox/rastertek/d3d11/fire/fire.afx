@@ -1,0 +1,54 @@
+#import "azer/effect/afx/baselight.afxi"
+
+struct VsOutput {
+  vec4 __afx_position;
+  vec2 texcoord;
+  vec2 noise_texcoord0;
+  vec2 noise_texcoord1;
+  vec2 noise_texcoord2;
+  vec4 normal;
+  vec4 viewpos;
+};
+
+uniform mat4 wvp;
+uniform mat4 world;
+uniform vec4 distortion0;
+uniform vec4 distortion1;
+uniform vec4 distortion2;
+uniform float deltatime;
+uniform float distortion_scale;
+uniform float distortion_bias;
+uniform vec4 scroll_speed;
+uniform sampler2D FireTex;
+uniform sampler2D AlphaTex;
+uniform sampler2D NoiseTex;
+
+VsOutput vs_main(vec3 position, vec2 texcoord, vec3 normal) {
+  VsOutput o;
+  o.__afx_position = vec4(position, 1) * wvp;
+  o.texcoord = texcoord;
+  o.normal = normalize(vec4(normal, 0) * world);
+  o.noise_texcoord0 = vec2(texcoord.x, texcoord.y + scroll_speed.x * deltatime);
+  o.noise_texcoord1 = vec2(texcoord.x, texcoord.y + scroll_speed.y * deltatime) * 2;
+  o.noise_texcoord2 = vec2(texcoord.x, texcoord.y + scroll_speed.z * deltatime) * 3;
+  return o;
+}
+
+vec4 ps_main(VsOutput o) {
+  vec2 noise1 = texture2D(NoiseTex, o.noise_texcoord0).xy;
+  vec2 noise2 = texture2D(NoiseTex, o.noise_texcoord1).xy;
+  vec2 noise3 = texture2D(NoiseTex, o.noise_texcoord2).xy;
+  noise1 = (noise1 * 2 - 1.0) * distortion0.xy;
+  noise2 = (noise2 * 2 - 1.0) * distortion1.xy;
+  noise3 = (noise3 * 2 - 1.0) * distortion2.xy;
+
+  vec2 final_noise = noise1 + noise2 + noise3;
+  float perturb = (1.0 - o.texcoord.y) * distortion_scale + distortion_bias;
+  vec2 noise_texcoord = final_noise * perturb + o.texcoord.xy;
+  
+  vec4 color = texture2D(FireTex, noise_texcoord);
+  color.a = texture2D(AlphaTex, noise_texcoord).r;
+  if (color.a < 0.2) discard;
+  return color;
+}
+

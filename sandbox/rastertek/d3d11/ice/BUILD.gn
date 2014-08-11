@@ -1,0 +1,16 @@
+
+import("//build/templates/afx.gni")
+
+afx("rastertek_ice_effect") {
+  source = "ice.afx"
+  classname = "IceEffect"
+  filename = "afx_ice_effect"
+}
+
+executable("rastertek_d3d11_ice") {
+  sources = ["main.cc"]
+  deps = ["//azer:azer", "//base:base", "//base:appinit",
+    ":rastertek_ice_effect"
+    "../common:rastertek_d3d11_common"
+  ]
+}

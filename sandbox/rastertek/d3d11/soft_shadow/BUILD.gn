@@ -1,0 +1,31 @@
+
+import("//build/templates/afx.gni")
+
+afx("rastertek_soft_shadow_effect") {
+  source = "shadow_map.afx"
+  classname = "ShadowMapEffect"
+  filename = "afx_shadow_map_effect"
+}
+
+afx("rastertek_depth_effect") {
+  source = "depth.afx"
+  classname = "DepthEffect"
+  filename = "afx_depth_effect"
+}
+
+afx("rastertek_depth_blur_effect") {
+  source = "blur.afx"
+  classname = "OverlayBlurEffect"
+  baseclass = "azer::OverlayEffect"
+  filename = "afx_surface_blur_effect"
+}
+
+executable("rastertek_d3d11_soft_shadow") {
+  sources = ["main.cc"]
+  deps = ["//azer:azer", "//base:base", "//base:appinit",
+    ":rastertek_soft_shadow_effect"
+    ":rastertek_depth_effect"
+    ":rastertek_depth_blur_effect"
+    "../common:rastertek_d3d11_common"
+  ]
+}

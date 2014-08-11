@@ -1,0 +1,35 @@
+#import "azer/effect/afx/baselight.afxi"
+
+struct VsOutput {
+  vec4 __afx_position;
+  vec2 texcoord;
+  vec4 world_position;
+  vec4 normal;
+};
+
+uniform mat4 wvp;
+uniform mat4 world;
+uniform sampler2D MyTex;
+uniform PointLight pointlights[4];
+uniform int light_num = 4;
+uniform vec3 ambient;
+
+VsOutput vs_main(vec3 position, vec2 texcoord, vec3 normal) {
+  VsOutput o;
+  o.__afx_position = vec4(position, 1) * wvp;
+  o.texcoord = texcoord;
+  o.normal = normalize(vec4(normal, 0) * world);
+  o.world_position = vec4(position, 1) * world;
+  return o;
+}
+
+vec4 ps_main(VsOutput o) {
+  vec4 diffuse = texture2D(MyTex, o.texcoord);
+  vec3 intensity = ambient.xyz;
+  for (int i = 0; i < light_num; ++i) {
+    intensity += CalcPointLight(pointlights[i], o.world_position, o.normal);
+  }
+  clamp(intensity, 0, 1);
+  return diffuse * vec4(intensity, 1);
+}
+

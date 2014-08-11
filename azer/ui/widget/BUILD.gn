@@ -1,0 +1,38 @@
+shared_library("widget") {
+  sources = [
+    "label.cc"
+    "label.h"
+    "widget.cc"
+    "widget.h"
+    "root_window.cc"
+    "root_window.h"
+    "theme.cc"
+    "theme.h"
+    "window.cc"
+    "window.h"
+  ]
+  deps = [
+    "//azer/render:render"
+    "//third_party/skia/gn:skia"
+    "//ui/gfx:gfx"
+    "//base:base"
+  ]
+
+  forward_dependent_configs_from = [
+    "//ui/gfx:gfx"
+    "//azer/render:render"
+  ]
+  defines = ["BUILD_AZER_WIDGET"] 
+}
+
+test("widget_unittest") {
+  sources = [
+    "widget_unittest.cc"
+    "transform_unittest.cc"
+  ]
+  deps = [
+    "//azer:azer"
+    "//base:base"
+    "//base:test_main"
+  ]
+}

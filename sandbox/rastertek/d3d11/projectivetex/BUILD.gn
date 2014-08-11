@@ -1,0 +1,16 @@
+
+import("//build/templates/afx.gni")
+
+afx("rastertek_projectivetex_effect") {
+  source = "projective_tex.afx"
+  classname = "ProjectiveTexEffect"
+  filename = "afx_projective_tex_effect"
+}
+
+executable("rastertek_d3d11_projectivetex") {
+  sources = ["main.cc"]
+  deps = ["//azer:azer", "//base:base", "//base:appinit",
+    ":rastertek_projectivetex_effect"
+    "../common:rastertek_d3d11_common"
+  ]
+}

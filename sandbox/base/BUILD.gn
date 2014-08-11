@@ -1,0 +1,5 @@
+
+executable("base_test") {
+  sources = ["main.cc"]
+  deps = ["//base:base"]
+}

@@ -1,0 +1,13 @@
+executable("wxwidget_propgrid") {
+  sources = [
+    "propgrid.cpp",
+    "propgrid.h",
+    "propgrid_minimal.cpp",
+    "sampleprops.cpp",
+    "sampleprops.h",
+    "tests.cpp",
+  ]
+  deps = ["//third_party/wxwidget:wxwidget"]
+  configs -= ["//build/config/win:console"]
+  configs += ["//build/config/win:windowed"]
+}

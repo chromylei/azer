@@ -1,0 +1,12 @@
+import("//build/templates/afx.gni")
+
+static_library("azer_util") {
+  hard_dep = true
+  sources = [
+  ]
+  deps = [
+    "//azer/render:render"
+    "//azer/math:math"
+    "//ui/gfx:gfx"
+  ]
+}

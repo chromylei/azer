@@ -1,0 +1,8 @@
+[user]
+	name = lenxyang
+	email = lenxyang@gmail.com
+[core]
+	filemode = false
+	autocrlf = false
+[push]
+	default = simple

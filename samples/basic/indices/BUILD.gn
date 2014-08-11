@@ -1,0 +1,15 @@
+import("//build/templates/afx.gni")
+
+afx("azer_sample_indices_effect") {
+  source = "texture.afx"
+  filename = "texture"
+}
+
+executable("azer_sample_indices") {
+  sources = ["main.cc"]
+  deps = [
+    "//base:appinit",
+    ":azer_sample_indices_effect",
+    "//samples:samples_common",
+  ]
+}

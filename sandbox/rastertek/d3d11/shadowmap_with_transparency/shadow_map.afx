@@ -1,0 +1,49 @@
+#import "azer/effect/afx/baselight.afxi"
+
+struct VsOutput {
+  vec4 __afx_position;
+  vec2 texcoord;
+  vec4 normal;
+  vec4 worldpos;
+  vec4 projpos;
+};
+
+uniform mat4 wvp;
+uniform mat4 world;
+uniform mat4 projtex_wvp;
+uniform sampler2D MyTex;
+uniform sampler2D ProjTex;
+uniform PointLight ptlight;
+
+VsOutput vs_main(vec3 position, vec2 texcoord, vec3 normal) {
+  VsOutput o;
+  o.__afx_position = vec4(position, 1) * wvp;
+  o.texcoord = texcoord;
+  o.normal = normalize(vec4(normal, 0) * world);
+  o.worldpos =  vec4(position, 1) * world;
+  o.projpos = vec4(position, 1) *  projtex_wvp;
+  return o;
+}
+
+vec4 ps_main(VsOutput o) {
+  vec4 color = texture2D(MyTex, o.texcoord);
+  if (color.a < 0.1) discard;
+  vec2 projtexcoord;
+  o.projpos /= o.projpos.w;
+  projtexcoord.x = o.projpos.x / 2.0 + 0.5;
+  projtexcoord.y = o.projpos.y / -2.0 + 0.5;
+
+  vec4 intensity = vec4(CalcPointLight(ptlight, o.worldpos, o.normal), 1.0);
+  if (clamp(projtexcoord, 0.0, 1.0) != projtexcoord) {
+    return ptlight.ambient * color;
+  }
+  float depth = o.projpos.z;
+  float light_view_depth = texture2D(ProjTex, projtexcoord).g;
+  
+  if (depth  < light_view_depth + 0.001) {
+    return intensity * color;
+  }
+
+  return 0.2 * intensity * color;
+}
+

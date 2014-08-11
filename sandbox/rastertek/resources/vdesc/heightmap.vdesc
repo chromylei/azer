@@ -1,0 +1,24 @@
+[
+  {
+    "name": "desc",
+    "desc": [
+      {
+        "semantic_name": "POSITION",
+        "semantic_index": 0,
+        "data_type": "vec3",
+      },
+
+      {
+        "semantic_name": "TEXCOORD",
+        "semantic_index": 0,
+        "data_type": "vec2",
+      },
+
+      {
+        "semantic_name": "NORMAL",
+        "semantic_index": 0,
+        "data_type": "vec3",
+      },
+    ],
+  },
+]

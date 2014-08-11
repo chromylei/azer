@@ -1,0 +1,7 @@
+
+executable("wxwidget_aui") {
+  sources = ["main.cc"]
+  deps = ["//third_party/wxwidget:wxwidget"]
+  configs -= ["//build/config/win:console"]
+  configs += ["//build/config/win:windowed"]
+}

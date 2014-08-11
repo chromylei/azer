@@ -1,0 +1,23 @@
+[
+  {
+    "name": "coordinate_grid_vdesc",
+    "desc": [
+      {
+        "semantic_name": "POSITION",
+        "semantic_index": 0,
+        "data_type": "vec4",
+      },
+    ],
+  },
+
+  {
+    "name": "bounding_volumn_vdesc",
+    "desc": [
+      {
+        "semantic_name": "POSITION",
+        "semantic_index": 0,
+        "data_type": "vec4",
+      },
+    ],
+  },
+]

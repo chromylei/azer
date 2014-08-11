@@ -1,0 +1,30 @@
+
+group("wxwidget_samples") {
+  deps = [
+    "aui:wxwidget_aui",
+    "caret:wxwidget_caret",
+    "controls:wxwidget_controls",
+    "collpanel:wxwidget_collpanel",
+    "combo:wxwidget_combo",
+    "dataview:wxwidget_dataview",
+    "debugrpt:wxwidget_debugrpt",
+    "dialogs:wxwidget_dialogs",
+    "grid:wxwidget_grid",
+    "hello:wxwidget_hello",
+    "listctl:wxwidget_listctl",
+    "popup:wxwidget_popup",
+    "richedit:wxwidget_richedit",
+    "ribbon:wxwidget_ribbon",
+    "statusbar:wxwidget_statusbar",
+    "stc:wxwidget_stc",
+    "taborder:wxwidget_taborder",
+    "taskbar:wxwidget_taskbar",
+    "toolbar:wxwidget_toolbar",
+    "treectl:wxwidget_treectl",
+    "treelist:wxwidget_treelist",
+    "propgrid:wxwidget_propgrid",
+    "preferences:wxwidget_preferences",
+    "widgets:wxwidget_widgets",
+    "xrc:wxwidget_xrc",
+  ]
+}

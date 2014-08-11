@@ -1,0 +1,47 @@
+
+shared_library("d3d11_render_system") {
+  sources = [
+    "blending.cc",
+    "blending.h",
+    "depth_buffer.cc",
+    "depth_buffer.h",
+    "enum_transform.h",
+    "gpu_constants_table.cc",
+    "gpu_constants_table.h",
+    "gpu_program.cc",
+    "gpu_program.h",
+    "indices_buffer.cc",
+    "indices_buffer.h",
+    "hr_msg.cc",
+    "hr_msg.h",
+    "overlay.cc",
+    "overlay.h",
+    "plugin.cc",
+    "plugin.h",
+    "render_system.cc",
+    "render_system.h",
+    "render_target.cc",
+    "render_target.h",
+    "renderer.cc",
+    "renderer.h",
+    "technique.cc",
+    "technique.h",
+    "texture.cc",
+    "texture.h",
+    "util.cc",
+    "util.h",
+    "vertex_buffer.cc",
+    "vertex_buffer.h",
+  ]
+  deps = [
+    "//base:base",
+    "//azer/render:render",
+    "//third_party/angle:libGLESv2",
+  ]
+  defines = ["BUILD_AZER_RENDER_SYSTEM"]
+  configs += [
+    "//build/config/win:d3d11",
+  ]
+  defpath = rebase_path("../render_system.def", ".", root_build_dir)
+  if (is_win) { ldflags = ["/DEF:$defpath"]}
+}

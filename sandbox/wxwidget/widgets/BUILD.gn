@@ -1,0 +1,40 @@
+executable("wxwidget_widgets") {
+  sources = [
+    "bmpcombobox.cpp",
+    "button.cpp",
+    "checkbox.cpp",
+    "choice.cpp",
+    "clrpicker.cpp",
+    "combobox.cpp",
+    "datepick.cpp",
+    "descrip.mms",
+    "dirctrl.cpp",
+    "dirpicker.cpp",
+    "editlbox.cpp",
+    "filectrl.cpp",
+    "filepicker.cpp",
+    "fontpicker.cpp",
+    "gauge.cpp",
+    "hyperlnk.cpp",
+    "icons",
+    "itemcontainer.cpp",
+    "itemcontainer.h",
+    "listbox.cpp",
+    "notebook.cpp",
+    "odcombobox.cpp",
+    "radiobox.cpp",
+    "searchctrl.cpp",
+    "slider.cpp",
+    "spinbtn.cpp",
+    "statbmp.cpp",
+    "static.cpp",
+    "textctrl.cpp",
+    "timepick.cpp",
+    "toggle.cpp",
+    "widgets.cpp",
+    "widgets.h",
+  ]
+  deps = ["//third_party/wxwidget:wxwidget"]
+  configs -= ["//build/config/win:console"]
+  configs += ["//build/config/win:windowed"]
+}

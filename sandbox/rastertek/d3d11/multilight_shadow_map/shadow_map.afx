@@ -1,0 +1,64 @@
+#import "azer/effect/afx/baselight.afxi"
+
+struct VsOutput {
+  vec4 __afx_position;
+  vec2 texcoord;
+  vec4 normal;
+  vec4 worldpos;
+  vec4 projpos;
+};
+
+uniform mat4 wvp;
+uniform mat4 world;
+uniform mat4 projtex_wvp;
+uniform sampler2D MyTex;
+uniform sampler2D ProjTex;
+uniform PointLight ptlight;
+
+VsOutput vs_main(vec3 position, vec2 texcoord, vec3 normal) {
+  VsOutput o;
+  o.__afx_position = vec4(position, 1) * wvp;
+  o.texcoord = texcoord;
+  o.normal = normalize(vec4(normal, 0) * world);
+  o.worldpos =  vec4(position, 1) * world;
+  o.projpos = vec4(position, 1) *  projtex_wvp;
+  return o;
+}
+
+/*
+ * -1 围在 depthtex 给定的光照影响范围内
+ * 0  不再影子中
+ * 1 在影子中
+ */
+int ShadowState(sampler2D depthtex, vec4 projpos) {
+  vec2 projtexcoord;
+  projtexcoord.x = projpos.x / 2.0 + 0.5;
+  projtexcoord.y = projpos.y / -2.0 + 0.5;
+
+  if (clamp(projtexcoord, 0.0, 1.0) != projtexcoord) {
+    return -1;
+  }
+
+  float depth = projpos.z;
+  float light_view_depth = texture2D(depthtex, projtexcoord).g;
+  if (depth  < light_view_depth + 0.001) {
+    return 0;
+  }
+
+  return 1;
+}
+
+vec4 ps_main(VsOutput o) {
+  vec4 color = texture2D(MyTex, o.texcoord);
+  vec3 intensity = CalcPointLight(ptlight, o.worldpos, o.normal);
+  o.projpos /= o.projpos.w;
+  int ret = ShadowState(ProjTex, o.projpos);
+  if (ret > 0) {
+    return 0.2 * vec4(intensity, 1) * color;
+  } else if (ret == 0) {
+    return vec4(intensity, 1) * color;
+  } else {
+    return vec4(intensity, 1) * color; 
+  }
+}
+

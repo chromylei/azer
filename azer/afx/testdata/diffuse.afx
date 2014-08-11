@@ -1,0 +1,37 @@
+#include "light.afxi"
+
+technique [
+    name = "effect"
+    ps_main="psmain"
+    vs_main="vsmain"
+           ];
+
+[uniform_func="SetLight"]
+uniform afx::SpotLight light1;
+
+exchange struct VSOutput {
+  [semantic="position" system="true"]
+  vec3 position;
+  vec3 normal;
+  vec2 texcoord;
+};
+
+exchange struct VSInput {
+  [semantic="position"]
+  vec3 position;
+  vec3 normal;
+  vec3 texcoord;
+};
+
+VSOutput vsmain(VSInput input) {
+  VSOutput o;
+  o.position = input.position;
+  o.normal = input.normal;
+  o.texcoord = input.texcoord;
+  return o;
+}
+
+[system="true" semantic="target"]
+vec4 psmain(VSOutput o) {
+  return vec4(1, 1, 1, 1);
+}

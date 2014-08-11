@@ -1,0 +1,13 @@
+#package afx;
+
+struct Material {
+  float transparency;
+  float specular_power;
+  float optical_density;
+  int illumination;
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 specular_color;
+  vec4 emissive_color;
+  Texture2D diffuse[4];
+};

@@ -1,0 +1,16 @@
+import("//build/templates/afx.gni")
+
+afx("azer_sample_hierarchy_diffuse") {
+  source = "diffuse.afx"
+  filename = "diffuse"
+}
+
+executable("azer_sample_hierarchy") {
+  sources = ["main.cc"]
+  deps = [
+    "//base:appinit",
+    ":azer_sample_hierarchy_diffuse",
+    "//ui/gfx:gfx",
+    "//samples:samples_common",
+  ]
+}

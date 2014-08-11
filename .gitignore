@@ -1,0 +1,11 @@
+.*
+*.pyc
+*.filters
+*.vcxproj
+*.vcproj
+*.sln
+*.suo
+*.user
+media
+out
+sbox

@@ -1,0 +1,223 @@
+declare_args() {
+  is_debug = true
+  is_win = true
+  is_linux = false
+  is_ios = false
+  is_mac = false
+  is_nacl = false
+  is_posix = false
+  is_android = false
+  is_clang = false
+  toolkit_uses_gtk = false
+  force_win64 = false
+  compiler="msvs"
+  component_mode="shared_library"
+  is_component_build = true
+}
+
+if (is_win) {
+  # Always use 32-bit on Windows, even when compiling on a 64-bit host OS,
+  # unless the override flag is specified.
+  if (force_win64) {
+    cpu_arch = "x64"
+  } else {
+    cpu_arch = "x86"
+  }
+}
+
+windows_sources_filters = [
+  "*_win.cc",
+  "*_win.h",
+  "*_win_unittest.cc",
+  "*\bwin/*",
+]
+mac_sources_filters = [
+  "*_mac.h",
+  "*_mac.cc",
+  "*_mac.mm",
+  "*_mac_unittest.h",
+  "*_mac_unittest.cc",
+  "*_mac_unittest.mm",
+  "*\bmac/*",
+  "*_mac.mm",
+  "*_mac_unittest.h",
+  "*_mac_unittest.cc",
+  "*_mac_unittest.mm",
+  "*\bmac/*",
+  "*_cocoa.h",
+  "*_cocoa.cc",
+  "*_cocoa.mm",
+  "*_cocoa_unittest.h",
+  "*_cocoa_unittest.cc",
+  "*_cocoa_unittest.mm",
+  "*\bcocoa/*",
+]
+ios_sources_filters = [
+  "*_ios.h",
+  "*_ios.cc",
+  "*_ios.mm",
+  "*_ios_unittest.h",
+  "*_ios_unittest.cc",
+  "*_ios_unittest.mm",
+  "*\bios/*",
+]
+objective_c_sources_filters = [
+  "*.mm",
+]
+linux_sources_filters = [
+  "*_linux.h",
+  "*_linux.cc",
+  "*_linux_unittest.h",
+  "*_linux_unittest.cc",
+  "*\blinux/*",
+  "*_x11.cc",
+  "*_x11.h",
+]
+android_sources_filters = [
+  "*_android.h",
+  "*_android.cc",
+  "*_android_unittest.h",
+  "*_android_unittest.cc",
+  "*\bandroid/*",
+]
+posix_sources_filters = [
+  "*_posix.h",
+  "*_posix.cc",
+  "*_posix_unittest.h",
+  "*_posix_unittest.cc",
+  "*\bposix/*",
+]
+freebsd_sources_filters = [
+  "*_freebsd.h",
+  "*_freebsd.cc"
+]
+
+openbsd_sources_filters = [
+  "*_openbsd.h",
+  "*_openbsd.cc"
+]
+
+chrome_os_sources_filters = [
+  "*_chromeos.h",
+  "*_chromeos.cc"
+]
+
+sources_assignment_filter = []
+sources_assignment_filter = chrome_os_sources_filters
+sources_assignment_filter += freebsd_sources_filters
+
+if (is_win) {
+  sources_assignment_filter += posix_sources_filters
+} else {
+  sources_assignment_filter += windows_sources_filters
+}
+if (!is_mac) {
+  sources_assignment_filter += mac_sources_filters
+}
+if (!is_ios) {
+  sources_assignment_filter += ios_sources_filters
+}
+if (!is_mac && !is_ios) {
+  sources_assignment_filter += objective_c_sources_filters
+}
+if (!is_linux) {
+  sources_assignment_filter += linux_sources_filters
+  sources_assignment_filter += openbsd_sources_filters
+}
+if (!is_android) {
+  sources_assignment_filter += android_sources_filters
+}
+
+# This is the actual set.
+set_sources_assignment_filter(sources_assignment_filter)
+
+# =============================================================================
+# TARGET DEFAULTS
+# =============================================================================
+#
+# Set up the default configuration for every build target of the given type.
+# The values configured here will be automatically set on the scope of the
+# corresponding target. Target definitions can add or remove to the settings
+# here as needed.
+
+# Holds all configs used for making native executables and libraries, to avoid
+# duplication in each target below.
+native_compiler_configs = [
+  "//build/config/compiler:compiler",
+  "//build/config/compiler:runtime_library",
+  "//build/config/compiler:no_rtti",
+  "//build/config/compiler:default_warnings",
+  "//build/config/compiler:no_chromium_code",
+]
+
+if (is_win) {
+  native_compiler_configs += [
+    "//build/config/win:sdk",
+    "//build/config/win:win32_lean",
+    "//build/config/win:unicode",
+  ]
+} else if (is_clang) {
+  native_compiler_configs += "//build/config/clang:find_bad_constructs"
+}
+
+if (is_debug) {
+  native_compiler_configs += ["//build/config/compiler:no_optimize"]
+  native_compiler_configs += ["//build/config/compiler:symbols"]
+  native_compiler_configs += ["//build/config/compiler:dbg_defines"]
+} else {
+  native_compiler_configs += ["//build/config/compiler:no_optimize"]
+  # native_compiler_configs += ["//build/config/compiler:optimize"]
+  native_compiler_configs += ["//build/config/compiler:symbols"]
+  # native_compiler_configs += ["//build/config/compiler:minimal_symbols"]
+  native_compiler_configs += ["//build/config/compiler:opt_defines"]
+}
+
+# Windows linker setup for EXEs and DLLs.
+if (is_win) {
+  if (is_debug) {
+    default_incremental_linking_config =
+      "//build/config/win:incremental_linking"
+  } else {
+    default_incremental_linking_config =
+      "//build/config/win:no_incremental_linking"
+  }
+  windows_linker_configs = [
+    default_incremental_linking_config,
+    "//build/config/win:sdk_link",
+    "//build/config/win:common_linker_setup",
+    # Default to console-mode apps. Most of our targets are tests and such
+    # that shouldn't use the windows subsystem.
+    "//build/config/win:console",
+    "//build/config/win:opengl32",
+  ]
+}
+
+set_defaults("executable") {
+  configs = native_compiler_configs
+  if (is_win) {
+    configs += windows_linker_configs
+  } else if (is_mac) {
+    configs += "//build/config/mac:mac_dynamic_flags"
+  } else if (is_linux) {
+    configs += "//build/config/linux:executable_ldconfig"
+  }
+}
+
+set_defaults("static_library") {
+  configs = native_compiler_configs
+}
+
+set_defaults("shared_library") {
+  configs = native_compiler_configs
+  if (is_win) {
+    configs += windows_linker_configs
+  } else if (is_mac) {
+    configs += "//build/config/mac:mac_dynamic_flags"
+  }
+}
+
+set_defaults("source_set") {
+  configs = native_compiler_configs
+}
+
+set_default_toolchain("//build/toolchain/msvs:32")

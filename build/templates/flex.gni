@@ -1,0 +1,79 @@
+
+#
+# flex("glsl_parser") {
+#   source = "a.flex"
+#   hpp = "a.h";
+#   cpp = "a.cc";
+#   flex_flags = ["-y", "-v", "-p", "_mesa_glsl_"]
+#   flex_include_dirs
+# }
+#
+
+flex_binary_path = "//third_party/cygwin/bin/flex.exe"
+
+template("flex") {
+  assert(defined(source))
+  assert(defined(cpp))
+  assert(defined(hpp))
+
+  if (!defined(flex_flags)) {flex_flags = []}
+
+  # where is source for static library when write BUILD.gn
+  flex_gen_dir = rebase_path(target_gen_dir, ".", root_build_dir)
+  flex_build_dir = rebase_path(target_gen_dir, root_build_dir, ".")
+
+  flex_mkdir_target = target_name + "_mkdir"
+  flex_custom_target = target_name + "_custom"
+  custom(flex_mkdir_target) {
+    hard_dep = true
+    script = "//build/tools/shell/mkdir.py"
+    outputs = ["$target_gen_dir"]
+    args = ["flex_gen_dir"]
+  }
+
+  custom(flex_custom_target) {
+    script = "//build/tools/shell/run2.py"
+    hard_dep = true
+    outputs = [
+      "$target_gen_dir/$hpp",
+      "$target_gen_dir/$cpp"
+    ]
+
+    flex_file_path = rebase_path("$source", ".", "$root_build_dir")
+    flex_path = rebase_path("$flex_binary_path", ".", "$root_build_dir")
+    args = [
+      "$flex_path",
+      "--header-file=$flex_gen_dir/$hpp",
+      "-o", "$flex_gen_dir/$cpp",
+    ] + flex_flags
+    args += ["$flex_file_path"]
+    deps = [":$flex_mkdir_target"]
+  }
+
+  flex_config = target_name + "_custom_config"
+  config(flex_config) {
+    defines = ["YY_NO_UNISTD_H"]
+    include_dirs = [ flex_build_dir ]
+  }
+
+  source_set(target_name) {
+    hard_dep = true
+    sources = [
+      "$flex_build_dir/$cpp",
+      "$flex_build_dir/$hpp"
+    ]
+    deps = [":$flex_custom_target"]
+    if (is_win) {
+      cflags = ["/FI io.h", "/wd 4003"]
+    }
+
+    if (defined(direct_dependent_configs)) {
+      direct_dependent_configs += [":$flex_config"]
+    } else {
+      direct_dependent_configs = [":$flex_config"]
+    }
+    if (defined(flex_include_dirs)) {
+      include_dirs = flex_include_dirs
+    }
+  }
+}

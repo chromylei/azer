@@ -1,0 +1,15 @@
+import("//build/templates/afx.gni")
+
+afx("azer_sample_triangle_effect") {
+  source = "diffuse.afx"
+  filename = "diffuse"
+}
+
+executable("azer_sample_triangle") {
+  sources = ["main.cc"]
+  deps = [
+    "//base:appinit",
+    ":azer_sample_triangle_effect",
+    "//samples:samples_common",
+  ]
+}

@@ -1,0 +1,67 @@
+
+assert(is_win)
+
+cc = "gcc"
+cxx = "g++"
+ar = "ar"
+ld = cxx
+
+cc_command = "$cc -MMD -MF \$out.d \$defines \$includes \$cflags \$cflags_c -c \$in -o \$out"
+cxx_command = "$cxx -MMD -MF \$out.d \$defines \$includes \$cflags \$cflags_cc -c \$in -o \$out"
+alink_command = "rm -f \$out && $ar rcs \$out \$in"
+link_command = "$ld \$ldflags -o \$out -Wl,--start-group \$in \$solibs -Wl,--end-group \$libs"
+
+
+
+# 32-bit -----------------------------------------------------------------------
+
+toolchain("32") {
+  # Make these apply to all tools below.
+  lib_prefix = "-l"
+  lib_dir_prefix="-L"
+
+  tool("cc") {
+    # cflags_pch_c
+    command = cc_command
+    description = "CC \$out"
+    depfile = "\$out.d"
+    deps = "gcc"
+  }
+  tool("cxx") {
+    # cflags_pch_cc
+    command = cxx_command
+    description = "CXX \$out"
+    depfile = "\$out.d"
+    deps = "gcc"
+  }
+  tool("alink") {
+    command = alink_command
+    description = "AR \$out"
+  }
+  tool("solink") {
+    command = solink_command
+    description = "SOLINK \$lib"
+    #pool = "link_pool"
+    restat = "1"
+  }
+  tool("link") {
+    command = link_command
+    description = "LINK \$out"
+    #pool = "link_pool"
+  }
+  tool("stamp") {
+    command = stamp_command
+    description = "STAMP \$out"
+  }
+  tool("copy") {
+    command = copy_command
+    description = "COPY \$in \$out"
+  }
+
+  # When invoking this toolchain not as the default one, these args will be
+  # passed to the build. They are ignored when this is the default toolchain.
+  toolchain_args() {
+    cpu_arch = "x86"
+  }
+}
+    

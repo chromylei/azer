@@ -1,0 +1,20 @@
+
+uniform vec4 diffuse;
+
+
+struct VsOutput {
+  vec4 __afx_position;
+  vec4 diffuse;
+};
+
+VsOutput vs_main(vec4 position) {
+  VsOutput o;
+  o.__afx_position = position;
+  o.diffuse = diffuse;
+  return o;
+}
+
+vec4 ps_main(VsOutput o) {
+  return o.diffuse;
+}
+

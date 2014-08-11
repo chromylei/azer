@@ -1,0 +1,5 @@
+
+static_library("rastertek_d3d11_common") {
+  sources = ["load.cc"]
+  deps = ["//azer:azer", "//base:base"]
+}

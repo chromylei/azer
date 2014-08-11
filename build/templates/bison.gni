@@ -1,0 +1,73 @@
+
+#
+# bison("glsl_parser") {
+#   source = "a.flex"
+#   hpp = "a.h";
+#   cpp = "a.cpp";
+#   bison_flags = ["-y", "-v", "-p", "_mesa_glsl_"]
+#   bison_include_dirs
+# }
+#
+
+bison_binary_path = "//build/tools/win32/bison.exe"
+
+template("bison") {
+  assert(defined(source))
+  assert(defined(cpp))
+  assert(defined(hpp))
+
+  # where is source for static library when write BUILD.gn
+  bison_gen_dir = rebase_path(target_gen_dir, ".", root_build_dir)
+  bison_build_dir = rebase_path(target_gen_dir, root_build_dir, ".")
+
+  bison_mkdir_target = target_name + "_mkdir"
+  bison_custom_target = target_name + "_custom"
+  custom(bison_mkdir_target) {
+    hard_dep = true
+    script = "//build/tools/shell/mkdir.py"
+    outputs = ["$target_gen_dir"]
+    args = ["bison_gen_dir"]
+  }
+
+  custom(bison_custom_target) {
+    script = "//build/tools/shell/run2.py"
+    hard_dep = true
+    outputs = [
+      "$target_gen_dir/$hpp",
+      "$target_gen_dir/$cpp"
+    ]
+
+    bison_file_path = rebase_path("$source", ".", "$root_build_dir")
+    bison_path = rebase_path("$bison_binary_path", ".", "$root_build_dir")
+    args = [
+      "$bison_path",
+      "$bison_file_path",
+      "--defines=$bison_gen_dir/$hpp",
+      "-o", "$bison_gen_dir/$cpp",
+    ] + bison_flags
+
+    deps = [":$bison_mkdir_target"]
+  }
+
+  bison_config = target_name + "_custom_config"
+  config(bison_config) {
+    include_dirs = [ bison_build_dir ]
+  }
+
+  static_library(target_name) {
+    hard_dep = true
+    sources = [
+      "$bison_build_dir/$cpp",
+      "$bison_build_dir/$hpp"
+    ]
+    deps = [":$bison_custom_target"]
+    if (defined(direct_dependent_configs)) {
+      direct_dependent_configs += [":$bison_config"]
+    } else  {
+      direct_dependent_configs = [":$bison_config"]
+    }
+    if (defined(bison_include_dirs)) {
+      include_dirs = bison_include_dirs
+    }
+  }
+}

@@ -1,0 +1,52 @@
+#package afx;
+
+struct DirectionalLight {
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 directional;
+};
+
+struct Attenuation {
+  float cvalue;
+  float clinear;
+  float cexpr;
+};
+
+struct PointLight {
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 position;
+  Attenuation atten;
+  float range;
+};
+
+struct SpotLight {
+  vec4 ambient;
+  vec4 diffuse;
+  vec4 position;
+  vec4 directional;
+  Attenuation atten;
+  float range;
+  float cone;
+};
+
+vec3 CalcDirectionalLight(DirectionalLight l, vec4 normal) {
+  vec4 intensity = l.ambient;
+  float ambient_scalar = dot(-l.directional, normal);
+  if (ambient_scalar > 0) {
+    intensity += ambient_scalar * l.diffuse;
+  }
+  return intensity.xyz;
+}
+
+vec3 CalcPointLight(PointLight l, vec4 position, vec4 normal) {
+  float dist = distance(l.position, position);
+  if (dist < l.range) {
+    float intensity = clamp(dot(normal, (l.position - position) / dist), 0, 1);
+    intensity /= l.atten.cvalue + l.atten.clinear * dist
+        + l.atten.cexpr * dist * dist;
+    return intensity * l.diffuse.xyz + l.ambient.xyz;
+  } else {
+    return l.ambient.xyz;
+  }
+}

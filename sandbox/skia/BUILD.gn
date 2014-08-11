@@ -1,0 +1,18 @@
+
+group("skia_sbox") {
+  deps = [
+    ":skiasbox_helloworld"
+    ":skia_sbox_png"
+    "samples:SkExamples"
+  ]
+}
+
+executable("skiasbox_helloworld") {
+  sources = ["helloworld.cc"]
+  deps = ["//third_party/skia:skia"]
+}
+
+executable("skia_sbox_png") {
+  sources = ["png.cc"]
+  deps = ["//third_party/skia:skia"]
+}

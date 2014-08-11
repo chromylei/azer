@@ -1,0 +1,23 @@
+import("//build/templates/afx.gni")
+
+afx("azer_samples_wxwidget_effect") {
+  source = "diffuse.afx"
+  filename = "diffuse"
+}
+
+executable("azer_wxwidget") {
+  sources = [
+    "main.cc",
+    "azer_canvas.cc",
+    "azer_canvas.h",
+  ]
+  deps = [
+    "//third_party/wxwidget:wxwidget",
+    ":azer_samples_wxwidget_effect",
+    "//azer:azer",
+    "//base:appinit",
+    "//samples:samples_common",
+  ]
+#  configs -= ["//build/config/win:console"]
+#  configs += ["//build/config/win:windowed"]
+}

@@ -1,0 +1,21 @@
+
+uniform mat4 wvp;
+struct VsOutput {
+  vec4 __afx_position;
+  vec4 position;
+  float depth;
+};
+
+VsOutput vs_main(vec3 position, vec2 texcoord, vec3 normal) {
+  VsOutput o;
+  o.__afx_position = vec4(position, 1) * wvp;
+  o.position = vec4(position, 1) * wvp;
+  o.depth = o.__afx_position.z / o.__afx_position.w;
+  return o;
+}
+
+vec4 ps_main(VsOutput o) {
+  float v = o.__afx_position.z;
+  vec4 color = vec4(v, v, v, 1.0);
+  return color;
+}

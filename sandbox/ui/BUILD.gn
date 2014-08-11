@@ -1,0 +1,58 @@
+group("gfx_sbox") {
+  deps = [
+    ":gfx_sbox_png",
+    ":gfx_sbox_cube",
+    ":gfx_sbox_canvas",
+    ":gfx_sbox_surface",
+    ":gfx_sbox_widget",
+  ]
+}
+
+executable("gfx_sbox_png") {
+  sources = ["png/main.cc"]
+  deps = ["//azer:azer", "//base:base"]
+}
+
+executable("gfx_sbox_cube") {
+  sources = ["cube/main.cc"]
+  deps = [
+    "//azer:azer",
+    "//base:base",
+    "//azer/render_system/d3d11:d3d11_render_system",
+  ]
+  configs += ["//build/config/win:d3d11"]
+}
+
+executable("gfx_sbox_canvas") {
+  sources = ["gfx_canvas/main.cc"]
+  deps = [
+    "//azer:azer",
+    "//sandbox/azer:common",
+    "//ui/gfx:gfx",
+    "//base:base",
+    "//third_party/skia/gn:skia",
+  ]
+  configs += ["//build/config/win:d3d11"]
+}
+
+executable("gfx_sbox_surface") {
+  sources = ["surface/main.cc", "surface/delegate.cc"]
+  deps = [
+    "//azer:azer",
+    "//azer/render_system/d3d11:d3d11_render_system",
+    "//sandbox/azer:common",
+    "//base:base",
+  ]
+  configs += ["//build/config/win:d3d11"]
+}
+
+executable("gfx_sbox_widget") {
+  sources = ["widget/main.cc", "widget/delegate.cc"]
+  deps = [
+    "//azer:azer",
+    "//azer/render_system/d3d11:d3d11_render_system",
+    "//sandbox/azer:common",
+    "//base:base",
+  ]
+  configs += ["//build/config/win:d3d11"]
+}

@@ -1,0 +1,15 @@
+import("//build/templates/afx.gni")
+
+afx("azer_sample_texture_effect") {
+  source = "texture.afx"
+  filename = "texture"
+}
+
+executable("azer_sample_texture") {
+  sources = ["main.cc"]
+  deps = [
+    "//base:appinit",
+    ":azer_sample_texture_effect",
+    "//samples:samples_common",
+  ]
+}

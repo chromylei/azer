@@ -1,0 +1,8 @@
+{
+  "vertex_stage": {
+    "program": "technique/bounding_volumn.vs",
+    "vertex_desc": "vdesc/base.vdesc:bounding_volumn_vdesc",
+  },
+
+  "pixel_stage": "technique/bounding_volumn.ps",
+}

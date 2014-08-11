@@ -1,0 +1,19 @@
+
+
+group("root") {
+  deps = [
+     "//base:base",
+     "//ui/gfx:gfx",
+     "//third_party/build:third_party",
+     "//azer:azer",
+     "//sandbox:sandbox",
+     "//samples:samples",
+     "//sbox:sbox",
+  ]
+}
+
+#group("unittests") {
+#  deps = [
+#    "//azer:azer_unittest"
+#  ]
+#}

@@ -1,0 +1,8 @@
+{
+  "vertex_stage": {
+    "program": "shader/program/coordinategrideffect.vs",
+    "vertex_desc": "vdesc/base.vdesc:coordinate_grid_vdesc",
+  },
+
+  "pixel_stage": "shader/program/coordinategrideffect.ps",
+}

@@ -1,0 +1,3 @@
+LIBRARY  d3d9_render_system.dll
+EXPORTS
+	CreateRenderSystem

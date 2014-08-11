@@ -1,0 +1,16 @@
+import("//build/templates/afx.gni")
+
+afx("azer_sample_xfile_effect") {
+  source = "transform.afx"
+  filename = "transform"
+}
+
+executable("azer_sample_xfile") {
+  sources = ["main.cc"]
+  deps = [
+    "//base:appinit",
+    ":azer_sample_xfile_effect",
+    "//samples:samples_common",
+    "//third_party/assimp:assimp",
+  ]
+}

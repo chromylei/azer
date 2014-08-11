@@ -1,0 +1,5 @@
+整体设计
+ compiler 分成两个部分 preprocessor 和 compiler，preprocessor 类似与 c++/c 的预处理指令。
+
+Atten:
+ BUILD 文件存在问题，由于 bison 进程必须互斥调用，而 BUILD.gn 当中存在两个 bison 相关的程序，如果同时 BULID 有可能出现不可预知错误。分别 BUILD 问题不会出现

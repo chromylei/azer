@@ -1,0 +1,12 @@
+
+static_library("rastertek_terrain_common") {
+  sources = [
+    "camera_control.cc"
+    "camera_control.h"
+    "heightmap.h",
+    "heightmap.cc"
+    "terrain_grid.cc"
+    "terrain_grid.h"
+  ]
+  deps = ["//azer:azer"]
+}

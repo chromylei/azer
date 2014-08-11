@@ -1,0 +1,16 @@
+import("//build/templates/afx.gni")
+
+afx("azer_sample_fps_effect") {
+  source = "diffuse.afx"
+  classname = "DiffuseEffect"
+  filename = "diffuse"
+}
+
+executable("azer_sample_fps") {
+  sources = ["main.cc"]
+  deps = [
+    "//base:appinit"
+    ":azer_sample_fps_effect"
+    "//samples:samples_common"
+  ]
+}

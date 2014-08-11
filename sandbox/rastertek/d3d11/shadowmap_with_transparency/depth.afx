@@ -1,0 +1,28 @@
+
+uniform mat4 wvp;
+uniform sampler2D MyTex;
+struct VsOutput {
+  vec4 __afx_position;
+  vec4 position;
+  vec2 texcoord;
+  float depth;
+};
+
+VsOutput vs_main(vec3 position, vec2 texcoord, vec3 normal) {
+  VsOutput o;
+  o.__afx_position = vec4(position, 1) * wvp;
+  o.texcoord = texcoord;
+  o.position = vec4(position, 1) * wvp;
+  o.depth = o.__afx_position.z / o.__afx_position.w;
+  return o;
+}
+
+vec4 ps_main(VsOutput o) {
+  vec4 tex_color = texture2D(MyTex, o.texcoord);
+  float v = o.__afx_position.z;
+  if (tex_color.a < 0.8) {
+     discard;
+  }
+
+  return vec4(v, v, v, 1);
+}

@@ -1,0 +1,23 @@
+
+import("//build/templates/afx.gni")
+
+afx("rastertek_ambient_effect") {
+  source = "ambient.afx"
+  classname = "AmbientEffect"
+  filename = "ambient"
+}
+
+afx("rastertek_water_effect") {
+  source = "water.afx"
+  classname = "WaterEffect"
+  filename = "water"
+}
+
+executable("rastertek_d3d11_water") {
+  sources = ["main.cc"]
+  deps = ["//azer:azer", "//base:base", "//base:appinit",
+    ":rastertek_ambient_effect"
+    ":rastertek_water_effect"
+    "../common:rastertek_d3d11_common"
+  ]
+}

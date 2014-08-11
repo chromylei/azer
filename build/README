@@ -1,0 +1,5 @@
+
+
+gn 目前无法支持 cygwin 下的使用 mingw 编译， 原因如下
+1. gn 不能保证所有路径使用 linux-style 的，导致 cygwin 部分命令失效
+2. gn 会为 ld-flags 自动增加 /MANIFEST 命令，导致链接命令失效

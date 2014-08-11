@@ -1,0 +1,57 @@
+[
+  {
+    "name": "base",
+    "transparency": 1,
+    "specular_power": 20,
+    "optical_density": 2,
+    "illumination": 3,
+    "ambient": [0.2, 0.2, 0.2, 1],
+    "diffuse": [0.8, 0.8, 0.8, 1],
+  },
+  {
+    "name": "plane",
+    "transparency": 1,
+    "specular_power": 20,
+    "optical_density": 2,
+    "illumination": 3,
+    "ambient": [0.1, 0.2, 0.3, 1],
+    "diffuse": [0.4, 0.5, 0.6, 1],
+    "diffuse_tex": ["texture/ice.dds"],
+    "normal_tex": ["texture/bump01.dds"],
+    "specular_tex": ["texture/spec02.dds"],
+    "alpha_tex": ["texture/alpha01.dds"],
+  },
+
+  {
+    "name": "sphere",
+    "transparency": 1,
+    "specular_power": 20,
+    "optical_density": 2,
+    "illumination": 3,
+    "ambient": [0.1, 0.2, 0.3, 1],
+    "diffuse": [0.4, 0.5, 0.6, 1],
+    "diffuse_tex": ["texture/ice.dds"],
+  },
+
+  {
+    "name": "sphere1",
+    "transparency": 1,
+    "specular_power": 20,
+    "optical_density": 2,
+    "illumination": 3,
+    "ambient": [0.1, 0.2, 0.3, 1],
+    "diffuse": [0.4, 0.5, 0.6, 1],
+    "diffuse_tex": ["texture/wall01.dds"],
+  },
+
+  {
+    "name": "sphere2",
+    "transparency": 1,
+    "specular_power": 20,
+    "optical_density": 2,
+    "illumination": 3,
+    "ambient": [0.1, 0.2, 0.3, 1],
+    "diffuse": [0.4, 0.5, 0.6, 1],
+    "diffuse_tex": ["texture/metal001.dds"],
+  },
+]

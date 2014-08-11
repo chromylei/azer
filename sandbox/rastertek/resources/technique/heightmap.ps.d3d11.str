@@ -1,0 +1,15 @@
+struct VsOutput {
+  float4 __afx_position : SV_POSITION;
+  float2 texcoord : TEXCOORD0;
+  float4 normal : NORMAL;
+};
+
+// uniforms defined
+cbuffer ps_buffer {
+  float4 diffuse;
+}
+
+// globals variables
+float4 ps_main(in VsOutput o) : SV_TARGET {
+  return diffuse;
+}
