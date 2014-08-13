@@ -53,6 +53,6 @@ bool Overlay::Init(RenderSystem* rs) {
 void Overlay::Render(Renderer* rs) {
   DCHECK (effect_ptr_.get() != NULL);
   effect_ptr_->Use(rs);
-  rs->Render(vb_ptr_.get(), azer::kTriangleList, 6);
+  rs->Draw(vb_ptr_.get(), azer::kTriangleList, 6);
 }
 }  // namespace azer

@@ -66,22 +66,21 @@ class AZER_EXPORT Renderer {
 
   virtual void ResetShader(RenderPipelineStage stage) = 0;
 
-  virtual void Render(VertexBuffer* vb, PrimitiveTopology primitive,
-                      int32 num_of_vertices = -1, int32 first_vertex = 0) = 0;
-  virtual void Render(VertexBuffer* vb, IndicesBuffer* ib,
-                      PrimitiveTopology primitive, int32 num_of_vertices = -1,
-                      int32 first_indices = 0, int32 index_base = 0) = 0;
-  virtual void RenderInstanced(int32 instance_num,
-                               VertexBuffer* vb, IndicesBuffer* ib,
-                               PrimitiveTopology primitive,
-                               int32 num_of_vertices = -1,
-                               int32 first_indices = 0, int32 index_base = 0,
-                               int32 instance_start_index = 0) = 0;
-  virtual void RenderInstanced(int32 instance_num,
-                               VertexBuffer* vb, PrimitiveTopology primitive,
-                               int32 num_of_vertices = -1,
-                               int32 first_vertex = 0,
-                               int32 instance_start_index = 0) = 0;
+  virtual void Draw(VertexBuffer* vb, PrimitiveTopology primitive,
+                    int32 num_of_vertices = -1, int32 first_vertex = 0) = 0;
+  virtual void DrawIndex(VertexBuffer* vb, IndicesBuffer* ib,
+                         PrimitiveTopology primitive, int32 num_of_vertices = -1,
+                         int32 first_indices = 0, int32 index_base = 0) = 0;
+  virtual void DrawInstanced(int32 instance_num, VertexBuffer* vb,
+                             PrimitiveTopology primitive, int32 num_of_vertices = -1,
+                             int32 first_vertex = 0,
+                             int32 instance_start_index = 0) = 0;
+  virtual void DrawIndexInstanced(int32 instance_num, VertexBuffer* vb,
+                                  IndicesBuffer* ib, PrimitiveTopology primitive,
+                                  int32 num_of_vertices = -1,
+                                  int32 first_indices = 0, int32 index_base = 0,
+                                  int32 instance_start_index = 0) = 0;
+  
   struct Viewport {
     int32 left;
     int32 top;

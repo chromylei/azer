@@ -76,7 +76,7 @@ void CoordinateGrid::Init() {
 
 void CoordinateGrid::Render(Renderer* renderer) {
   effect_ptr_->Use(renderer);
-  renderer->Render(vb_.get(), kLineList, (kNum + 1) * 4);
+  renderer->Draw(vb_.get(), kLineList, (kNum + 1) * 4);
 }
 
 void CoordinateGrid::SetGridDiffuse(const Vector4& grid_diffuse) {

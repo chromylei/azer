@@ -62,8 +62,6 @@ class CppCodeGen {
   std::string GenUseTexture(const TechniqueParser::Technique& tech);
   std::string GenTextureStageUse(RenderPipelineStage stage,
                                  const ASTNodeVec& uniforms);
-  int GetSemanticIndex(FieldNode* field);
-  
   std::string cpp_code_;
   std::string head_code_;
   DISALLOW_COPY_AND_ASSIGN(CppCodeGen);

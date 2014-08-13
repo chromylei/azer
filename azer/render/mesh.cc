@@ -12,10 +12,10 @@ inline void Mesh::RenderGroup(Renderer* renderer, SubMesh* sub, const Group& gro
   }
 
   if (group.type == kIndices) {
-    renderer->Render(sub->vb_ptr.get(), sub->ib_ptr.get(), group.primitive,
-                     group.num, group.first);
+    renderer->DrawIndex(sub->vb_ptr.get(), sub->ib_ptr.get(), group.primitive,
+                        group.num, group.first);
   } else if (group.type == kVertex) {
-    renderer->Render(sub->vb_ptr.get(), group.primitive, group.num, group.first);
+    renderer->Draw(sub->vb_ptr.get(), group.primitive, group.num, group.first);
   } else {
     NOTREACHED();
   }

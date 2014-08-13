@@ -109,7 +109,7 @@ void AABBMesh::Render(Renderer* renderer) {
    * 根据 bbox 计算缩放的坐标进行缩放及移动
    * 以保证 AABB 的 Mesh 能够包裹住 box
    */
-  renderer->Render(vb_.get(), edge_ib_.get(), kLineList);
+  renderer->DrawIndex(vb_.get(), edge_ib_.get(), kLineList);
   // renderer->Render(vb_.get(), ib_.get(), kLineList);
 }
 

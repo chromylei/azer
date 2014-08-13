@@ -58,22 +58,20 @@ class D3D11Renderer : public Renderer {
   virtual void ClearDepthAndStencil(DepthBuffer::ClearFlag,
                                     float depth_val, int stencil_val) OVERRIDE;
   
-  virtual void Render(VertexBuffer* vb, PrimitiveTopology primitive,
+  virtual void Draw(VertexBuffer* vb, PrimitiveTopology primitive,
                       int32 num_of_vertices, int32 first_vertex) OVERRIDE;
-  virtual void Render(VertexBuffer* vb, IndicesBuffer* ib,
-                      PrimitiveTopology primitive, int32 num_of_vertices,
-                      int32 first_indices, int32 index_base) OVERRIDE;
-  virtual void RenderInstanced(int32 instance_num,
-                               VertexBuffer* vb, IndicesBuffer* ib,
-                               PrimitiveTopology primitive,
-                               int32 num_of_vertices,
-                               int32 first_indices, int32 index_base,
-                               int32 instance_start_index) OVERRIDE;
-  virtual void RenderInstanced(int32 instance_num,
-                               VertexBuffer* vb, PrimitiveTopology primitive,
-                               int32 num_of_vertices,
-                               int32 first_vertex,
-                               int32 instance_start_index) OVERRIDE;
+  virtual void DrawIndex(VertexBuffer* vb, IndicesBuffer* ib,
+                         PrimitiveTopology primitive, int32 num_of_vertices,
+                         int32 first_indices, int32 index_base) OVERRIDE;
+  virtual void DrawInstanced(int32 instance_num, VertexBuffer* vb,
+                             PrimitiveTopology primitive,
+                             int32 num_of_vertices, int32 first_vertex,
+                             int32 instance_start_index) OVERRIDE;
+  virtual void DrawIndexInstanced(int32 instance_num, VertexBuffer* vb,
+                                  IndicesBuffer* ib, PrimitiveTopology primitive,
+                                  int32 num_of_vertces, int32 first_indices,
+                                  int32 index_base,
+                                  int32 instance_start_index) OVERRIDE;
 
   virtual void SetViewport(const Viewport& viewport) OVERRIDE;
   

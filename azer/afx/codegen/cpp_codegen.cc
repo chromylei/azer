@@ -1,6 +1,8 @@
 #include "azer/afx/codegen/cpp_codegen.h"
 
 #include <sstream>
+#include <ctype.h>
+
 #include "azer/render/render_system_enum.h"
 #include "azer/afx/compiler/astnode.h"
 #include "azer/afx/codegen/hlsl_util.h"
@@ -21,6 +23,8 @@ const char* GpuConstantTypeFromUniform(const TypePtr& typeptr);
 std::string GetTexVarName(ASTNode* node, RenderPipelineStage stage);
 std::string SelfDefStructureName(StructDeclNode* node);
 bool IsSelfDefinedStruct(const TypePtr& typeptr);
+std::string GetSemanticName(const std::string& name);
+int GetSemanticIndex(FieldNode* field);
 }  // namespace
 
 CppCodeGen::CppCodeGen() {
@@ -255,13 +259,15 @@ std::string CppCodeGen::GenVertexDesc(const TechniqueParser::Technique& tech) {
   std::stringstream ss;
   ss << "const azer::VertexDesc::Desc " << GetClassName(tech)
      << "::kVertexDesc[] = {\n";
+  std::string prev_name;
   for (auto iter = decl->fields().begin(); iter != decl->fields().end(); ++iter) {
     DCHECK((*iter)->IsFieldNode());
     int semantic_index = GetSemanticIndex((*iter)->ToFieldNode());
-    std::string fieldname = (*iter)->ToFieldNode()->fieldname();
+    std::string fieldname = GetSemanticName((*iter)->ToFieldNode()->fieldname());
     ss << "  {\"" << StringToUpperASCII(fieldname)
        << "\", " << semantic_index << ", "
        << UniformTypeIndex((*iter)->ToFieldNode()->GetType()) << "},\n";
+    prev_name = fieldname;
   }
   ss << "};\n";
   return ss.str();
@@ -416,19 +422,6 @@ std::string CppCodeGen::GetClassName(const TechniqueParser::Technique& tech) con
     }
   }
   return classname;
-}
-
-int CppCodeGen::GetSemanticIndex(FieldNode* field) {
-  if (field->attributes()) {
-    AttributesNode* attr = field->attributes();
-    const std::string& value = attr->GetAttrValue("semantic_index");
-    if (value.empty()) return 0;
-    int index = 0;
-    DCHECK(::base::StringToInt(value, &index));
-    return index;
-  } else {
-    return 0; 
-  }
 }
 
 void CppCodeGen::GenHeadCode(const TechniqueParser::Technique& tech) {
@@ -727,6 +720,49 @@ std::string SelfDefStructureName(StructDeclNode* node) {
 
   ss << node->struct_name();
   return ss.str();
+}
+
+bool SplitSemantic(const std::string& str, std::string* sname,
+                   std::string* sindex) {
+  int semantic_index = str.length() - 1;
+  for (auto iter = str.rbegin(); iter != str.rend(); ++iter) {
+    if (isdigit(*iter)) {
+      semantic_index--;
+    } else {
+      break;
+    }
+  }
+
+  *sname = str.substr(0, semantic_index + 1);
+  *sindex = str.substr(semantic_index + 1);
+  return semantic_index != str.length() - 1;
+}
+
+std::string GetSemanticName(const std::string& name) {
+  std::string sname, sindex;
+  SplitSemantic(name, &sname, &sindex);
+  return sname;
+}
+
+int GetSemanticIndex(FieldNode* field) {
+  if (field->attributes()) {
+    AttributesNode* attr = field->attributes();
+    const std::string& value = attr->GetAttrValue("semantic_index");
+    if (value.empty()) return 0;
+    int index = 0;
+    DCHECK(::base::StringToInt(value, &index));
+    return index;
+  } else {
+    std::string name = field->fieldname();
+    std::string sname, sindex;
+    if (!SplitSemantic(name, &sname, &sindex)) {
+      return 0;
+    } else {
+      int index = 0;
+      DCHECK(::base::StringToInt(sindex, &index));
+      return index;
+    }
+  }
 }
 }  // namespace
 }  // namespace afx
