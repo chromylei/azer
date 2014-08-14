@@ -132,13 +132,19 @@ uint32 SizeofType(const Type& type) {
   if (type.IsStructure()) {
   } else if (type.IsBasicType()) {
     unit_size = BasicTypeSize(type.type());
+  } else if (type.IsMatrix()) {
+    unit_size = BasicTypeSize(type.type());
+  } else if (type.IsVector()) {
+    unit_size = BasicTypeSize(type.type());
   } else if (type.IsTexture()) {
   } else {
     NOTREACHED();
   }
 
   if (type.IsArray()) {
-    NOTREACHED() << "calc const expression";
+    for (uint32 i = 0; i < type.GetDimVec().size(); ++i) {
+      unit_size *= type.GetDim(i);
+    }
     return unit_size;
   } else {
     return unit_size;

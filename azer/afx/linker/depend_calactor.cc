@@ -15,8 +15,8 @@ struct UniformSizeSort {
     DCHECK(node2 && node2->IsDeclarationNode());
     DCHECK(node1->ToDeclarationNode()->first_child());
     DCHECK(node2->ToDeclarationNode()->first_child());
-    SymbolNode* s1 = node1->ToDeclarationNode()->first_child()->ToSymbolNode();
-    SymbolNode* s2 = node2->ToDeclarationNode()->first_child()->ToSymbolNode();
+    SymbolNode* s1 = node1->ToDeclarationNode()->last_child()->ToSymbolNode();
+    SymbolNode* s2 = node2->ToDeclarationNode()->last_child()->ToSymbolNode();
         
     return SizeofType(*s1->GetType().get()) > SizeofType(*s2->GetType().get());
   }
@@ -41,8 +41,8 @@ std::string StructFullName(ASTNode* node) {
 
 void DependCalactor::Swap(TechniqueParser::StageInfo* stage) {
   depend_.swap(stage->depend);
-  std::sort(stage->uniforms.begin(), stage->uniforms.end(), UniformSizeSort());
   uniforms_.swap(stage->uniforms);
+  std::sort(stage->uniforms.begin(), stage->uniforms.end(), UniformSizeSort());
   textures_.swap(stage->uni_textures);
   uni_depend_.swap(stage->uni_depend);
   inserted_.clear();
