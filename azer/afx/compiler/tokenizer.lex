@@ -162,6 +162,48 @@
 "}"  { PUNCTUATION_INIT(RIGHT_BRACE);}
 "#"  { PUNCTUATION_INIT(SHARP);}
 
+[0-9]+\.[0-9]+[f]?         {
+  LEX_TRACE << "double: " << yytext << std::endl;
+  int length = yyleng;
+  if (yytext[yyleng-1] == 'f') --length;
+  std::string tex(yytext, length);
+  yylval->lex.loc.lineno = context->lineno();
+  CHECK(::base::StringToDouble(tex, &yylval->lex.d)) << yytext;
+  return FLOATCONST;
+}
+
+[0-9]?\.[0-9]+[f]?         {
+  LEX_TRACE << "double: " << yytext << std::endl;
+  int length = yyleng;
+  if (yytext[yyleng-1] == 'f') --length;
+  std::string tex(yytext, length);
+  yylval->lex.loc.lineno = context->lineno();
+  CHECK(::base::StringToDouble(tex, &yylval->lex.d)) << yytext;
+  return FLOATCONST;
+}
+
+[0-9]+                     {
+  LEX_TRACE << "integer: " << yytext << std::endl;
+  yylval->lex.loc.lineno = context->lineno();
+  CHECK(::base::StringToInt(yytext, &yylval->lex.i));
+  return INTCONST;
+}
+
+[0-9]+u                     {
+  LEX_TRACE << "uint: " << yytext << std::endl;
+  std::string tex(yytext, yyleng - 1);
+  yylval->lex.loc.lineno = context->lineno();
+  CHECK (::base::StringToUint(tex, &yylval->lex.u));
+  return UINTCONST;
+}
+
+0x[0-9]+                   {
+  LEX_TRACE << "hex: " << yytext << std::endl;
+  CHECK (::base::HexStringToInt(yytext, &yylval->lex.i));
+  yylval->lex.loc.lineno = context->lineno();
+  return INTCONST;
+}
+
 \"([^"\\]|\\['"?\\abfnrtv]|\\[0-7]{1,3}|\\[Xx][0-9a-fA-F]+)*\" {
   yylval->lex.string = new std::string(yytext, yyleng);
   return STRING;
@@ -227,38 +269,6 @@
   yylval->lex.loc.lineno = context->lineno();
   yylval->lex.c = *(yytext + 1);
   return CHARCONST;
-}
-
-[0-9]?\.[0-9]+[f]?         {
-  LEX_TRACE << "double: " << yytext << std::endl;
-  int length = yyleng;
-  if (yytext[yyleng-1] == 'f') --length;
-  std::string tex(yytext, length);
-  yylval->lex.loc.lineno = context->lineno();
-  CHECK(::base::StringToDouble(tex, &yylval->lex.d)) << yytext;
-  return FLOATCONST;
-}
-
-[0-9]+                     {
-  LEX_TRACE << "integer: " << yytext << std::endl;
-  yylval->lex.loc.lineno = context->lineno();
-  CHECK(::base::StringToInt(yytext, &yylval->lex.i));
-  return INTCONST;
-}
-
-[0-9]+u                     {
-  LEX_TRACE << "uint: " << yytext << std::endl;
-  std::string tex(yytext, yyleng - 1);
-  yylval->lex.loc.lineno = context->lineno();
-  CHECK (::base::StringToUint(tex, &yylval->lex.u));
-  return UINTCONST;
-}
-
-0x[0-9]+                   {
-  LEX_TRACE << "hex: " << yytext << std::endl;
-  CHECK (::base::HexStringToInt(yytext, &yylval->lex.i));
-  yylval->lex.loc.lineno = context->lineno();
-  return INTCONST;
 }
 
 \/\/[^\n]* {

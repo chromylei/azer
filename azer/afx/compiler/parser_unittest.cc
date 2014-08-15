@@ -12,11 +12,17 @@ TEST(AfxParser, Expression) {
       "void psmain() {\n"
       "  int a = 0;//comments\n"
       "  100;a++;--a;-a;a++++++;++++++a;++-+a; //\n"
+      "  float f1 = 1.0f;\n"
+      "  float f2 = 1.0f + 100.0f;\n"
       "  }  // comments"
       " // comments"
       ;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory);
+  ParseContext::Options opt;
+  // opt.dump_parser = true;
+  // opt.dump_tokenizer = true;
+  // opt.syntax_valid = false;
+  ParseContext context("", "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   // DumpASTree(&context, std::cout);
