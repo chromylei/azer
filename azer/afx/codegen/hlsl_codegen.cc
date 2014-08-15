@@ -544,11 +544,12 @@ bool SymbolNodeHLSLCodeGen::GenCommonCode(SymbolNode* symbol, std::string* code)
 bool UnaryOpNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
   TRACE();
   std::stringstream ss;
-  switch (node()->GetOperator()) {
+  UnaryOpNode* unary = node();
+  switch (unary->GetOperator()) {
     case kOpNull:
     default:
-      if (NeedBraceForOp(node())) ss << "(";
-      ss << operator_str(node()->GetOperator());
+      if (NeedBraceForOp(unary)) ss << "(";
+      ss << operator_str(unary->GetOperator());
   }
   *code = ss.str();
   return true;
