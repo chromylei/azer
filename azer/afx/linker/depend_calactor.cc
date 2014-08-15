@@ -22,21 +22,6 @@ struct UniformSizeSort {
   }
 };
 bool IsUniformSymbol(ASTNode* node);
-
-std::string StructFullName(ASTNode* node) {
-  DCHECK(node->IsStructDeclNode());
-  StructDeclNode* decl = node->ToStructDeclNode();
-  if (decl->struct_name().find("::") == std::string::npos
-      && !node->GetContext()->package().empty()) {
-    std::string fullname;
-    fullname.append(node->GetContext()->package());
-    fullname.append("::");
-    fullname.append(decl->struct_name());
-    return fullname;
-  } else {
-    return decl->struct_name();
-  }
-}
 }  // namespace
 
 void DependCalactor::Swap(TechniqueParser::StageInfo* stage) {

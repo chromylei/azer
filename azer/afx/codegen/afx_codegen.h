@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -44,6 +45,11 @@ class AfxCodegen {
                              bool comments);
   CodeGeneratorFactory* factory_;
   RenderPipelineStage stage_;
+  /**
+   * uniform 和 其他函数可能都依赖于某个指定的结构体， type_depends_
+   * 用来对他们进行去重
+   */
+  std::set<std::string> type_depends_;
   DISALLOW_COPY_AND_ASSIGN(AfxCodegen);
 };
 }  // namespace afx

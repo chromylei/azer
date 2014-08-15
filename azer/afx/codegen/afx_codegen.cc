@@ -132,12 +132,20 @@ std::string AfxCodegen::GenDepend(ASTNode* node, bool comments) {
   SnippetCodeGenerator generator(factory_);
   generator.GenCode(node);
   ss << std::move(generator.GetCode());
+  if (node->IsStructDeclNode()) {
+    type_depends_.insert(StructFullName(node));
+  }
   return ss.str();
 }
 
 std::string AfxCodegen::GenUniDepend(ASTNode* node, bool comments) {
   if (HasOnlyTextureField(node)) {
     return "";
+  }
+
+  if (node->IsStructDeclNode()
+      && type_depends_.find(StructFullName(node)) != type_depends_.end()) {
+       return "";
   }
 
   std::stringstream ss;

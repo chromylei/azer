@@ -139,5 +139,9 @@ class ParseContext: public TreeNode<ParseContext> {
 };
 
 std::string SymbolTypeName(ParseContext::SymbolType type);
+/**
+ * 计算 Struct 的完整名称，包含名字空间的命名
+ */
+std::string StructFullName(ASTNode* node);
 }  // namespace afx
 }  // namespace azer
