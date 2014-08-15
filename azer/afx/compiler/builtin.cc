@@ -38,6 +38,15 @@ const std::string g_builtin_str =
     "vec4 sample2D(Texture2D tex, vec2 texcoord) { return vec4(1, 1, 1, 1);}\n"
     "vec4 sample3D(Texture3D tex, vec3 texcoord) { return vec4(1, 1, 1, 1);}\n"
     "vec4 load(Texture2D, ivec3 coord) { return vec4(1.0, 1.0, 1.0, 1.0);}\n"
+    "float frac(float v) { return 1.0;}\n"
+    "vec3 frac(vec3 v) { return vec3(1, 1, 1);}\n"
+    "vec4 frac(vec4 v) { return vec4(1, 1, 1, 1);}\n"
+    "float max(float v, float v2) {}\n"
+    "vec3 max(vec3 v, float v2) {}\n"
+    "vec4 max(vec4 v, float v2) {}\n"
+    "float min(float v, float v2) {}\n"
+    "vec3 min(vec3 v, float v2) {}\n"
+    "vec4 min(vec4 v, float v2) {}\n"
     ;
 }  // namespace
 

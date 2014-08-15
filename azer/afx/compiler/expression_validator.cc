@@ -47,7 +47,12 @@ ValuePtr GetNodeValue(ASTNode* node) {
 }
 
 TypedNode* GetTypedNode(ASTNode* node) {
-  if (node->IsFuncCallNode()) {
+  if (node->IsConstNode()) {
+    TypedNode* typed = node->GetContext()->Create(ASTNode::kTypedNode,
+                                                  node->loc())->ToTypedNode();
+    typed->SetType(node->ToConstNode()->GetResultType());
+    return typed;
+  } else if (node->IsFuncCallNode()) {
     FuncCallNode* func = node->ToFuncCallNode();
     FuncDefNode* funcdef = func->GetFuncDefNode();
     DCHECK(funcdef != NULL);

@@ -184,6 +184,10 @@ Value operator + (const Value& v1, const Value& v2) {
   if (v1.type()->IsArray() || v2.type()->IsArray() || v1.type()->IsTexture()
       || v2.type()->IsTexture()) {
     return Value();
+  } else if (v1.type()->IsIntVec() && v2.type()->IsScalar()) {
+    return Value(v1.type());
+  } else if (v1.type()->IsVector() && v2.type()->IsScalar()) {
+    return Value(v1.type());
   } else if (v1.type()->IsVector() && v2.type()->IsVector()) {
     if (v1.type()->type() == v2.type()->type()) {
       return Value(v1.type());
@@ -249,6 +253,10 @@ Value operator - (const Value& v1, const Value& v2) {
   if (v1.type()->IsArray() || v2.type()->IsArray() || v1.type()->IsTexture()
       || v2.type()->IsTexture()) {
     return Value();
+  } else if (v1.type()->IsIntVec() && v2.type()->IsScalar()) {
+    return Value(v1.type());
+  } else if (v1.type()->IsVector() && v2.type()->IsScalar()) {
+    return Value(v1.type());
   } else if (v1.type()->IsVector() && v2.type()->IsVector()) {
     if (v1.type()->type() == v2.type()->type()) {
       return Value(v1.type());
