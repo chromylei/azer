@@ -39,6 +39,8 @@ class D3D11RenderSystem : public RenderSystem {
 
   // texutre functions
   virtual Texture* CreateTexture(const Texture::Options& opt) OVERRIDE;
+  virtual Texture* CreateTexture(const Texture::Options& opt,
+                                 const Image* image) OVERRIDE;
   virtual Texture* CreateTextureFromFile(const Texture::Type type,
                                          const ::base::FilePath& path) OVERRIDE;
   // virtual RenderTarget* CreateRenderTarget(const Texture::Options& opt);

@@ -6,6 +6,7 @@
 #include "base/strings/string16.h"
 #include "base/basictypes.h"
 #include "base/logging.h"
+#include "azer/base/image.h"
 #include "azer/render/win/window_host.h"
 #include "azer/render/render_system_enum.h"
 #include "azer/render_system/d3d11/util.h"
@@ -173,6 +174,20 @@ GpuConstantsTable* D3D11RenderSystem::CreateGpuConstantsTable(
       new D3D11GpuConstantsTable(num, desc));
   if (tableptr->Init(this)) {
     return tableptr.release();
+  } else {
+    return NULL;
+  }
+}
+
+Texture* D3D11RenderSystem::CreateTexture(const Texture::Options& opt,
+                                          const Image* image) {
+  Texture::Options texopt = opt;
+  texopt.width = image->width();
+  texopt.height = image->height();
+  texopt.format = image->format();
+  std::unique_ptr<D3D11Texture2D> tex(new D3D11Texture2D(texopt, this));
+  if (tex->InitFromData(image->data(), image->data_size())) {
+    return tex.release();
   } else {
     return NULL;
   }

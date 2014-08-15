@@ -19,6 +19,7 @@ class Technique;
 class VertexBuffer;
 class RenderTarget;
 class DepthRenderTarget;
+class Image;
 
 typedef std::shared_ptr<IndicesData> IndicesDataPtr;
 
@@ -53,6 +54,7 @@ class AZER_EXPORT RenderSystem {
 
   // textures functions
   virtual Texture* CreateTexture(const Texture::Options& opt) = 0;
+  virtual Texture* CreateTexture(const Texture::Options& opt, const Image* image) = 0;
   virtual Texture* CreateTextureFromFile(const Texture::Type type,
                                          const ::base::FilePath& path) = 0;
   // virtual RenderTarget* CreateRenderTarget(const Texture::Options& opt) = 0;
