@@ -1,6 +1,9 @@
 #include "azer/afx/codegen/hlsl_codegen.h"
 
 #include <sstream>
+#include <iostream>
+#include <iomanip>
+
 #include "base/logging.h"
 #include "base/strings/string_util.h"
 #include "azer/afx/codegen/hlsl_util.h"
@@ -131,7 +134,9 @@ bool ConstNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
     case kShort: ss << constant->value()->GetShort(); break;
     case kUint32: ss << constant->value()->GetUint32(); break;
     case kInt32: ss << constant->value()->GetInt32(); break;
-    case kFloat: ss << constant->value()->GetFloat(); break;
+    case kFloat:
+      ss.flags(std::ios::showpoint);
+      ss << constant->value()->GetFloat() << "f"; break;
     default: NOTREACHED(); break;
   }
   *code = ss.str();

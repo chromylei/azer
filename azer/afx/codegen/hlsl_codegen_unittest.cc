@@ -19,7 +19,9 @@ TEST(HLSLCodeGenerator, Expression) {
       "int a = 0;100;"
       "++a;--a;-a;++(++(++a));"
       "++(++(++a));-(++a);bool b = false;"
-      "bool c = (true && b) || (!b);}"
+      "bool c = (true && b) || (!b);"
+      "float f = (-1.00000f) / 100.000f;"
+      "}"
       ;
   const std::string str =
       "void psmain() {\n"
@@ -27,11 +29,12 @@ TEST(HLSLCodeGenerator, Expression) {
       "  100;a++;--a;-a;a++++++;++++++a;-+++a;\n"
       "  bool b = false;\n"
       "  bool c = true && b || !b;\n"
+      "  float f = -1.0f / 100.0f;\n"
       "}"
       ;
   ParseContext::Options opt;
-  opt.dump_parser = false;
-  opt.dump_tokenizer = false;
+  // opt.dump_parser = true;
+  // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
   ParseContext context("", "", str, &factory, opt);
   Parser parser;

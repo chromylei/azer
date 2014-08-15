@@ -95,88 +95,99 @@ Value& Value::operator --(int) {
   return --(*this);
 }
 
-Value& Value::operator !() {
+Value Value::operator !() {
   DCHECK(valid());
   if (type()->IsArray() || type()->IsTexture() || type()->IsMatrix()
       || type()->IsVector() || type()->IsIntVec()) {
     SetErrno(kOperUnacceptableOper);
     assigned_ = false;
-    return *this;
+    return Value();
   }
 
   if (!assigned()) {
     if (type()->type() == kBoolean || type()->type() == kShort
         || type()->type() == kBoolean || type()->type() == kInt32
         || type()->type() == kUint32) {
-      type_.reset(new Type(kBoolean));
+      return Value(kBoolean);
     } else {
-      SetErrno(kOperUnacceptableOper);
-      assigned_ = false;
+      Value v;
+      v.SetErrno(kOperUnacceptableOper);
+      v.assigned_ = false;
+      return v;
     }
-    return *this;
+    return Value();
   }
 
+  Value v(type()->type());
   if (type()->type() == kBoolean) {
-    value_.b = !value_.b;
+    v.value_.b = !value_.b;
   } else if (type()->type() == kShort) {
-    value_.s = !value_.s;
+    v.value_.s = !value_.s;
   } else if (type()->type() == kUint32) {
-    value_.u32 = !value_.u32;
+    v.value_.u32 = !value_.u32;
   } else if (type()->type() == kInt32) {
-    value_.i32 = !value_.i32;
+    v.value_.i32 = !value_.i32;
   } else {
     SetErrno(kOperUnacceptableOper);
-    assigned_ = false;
+    v.assigned_ = false;
   }
-  return *this;
+  return v;
 }
 
-Value& Value::operator -() {
+Value Value::operator -() {
   DCHECK(valid());
 
   if (type_->type() == kInt32) {
-    value_.i32 = -value_.i32;
+    return Value(-value_.i32);
   } else if (type_->type() == kShort) {
-    value_.s = -value_.s;
+    return Value(-value_.s);
   } else if (type_->type() == kFloat) {
-    value_.f = -value_.f;
+    return Value(-value_.f);
   } else if (type_->IsVector()) {
+    Value v(type_->type());
     for (size_t i = 0; i < arraysize(value_.vec); ++i) {
-      value_.vec[i] = -value_.vec[i];
+      v.value_.vec[i] = -value_.vec[i];
     }
   } else if (type_->IsIntVec()) {
+    Value v(type_->type());
     for (size_t i = 0; i < arraysize(value_.intvec); ++i) {
-      value_.vec[i] = -value_.vec[i];
+      v.value_.vec[i] = -value_.vec[i];
     }
+    return v;
   } else if (type_->IsMatrix()) {
+    Value v(type_->type());
     for (size_t i = 0; i < arraysize(value_.mat); ++i) {
-      value_.vec[i] = -value_.mat[i];
+      v.value_.mat[i] = -value_.mat[i];
     }
+    return v;
   } else {
     SetErrno(kOperUnacceptableOper);
+    return Value();
   }
-  
-  return *this;
+
+  SetErrno(kOperUnacceptableOper);
+  return Value();
 }
 
-Value& Value::operator ~() {
+Value Value::operator ~() {
   DCHECK(valid());
   if (!IsIntegerScalar(type())) {
     SetErrno(kOperUnacceptableOper);
-    return *this;
+    return Value();
   }
 
+  Value v(type_->type());
   if (type_->type() == kInt32) {
-    value_.i32 = ~value_.i32;
+    v.value_.i32 = ~value_.i32;
   } else if (type_->type() == kUint32) {
-    value_.u32 = ~value_.u32;
+    v.value_.u32 = ~value_.u32;
   } else if (type_->type() == kShort) {
-    value_.s = ~value_.s;
+    v.value_.s = ~value_.s;
   } else {
     SetErrno(kOperUnacceptableOper);
   }
   
-  return *this;
+  return v;
 }
 
 Value operator + (const Value& v1, const Value& v2) {

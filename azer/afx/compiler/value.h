@@ -38,9 +38,9 @@ class Value {
   Value& operator --(int);
   Value& operator ++();
   Value& operator --();
-  Value& operator !();
-  Value& operator -();
-  Value& operator ~();
+  Value operator !();
+  Value operator -();
+  Value operator ~();
   friend Value operator + (const Value& v1, const Value& v2);
   friend Value operator - (const Value& v1, const Value& v2);
   friend Value operator * (const Value& v1, const Value& v2);
