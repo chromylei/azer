@@ -126,21 +126,21 @@ TEST(Value, Mul) {
     Value v1(kVector2), v2(kVector2);
     Value ret = v1 * v2;
     ASSERT_TRUE(ret.valid());
-    ASSERT_EQ(ret.type()->type(), kFloat);
+    ASSERT_EQ(ret.type()->type(), kVector2);
   }
   {
     using namespace azer::afx;
     Value v1(kVector3), v2(kVector3);
     Value ret = v1 * v2;
     ASSERT_TRUE(ret.valid());
-    ASSERT_EQ(ret.type()->type(), kFloat);
+    ASSERT_EQ(ret.type()->type(), kVector3);
   }
   {
     using namespace azer::afx;
     Value v1(kVector4), v2(kVector4);
     Value ret = v1 * v2;
     ASSERT_TRUE(ret.valid());
-    ASSERT_EQ(ret.type()->type(), kFloat);
+    ASSERT_EQ(ret.type()->type(), kVector4);
   }
 
   // matrix * vector
