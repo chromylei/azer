@@ -1272,10 +1272,21 @@ unary_expression
 ;
 
 unary_operator
-: PLUS  { $$.loc = $1.loc; $$.op = kOpNull; }
-| DASH  { $$.loc = $1.loc; $$.op = kOpNegative; }
-| BANG  { $$.loc = $1.loc; $$.op = kOpLogicalNot; }
-| TILDE { $$.loc = $1.loc; $$.op = kOpBitwiseNot;
+: PLUS  {
+  PARSER_TRACE << "unary_operator + " << std::endl;
+  $$.loc = $1.loc; $$.op = kOpNull;
+ }
+| DASH  {
+  PARSER_TRACE << "unary_operator - " << std::endl;
+  $$.loc = $1.loc; $$.op = kOpNegative;
+  }
+| BANG  {
+  PARSER_TRACE << "unary_operator ! " << std::endl;
+  $$.loc = $1.loc; $$.op = kOpLogicalNot;
+  }
+| TILDE {
+  PARSER_TRACE << "unary_operator ~ " << std::endl;
+  $$.loc = $1.loc; $$.op = kOpBitwiseNot;
   }
 ;
 
