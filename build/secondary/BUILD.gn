@@ -9,6 +9,8 @@ group("root") {
      "//sandbox:sandbox",
      "//samples:samples",
      "//sbox:sbox",
+     "//tersbox:tersbox",
+     "//wow:wow",
   ]
 }
 

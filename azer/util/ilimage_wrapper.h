@@ -2,6 +2,7 @@
 
 #include "base/basictypes.h"
 #include "base/files/file_path.h"
+#include "azer/render/render_system_enum.h"
 
 namespace azer {
 namespace util {
@@ -25,6 +26,7 @@ class ilImageWrapper {
   int32 height() const { return height_;}
   int32 width() const { return width_;}
   uint32 GetDataSize() {return width_ * height_ * sizeof(uint8) * 4;}
+  void InitFromData(const char* data, Format format);
  private:
   uint32 image_id_;
   int32 width_, height_;

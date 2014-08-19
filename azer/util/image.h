@@ -31,5 +31,6 @@ class Image {
 TexturePtr CreateTextureForShader(Image* image, RenderSystem* rs);
 azer::Vector4 SampleImage(float u, float v, Image* image);
 
+bool SaveImage(azer::Image* image, const ::base::FilePath& path);
 }  // namespace util
 }  // namespace azer

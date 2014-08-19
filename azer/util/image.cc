@@ -1,5 +1,6 @@
 #include "azer/util/image.h"
 
+#include "base/file_util.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/logging.h"
 #include "azer/util/ilimage_wrapper.h"
@@ -69,6 +70,10 @@ TexturePtr CreateTextureForShader(Image* image, RenderSystem* rs) {
   } else {
     return azer::TexturePtr();
   }
+}
+
+bool SaveImage(azer::Image* image, const ::base::FilePath& path) {
+  
 }
 }  // namespace util
 }  // namespace azer

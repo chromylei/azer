@@ -17,19 +17,8 @@ ilImageWrapper::~ilImageWrapper() {
   }
 }
 
-bool ilImageWrapper::Load(const ::base::FilePath& path) {
-  int64 filesize = 0;
-  if (!::base::GetFileSize(path, &filesize)) {
-    return false;
-  }
-
-  std::unique_ptr<uint8[]> data(new uint8[filesize]);
-  if (filesize != ::base::ReadFile(path, (char*)data.get(), (int32)filesize)) {
-    return false;
-  }
-
-  const ::base::FilePath::StringType ext = StringToLowerASCII(path.Extension());
-  int type;
+namespace {
+int ILImageType(const std::string16& ext) {
   if (ext ==  AZER_LITERAL(".bmp")) {
     type = IL_BMP;
   } else if (ext == AZER_LITERAL(".dds")) {
@@ -45,7 +34,22 @@ bool ilImageWrapper::Load(const ::base::FilePath& path) {
   } else {
     NOTREACHED();
   }
+}
+}
 
+bool ilImageWrapper::Load(const ::base::FilePath& path) {
+  int64 filesize = 0;
+  if (!::base::GetFileSize(path, &filesize)) {
+    return false;
+  }
+
+  std::unique_ptr<uint8[]> data(new uint8[filesize]);
+  if (filesize != ::base::ReadFile(path, (char*)data.get(), (int32)filesize)) {
+    return false;
+  }
+
+  const ::base::FilePath::StringType ext = StringToLowerASCII(path.Extension());
+  int type = ILImageType(ext);
   return Load(data.get(), filesize, type);
 }
 
@@ -130,6 +134,12 @@ uint32 ilImageWrapper::GetData(int x, int y) {
       NOTREACHED();
       return 0;
   }
+}
+
+void ilImageWrapper::InitFromData(const char* data) {
+  ilBindImage(image_id_);
+  ilTexImage(width_, height_, 1, 4, IL_FLOAT, IL_BMP, data);
+  ilClearImage();
 }
 }  // namespace detail
 }  // namespace util
