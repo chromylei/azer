@@ -52,18 +52,18 @@ void Tile::InitVertex() {
   for (int i = 0; i < kColumn-1; ++i) {
     for (int j = 0; j < kRow-1; ++j) {
       indices_.push_back(i * kRow + j);
-      indices_.push_back((i + 1) * kRow + j + 1);
       indices_.push_back((i + 1) * kRow + j);
-      indices_.push_back(i * kRow + j);
-      indices_.push_back(i * kRow + j + 1);
       indices_.push_back((i + 1) * kRow + j + 1);
+      indices_.push_back(i * kRow + j);
+      indices_.push_back((i + 1) * kRow + j + 1);
+      indices_.push_back(i * kRow + j + 1);
     }
   }
 }
 
 void Tile::CalcNormal() {
   normal_.resize(GetVertexNum());
-  std::vector<uint32> used(GetVertexNum(), 0);
+  std::vector<float> used(GetVertexNum(), 0.0f);
   for (int i = 0; i < GetIndicesNum(); i+=3) {
     int index1 = indices_[i];
     int index2 = indices_[i + 1];
@@ -71,9 +71,10 @@ void Tile::CalcNormal() {
     const Vector3& p1 = vertices_[index1];
     const Vector3& p2 = vertices_[indices_[index2]];
     const Vector3& p3 = vertices_[indices_[index3]];
-    used[indices_[index1]]++;
-    used[indices_[index2]]++;
-    used[indices_[index3]]++;
+    used[index1] += 1.0f;
+    used[index2] += 1.0f;
+    used[index3] += 1.0f;
+
     Vector3 normal = CalcPlaneNormal(p1, p2, p3);
 
     normal_[index1] += normal;
@@ -82,7 +83,7 @@ void Tile::CalcNormal() {
   }
 
   for (int i = 0; i < GetVertexNum(); ++i) {
-    normal_[i] /= (float)used[i];
+    normal_[i] = normal_[i] / used[i];
   }
 }
 

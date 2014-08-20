@@ -36,6 +36,7 @@ class AZER_EXPORT Camera : public MovableObject {
     frustrum_.UpdatePlane();
   }
   const Frustrum& frustrum() const { return frustrum_;}
+  Frustrum& frustrum() { return frustrum_;}
   friend std::ostream& operator << (std::ostream& os, const Camera& camera);
  private:
   // generate camera transform matrix
