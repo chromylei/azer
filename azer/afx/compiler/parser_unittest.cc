@@ -37,6 +37,7 @@ TEST(AfxParser, ExpressionValue) {
       "  vec4 v1, diffuse;\n"
       "  float scalar = 0.1f;\n"
       "  v1 += diffuse * scalar;\n"
+      "  vec4 v2 = -v1;\n"
       "}"
       ;
   ASTNodeFactory factory;

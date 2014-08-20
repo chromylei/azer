@@ -148,6 +148,7 @@ Value Value::operator -() {
     for (size_t i = 0; i < arraysize(value_.vec); ++i) {
       v.value_.vec[i] = -value_.vec[i];
     }
+    return v;
   } else if (type_->IsIntVec()) {
     Value v(type_->type());
     for (size_t i = 0; i < arraysize(value_.intvec); ++i) {
