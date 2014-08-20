@@ -17,6 +17,7 @@ class Tile {
   const std::vector<int32>& indices() { return indices_;}
 
   int GetCellNum() const { return kCellNum_;}
+  int GetVertexNum() const { return vertices_.size();}
  private:
   void InitVertex();
   std::vector<azer::Vector3> vertices_;

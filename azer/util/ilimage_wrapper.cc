@@ -101,6 +101,10 @@ uint8* ilImageWrapper::GetDataPtr() {
   return (uint8*)ilGetData();
 }
 
+uint32 ilImageWrapper::GetDataSize() {
+  return width_ * height_ * bytes_per_pixel_;
+}
+
 uint32 ilImageWrapper::GetData(int x, int y) {
   DCHECK(image_id_ != (ILuint)-1);
   ilBindImage(image_id_);

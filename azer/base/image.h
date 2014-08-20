@@ -18,8 +18,12 @@ class Image {
   int height() const;
   uint8* data();
   const uint8* data() const;
+
+  uint32 pixel(int x, int y);
+  void set_pixel(int x, int y, uint32 v);
   int32 data_size() const;
   int32 unit_size() const { return sizeof_dataformat(format_);}
+  bool InitFromData(uint8* data, int32 size);
   DataFormat format() const { return format_;}
  private:
   int32 sizeof_dataformat(DataFormat format) const;
@@ -30,11 +34,14 @@ class Image {
   DISALLOW_COPY_AND_ASSIGN(Image);
 };
 
+typedef std::shared_ptr<Image> ImagePtr;
+
 inline Image::Image(int32 width, int32 height, DataFormat format)
     : width_(width)
     , height_(height)
     , format_(format) {
-  data_.reset(new uint8[sizeof_dataformat(format_) * width * height]);
+  uint32 size = data_size();
+  data_.reset(new uint8[size]);
 }
 
 inline int Image::width() const {
@@ -47,7 +54,6 @@ inline int Image::height() const {
 }
 
 inline int32 Image::data_size() const {
-  DCHECK(data_.get() != NULL);
   return width_ * height_ * sizeof_dataformat(format_);
 }
 
@@ -75,5 +81,26 @@ inline int32 Image::sizeof_dataformat(DataFormat format) const {
       NOTREACHED();
       return -1;
   }
+}
+
+inline bool Image::InitFromData(uint8* data, int32 size) {
+  DCHECK(data_.get() != NULL);
+  if (size != data_size()) {
+    return false;
+  }
+
+  memcpy(data_.get(), data, size);
+  return true;
+}
+
+inline uint32 Image::pixel(int x, int y) {
+  DCHECK(data_.get() != NULL);
+  uint8* ptr = data_.get() + (y * width() + x) * sizeof_dataformat(format());
+  return *(uint32*)ptr;
+}
+
+inline void Image::set_pixel(int x, int y, uint32 v) {
+  uint8* ptr = data_.get() + (y * width() + x) * sizeof_dataformat(format());
+  *(uint32*)ptr = v;
 }
 }  // namespace azer

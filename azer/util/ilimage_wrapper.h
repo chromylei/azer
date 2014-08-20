@@ -26,7 +26,7 @@ class ilImageWrapper {
 
   int32 height() const { return height_;}
   int32 width() const { return width_;}
-  uint32 GetDataSize() {return width_ * height_ * sizeof(uint8) * 4;}
+  uint32 GetDataSize();
   bool InitFromData(const float* data);
   bool InitFromData(const uint32* data);
   bool InitFromData(const uint8* data);

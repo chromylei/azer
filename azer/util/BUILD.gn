@@ -17,6 +17,7 @@ static_library("azer_util") {
     "image.h",
     "tile.cc",
     "tile.h",
+    "util.h",
   ]
   deps = [
     "//azer/render:render"

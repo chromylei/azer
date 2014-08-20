@@ -80,5 +80,21 @@ bool SaveImage(azer::Image* image, const ::base::FilePath& path) {
   return ilimg.Save(path);
 }
 
+azer::ImagePtr LoadImageFromFile(const ::base::FilePath& path) {
+  detail::ilImageWrapper ilimg;
+  if (!ilimg.Load(path)) {
+    return azer::ImagePtr();
+  }
+
+  int32 size = ilimg.GetDataSize();
+  azer::ImagePtr ptr(new azer::Image(ilimg.width(), ilimg.height(), azer::kRGBA8));
+  for (int j = 0; j < ptr->height(); j++) {
+    for (int i = 0; i < ptr->width(); i++) {
+      ptr->set_pixel(i, j, ilimg.GetData(i, j));
+    }
+  }
+
+  return ptr;
+}
 }  // namespace util
 }  // namespace azer

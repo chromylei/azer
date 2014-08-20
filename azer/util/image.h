@@ -4,6 +4,7 @@
 #include "base/basictypes.h"
 #include "base/files/file_path.h"
 #include "azer/render/render.h"
+#include "azer/base/image.h"
 
 namespace azer {
 namespace util {
@@ -31,6 +32,7 @@ class Image {
 TexturePtr CreateTextureForShader(Image* image, RenderSystem* rs);
 azer::Vector4 SampleImage(float u, float v, Image* image);
 
+azer::ImagePtr LoadImageFromFile(const ::base::FilePath& path);
 bool SaveImage(azer::Image* image, const ::base::FilePath& path);
 }  // namespace util
 }  // namespace azer
