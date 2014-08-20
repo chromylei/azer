@@ -69,8 +69,8 @@ void Tile::CalcNormal() {
     int index2 = indices_[i + 1];
     int index3 = indices_[i + 2];
     const Vector3& p1 = vertices_[index1];
-    const Vector3& p2 = vertices_[indices_[index2]];
-    const Vector3& p3 = vertices_[indices_[index3]];
+    const Vector3& p2 = vertices_[index2];
+    const Vector3& p3 = vertices_[index3];
     used[index1] += 1.0f;
     used[index2] += 1.0f;
     used[index3] += 1.0f;
