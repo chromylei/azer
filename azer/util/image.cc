@@ -4,6 +4,7 @@
 #include "base/strings/utf_string_conversions.h"
 #include "base/logging.h"
 #include "azer/util/ilimage_wrapper.h"
+#include "azer/base/image.h"
 
 namespace azer {
 namespace util {
@@ -73,7 +74,11 @@ TexturePtr CreateTextureForShader(Image* image, RenderSystem* rs) {
 }
 
 bool SaveImage(azer::Image* image, const ::base::FilePath& path) {
-  
+  detail::ilImageWrapper ilimg;
+  ilimg.Create(image->width(), image->height());
+  ilimg.InitFromData(image->data());
+  return ilimg.Save(path);
 }
+
 }  // namespace util
 }  // namespace azer

@@ -3,6 +3,7 @@
 #include "base/file_util.h"
 #include "base/files/file_path.h"
 #include "base/logging.h"
+#include "base/strings/string16.h"
 #include "base/strings/string_util.h"
 #include "azer/base/string.h"
 
@@ -18,21 +19,22 @@ ilImageWrapper::~ilImageWrapper() {
 }
 
 namespace {
-int ILImageType(const std::string16& ext) {
-  if (ext ==  AZER_LITERAL(".bmp")) {
-    type = IL_BMP;
-  } else if (ext == AZER_LITERAL(".dds")) {
-    type = IL_DDS;
-  } else if (ext == AZER_LITERAL(".png")) {
-    type = IL_PNG;
-  } else if (ext == AZER_LITERAL(".jpg") || ext == AZER_LITERAL(".jpeg")) {
-    type = IL_JPG;
-  } else if (ext == AZER_LITERAL(".blp")) {
-    type = IL_BLP;
-  } else if (ext == AZER_LITERAL(".tga")) {
-    type = IL_TGA;
+int ILImageType(const ::base::FilePath::StringType& ext) {
+  if (ext ==  FILE_PATH_LITERAL(".bmp")) {
+    return IL_BMP;
+  } else if (ext == FILE_PATH_LITERAL(".dds")) {
+    return IL_DDS;
+  } else if (ext == FILE_PATH_LITERAL(".png")) {
+    return IL_PNG;
+  } else if (ext == FILE_PATH_LITERAL(".jpg") || ext == FILE_PATH_LITERAL(".jpeg")) {
+    return IL_JPG;
+  } else if (ext == FILE_PATH_LITERAL(".blp")) {
+    return IL_BLP;
+  } else if (ext == FILE_PATH_LITERAL(".tga")) {
+    return IL_TGA;
   } else {
     NOTREACHED();
+    return IL_BMP;
   }
 }
 }
@@ -71,7 +73,7 @@ bool ilImageWrapper::Create(int width, int height) {
   }
 
   width_ = width;
-  height_ = height_;
+  height_ = height;
   bytes_per_pixel_ = 4;
   return true;
 }
@@ -136,10 +138,37 @@ uint32 ilImageWrapper::GetData(int x, int y) {
   }
 }
 
-void ilImageWrapper::InitFromData(const char* data) {
+bool ilImageWrapper::InitFromData(const uint8* data) {
   ilBindImage(image_id_);
-  ilTexImage(width_, height_, 1, 4, IL_FLOAT, IL_BMP, data);
-  ilClearImage();
+  ilTexImage(width_, height_, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, (void*)data);
+
+  ILenum ilerr = ilGetError();
+  if (ilerr != IL_NO_ERROR) {
+    LOG(ERROR) << (const char*)iluErrorString(ilerr);
+    return false;
+  }
+
+  return true;
+}
+
+bool ilImageWrapper::Save(const ::base::FilePath& path) {
+  const ::base::FilePath::StringType ext = StringToLowerASCII(path.Extension());
+  int type = ILImageType(ext);
+  ilBindImage(image_id_);
+
+  int size = ilSaveL((ILenum)type, NULL, 0);
+  if (size == 0) {
+    return false;
+  }
+
+  std::unique_ptr<uint8> buf(new uint8[size]);
+  int save_size = ilSaveL((ILenum)type, buf.get(), size);
+  if (save_size > 0) {
+    ::file_util::WriteFile(path, (char*)buf.get(), size);
+    return true;
+  } else {
+    return false;
+  }
 }
 }  // namespace detail
 }  // namespace util
