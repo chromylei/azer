@@ -87,13 +87,8 @@ azer::ImagePtr LoadImageFromFile(const ::base::FilePath& path) {
   }
 
   int32 size = ilimg.GetDataSize();
-  azer::ImagePtr ptr(new azer::Image(ilimg.width(), ilimg.height(), azer::kRGBA8));
-  for (int j = 0; j < ptr->height(); j++) {
-    for (int i = 0; i < ptr->width(); i++) {
-      ptr->set_pixel(i, j, ilimg.GetData(i, j));
-    }
-  }
-
+  azer::ImagePtr ptr(new azer::Image(ilimg.width(), ilimg.height(), azer::kRGBAn8));
+  ilimg.CopyToImage(ptr.get());
   return ptr;
 }
 }  // namespace util

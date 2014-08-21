@@ -12,7 +12,7 @@ namespace azer {
 
 class Image {
  public:
-  Image(int width, int height, DataFormat format = kRGBA8);
+  Image(int width, int height, DataFormat format = kRGBAn8);
 
   int width() const;
   int height() const;
@@ -23,7 +23,6 @@ class Image {
   void set_pixel(int x, int y, uint32 v);
   int32 data_size() const;
   int32 unit_size() const { return sizeof_dataformat(format_);}
-  bool InitFromData(uint8* data, int32 size);
   DataFormat format() const { return format_;}
  private:
   int32 sizeof_dataformat(DataFormat format) const;
@@ -81,16 +80,6 @@ inline int32 Image::sizeof_dataformat(DataFormat format) const {
       NOTREACHED();
       return -1;
   }
-}
-
-inline bool Image::InitFromData(uint8* data, int32 size) {
-  DCHECK(data_.get() != NULL);
-  if (size != data_size()) {
-    return false;
-  }
-
-  memcpy(data_.get(), data, size);
-  return true;
 }
 
 inline uint32 Image::pixel(int x, int y) {

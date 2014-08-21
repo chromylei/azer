@@ -143,6 +143,7 @@ uint32 ilImageWrapper::GetData(int x, int y) {
 }
 
 bool ilImageWrapper::InitFromData(const uint8* data) {
+  DCHECK(image_id_ != (ILuint)-1);
   ilBindImage(image_id_);
   ilTexImage(width_, height_, 1, 4, IL_RGBA, IL_UNSIGNED_BYTE, (void*)data);
 
@@ -172,6 +173,25 @@ bool ilImageWrapper::Save(const ::base::FilePath& path) {
     return true;
   } else {
     return false;
+  }
+}
+
+void ilImageWrapper::CopyToImage(azer::Image* image) {
+  DCHECK(image_id_ != (ILuint)-1);
+  ilBindImage(image_id_);
+
+  DCHECK_EQ(image->width(), width());
+  DCHECK_EQ(image->height(), height());
+
+  switch (image->format()) {
+    case azer::kRGBA8:
+      NOTREACHED();
+    case azer::kRGBAn8:
+      ilCopyPixels(0, 0, 0, width(), height(), 1, IL_RGBA,
+                   IL_UNSIGNED_BYTE, image->data());
+      break;
+    default:
+      NOTREACHED();
   }
 }
 }  // namespace detail

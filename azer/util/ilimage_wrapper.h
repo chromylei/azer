@@ -2,6 +2,7 @@
 
 #include "base/basictypes.h"
 #include "base/files/file_path.h"
+#include "azer/base/image.h"
 #include "azer/render/render_system_enum.h"
 
 namespace azer {
@@ -30,6 +31,8 @@ class ilImageWrapper {
   bool InitFromData(const float* data);
   bool InitFromData(const uint32* data);
   bool InitFromData(const uint8* data);
+
+  void CopyToImage(azer::Image* image);
  private:
   uint32 image_id_;
   int32 width_, height_;
