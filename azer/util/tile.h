@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include "base/files/file_path.h"
 #include "azer/render/render.h"
@@ -10,7 +11,10 @@ namespace azer {
 namespace util {
 class Tile {
  public:
-  Tile(const int cell = 1024) : kCellNum_(cell) {}
+  Tile(const int level = 8)
+      : kCellNum_(std::pow(2.0f, level) + 1)
+      , kLevel_(level) {
+  }
 
   void Init();
   const std::vector<azer::Vector3>& vertices() { return vertices_;}
@@ -35,6 +39,7 @@ class Tile {
   std::vector<azer::Vector3> normal_;
   std::vector<int32> indices_;
   const int kCellNum_;
+  const int kLevel_;
   float min_x_, max_x_, min_z_, max_z_;
   DISALLOW_COPY_AND_ASSIGN(Tile);
 };
