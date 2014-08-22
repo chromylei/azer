@@ -9,7 +9,7 @@
 
 namespace azer {
 bool D3D11IndicesBuffer::Init() {
-  DCHECK(NULL == indices_buffer_);
+  DCHECK(NULL == buffer_);
   DCHECK(indices_data_.get() != NULL);
 
   ID3D11Device* d3d_device = render_system_->GetDevice();
@@ -26,7 +26,7 @@ bool D3D11IndicesBuffer::Init() {
   ZeroMemory(&d3d_vdata, sizeof(d3d_vdata));
   d3d_vdata.pSysMem = indices_data_->pointer();
   HRESULT hr;
-  hr = d3d_device->CreateBuffer(&indices_buffer_desc, &d3d_vdata, &indices_buffer_);
+  hr = d3d_device->CreateBuffer(&indices_buffer_desc, &d3d_vdata, &buffer_);
   HRESULT_HANDLE(hr, ERROR, "D3D11: CreateIndexBuffer failed ");
 
   return true;
@@ -34,7 +34,7 @@ bool D3D11IndicesBuffer::Init() {
 
 LockDataPtr D3D11IndicesBuffer::map(MapType flags) {
   HRESULT hr;
-  DCHECK(!locked_) << "Vertex Buffer(" << options_.name << ") has been locked";
+  DCHECK(!locked_) << "Indices Buffer("") has been locked";
   ID3D11Device* d3d_device = render_system_->GetDevice();
   ID3D11DeviceContext* d3d_context = NULL;
   d3d_device->GetImmediateContext(&d3d_context);
@@ -43,8 +43,7 @@ LockDataPtr D3D11IndicesBuffer::map(MapType flags) {
   D3D11_MAP d3d11_map = TranslateMapType(flags);
   hr = d3d_context->Map(buffer_, 0, d3d11_map, 0, &mapped);
   if (FAILED(hr)) {
-    LOG(ERROR) << "D3D11 VertexBuffer: Map failed, desc: "
-               << ::base::HRMessage(hr);
+    LOG(ERROR) << "D3D11 IndicesBuffer: Map failed, desc: " << ::base::HRMessage(hr);
     return NULL;
   }
 
@@ -57,7 +56,7 @@ LockDataPtr D3D11IndicesBuffer::map(MapType flags) {
 }
 
 void D3D11IndicesBuffer::unmap() {
-  DCHECK(locked_) << "Vertex Buffer(" << options_.name << ") has not been locked";
+  DCHECK(locked_) << "Indices Buffer has not been locked";
   ID3D11Device* d3d_device = render_system_->GetDevice();
   ID3D11DeviceContext* d3d_context = NULL;
   d3d_device->GetImmediateContext(&d3d_context);

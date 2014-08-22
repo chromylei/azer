@@ -4,6 +4,7 @@
 
 #include "azer/math/math.h"
 #include "azer/base/render_export.h"
+#include "azer/render/render_system_enum.h"
 #include "base/logging.h"
 
 namespace azer {
@@ -38,8 +39,8 @@ class AZER_EXPORT Frustrum {
     kBottomPlane,
   };
 
-  bool IsVisible(const Vector3& point) const;
-  bool IsVisible(const Vector3& center, const Vector3& halfsize) const;
+  VisibleState IsVisible(const Vector3& point) const;
+  VisibleState IsVisible(const Vector3& center, const Vector3& halfsize) const;
 
   // recalc frustrum plane of camera
   void UpdatePlane();

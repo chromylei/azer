@@ -204,7 +204,7 @@ void D3D11Renderer::DrawIndex(VertexBuffer* vvb, IndicesBuffer* vib,
   D3D11IndicesBuffer* ib = (D3D11IndicesBuffer*)vib;
   DCHECK(NULL != ib && ib->Initialized()) << "IndicesBuffer not initialized.";
   d3d_context_->IASetVertexBuffers(0, 1, &vb->buffer_, &stride, &offset);
-  d3d_context_->IASetIndexBuffer(ib->indices_buffer_,
+  d3d_context_->IASetIndexBuffer(ib->buffer_,
                                  TranslateIndexType(ib->type()),
                                  0);
   d3d_context_->IASetPrimitiveTopology(TranslatePrimitiveTopology(primitive));
@@ -242,7 +242,7 @@ void D3D11Renderer::DrawIndexInstanced(int32 instance_num, VertexBuffer* vvb,
   D3D11IndicesBuffer* ib = (D3D11IndicesBuffer*)vib;
   DCHECK(NULL != ib && ib->Initialized()) << "IndicesBuffer not initialized.";
   d3d_context_->IASetVertexBuffers(0, 1, &vb->buffer_, &stride, &offset);
-  d3d_context_->IASetIndexBuffer(ib->indices_buffer_,
+  d3d_context_->IASetIndexBuffer(ib->buffer_,
                                  TranslateIndexType(ib->type()),
                                  0);
   d3d_context_->IASetPrimitiveTopology(TranslatePrimitiveTopology(primitive));

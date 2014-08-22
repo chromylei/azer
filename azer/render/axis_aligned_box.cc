@@ -90,15 +90,15 @@ bool AxisAlignedBox::intersect(const Ray& ray) const {
 }
 
 namespace {
-inline bool IsAABBVisible(const AxisAlignedBox& aabb,
-                          const Frustrum& frustrum) {
+inline VisibleState IsAABBVisible(const AxisAlignedBox& aabb,
+                                  const Frustrum& frustrum) {
   Vector3 center((aabb.maximum() + aabb.minimum()) / 2.0f);
   Vector3 halfsize((aabb.maximum() - aabb.minimum()) / 2.0f);
   return frustrum.IsVisible(center, halfsize);
 }
 }  // namespace
 
-bool AxisAlignedBox::IsVisible(const Frustrum& frustrum,
+VisibleState AxisAlignedBox::IsVisible(const Frustrum& frustrum,
                                        const Matrix4& world) {
   AxisAlignedBox aabb = std::move(TransformCopy(world));
   return IsAABBVisible(aabb, frustrum);

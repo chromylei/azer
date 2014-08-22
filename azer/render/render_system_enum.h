@@ -115,6 +115,13 @@ enum MapType {
   kWriteNoOverwrite,
 };
 
+enum VisibleState {
+  kNonVisible     = -1,
+  kFullyVisible   = 0,
+  kPartialVisible = 1,
+  
+};
+
 AZER_EXPORT const char* RenderStageName(RenderPipelineStage stage);
 AZER_EXPORT uint32 SizeofDataFormat(DataFormat format);
 }  // namespace azer

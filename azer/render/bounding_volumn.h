@@ -4,6 +4,7 @@
 
 #include "base/basictypes.h"
 #include "azer/base/render_export.h"
+#include "azer/render/render_system_enum.h"
 
 namespace azer {
 
@@ -21,7 +22,7 @@ class AZER_EXPORT BoundingVolumn {
     kOrientedBox,
   };
 
-  virtual bool IsVisible(const Frustrum& frustrum, const Matrix4& world) = 0;
+  virtual VisibleState IsVisible(const Frustrum& frustrum, const Matrix4& world) = 0;
   virtual void Render(Renderer* renderer, const Matrix4& world,
                       const Camera& camera) = 0;
 };

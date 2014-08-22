@@ -41,7 +41,8 @@ class AZER_EXPORT AxisAlignedBox : public BoundingVolumn {
   bool IsNull() const { return is_null_;}
 
   // from Bounding Volumn
-  virtual bool IsVisible(const Frustrum& frustrum, const Matrix4& world) OVERRIDE;
+  virtual VisibleState IsVisible(const Frustrum& frustrum,
+                                 const Matrix4& world) OVERRIDE;
   virtual void Render(Renderer* renderer, const Matrix4& world,
                       const Camera& camera) OVERRIDE;
   friend AZER_EXPORT std::ostream& operator << (std::ostream& o,

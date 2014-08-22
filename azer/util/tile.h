@@ -8,6 +8,7 @@
 #include "base/files/file_path.h"
 #include "base/logging.h"
 #include "azer/render/render.h"
+#include "azer/render/render_system_enum.h"
 
 namespace azer {
 
@@ -57,6 +58,8 @@ class Tile {
   float minz() const;
   float maxz() const;
   float z_range() const { return maxz() - minz();}
+
+  int level() const { return kLevel_;}
  private:
   void InitVertex();
   void InitIndices();
@@ -100,9 +103,9 @@ class QuadTree {
      *  > 0  partical visible
      *  < 0  non visible
      */
-    virtual int32 Split(const Node& node) = 0;
+    virtual VisibleState Split(const Node& node) = 0;
   };
-  void Split(Splitable* splitable, std::vector<Node*>* nodes);
+  void Split(Splitable* splitable, std::vector<Tile::Pitch>* nodes);
  private:
   void InitNode();
   void SplitPitch(Node* node);
@@ -117,7 +120,7 @@ class FrustrumSplit : public QuadTree::Splitable {
  public:
   FrustrumSplit(Tile* tile, Frustrum* frustrum)
     : tile_(tile), frustrum_(frustrum) {}
-  virtual int32 Split(const QuadTree::Node& node) OVERRIDE;
+  virtual VisibleState Split(const QuadTree::Node& node) OVERRIDE;
  private:
   Tile* tile_;
   Frustrum* frustrum_;
@@ -130,20 +133,20 @@ inline void QuadTree::InitNode() {
   n.splitted = false;
   n.pitch.left = 0;
   n.pitch.top = 0;
-  n.pitch.right = kCellNum;
-  n.pitch.bottom = kCellNum;
+  n.pitch.right = kCellNum - 1;
+  n.pitch.bottom = kCellNum - 1;
 }
 
-inline void QuadTree::Split(Splitable* splitable, std::vector<Node*>* final) {
+inline void QuadTree::Split(Splitable* splitable, std::vector<Tile::Pitch>* final) {
   InitNode();
   int cur = tail_;
   Node* node = nodes_.get();
   while (cur <= tail_) {
     int32 visible = splitable->Split(*node);
-    if (visible > 0) {
+    if (visible > kPartialVisible) {
       SplitPitch(node);
-    } else if (visible == 0) {
-      final->push_back(node);
+    } else if (visible == kFullyVisible) {
+      final->push_back(node->pitch);
     } else {
     }
     cur++;

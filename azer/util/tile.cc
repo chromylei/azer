@@ -2,6 +2,7 @@
 
 #include <limits>
 #include "azer/render/render.h"
+#include "azer/render/axis_aligned_box.h"
 
 namespace azer {
 namespace util {
@@ -134,22 +135,13 @@ void QuadTree::SplitPitch(Node* node) {
   n4.splitted = false;
 }
 
-int32 FrustrumSplit::Split(const QuadTree::Node& node) {
-  azer::Vector3& pos1 = tile_->vertex(node.pitch.left, node.pitch.top);
-  azer::Vector3& pos2 = tile_->vertex(node.pitch.left, node.pitch.bottom);
-  azer::Vector3& pos3 = tile_->vertex(node.pitch.right, node.pitch.top);
-  azer::Vector3& pos4 = tile_->vertex(node.pitch.right, node.pitch.bottom);
-  bool v1 = frustrum_->IsVisible(pos1);
-  bool v2 = frustrum_->IsVisible(pos2);
-  bool v3 = frustrum_->IsVisible(pos3);
-  bool v4 = frustrum_->IsVisible(pos4);
-  if (v1 && v2 && v3 && v4) {
-    return 0;
-  } else if (v1 || v2 || v3 || v4) {
-    return 1;
-  } else {
-    return -1;
-  }
+VisibleState FrustrumSplit::Split(const QuadTree::Node& node) {
+  const Vector3& minpos = tile_->vertex(node.pitch.left, node.pitch.top);
+  const Vector3& maxpos = tile_->vertex(node.pitch.right,node.pitch.bottom);
+
+  AxisAlignedBox box(Vector3(minpos.x, tile_->miny(), minpos.z),
+                     Vector3(maxpos.x, tile_->maxy(), maxpos.z));
+  return box.IsVisible(*frustrum_, Matrix4::kIdentity);
 }
 }  // namespace azer {
 }  // namespace util

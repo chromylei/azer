@@ -44,24 +44,24 @@ void Frustrum::UpdatePlane() {
 }
 
 
-bool Frustrum::IsVisible(const Vector3& point) const {
+VisibleState Frustrum::IsVisible(const Vector3& point) const {
   for (int i = 0; i < 6; ++i) {
     if (planes_[i].GetSide(point) == Plane::kNegative) {
-      return false;
+      return kNonVisible;
     }
   }
 
-  return true;
+  return kFullyVisible;
 }
 
-bool Frustrum::IsVisible(const Vector3& center,
+VisibleState Frustrum::IsVisible(const Vector3& center,
                          const Vector3& halfsize) const {
   for (int i = 0; i < 6; ++i) {
     if (planes_[i].GetSide(center, halfsize) == Plane::kNegative) {
-      return false;
+      return kNonVisible;
     }
   }
 
-  return true;
+  return kFullyVisible;
 }
 }  // namespace azer
