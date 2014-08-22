@@ -759,7 +759,7 @@ int GetSemanticIndex(FieldNode* field) {
       return 0;
     } else {
       int index = 0;
-      DCHECK(::base::StringToInt(sindex, &index));
+      CHECK(::base::StringToInt(sindex, &index));
       return index;
     }
   }
