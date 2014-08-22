@@ -105,7 +105,7 @@ class QuadTree {
      */
     virtual VisibleState Split(const Node& node) = 0;
   };
-  void Split(Splitable* splitable, std::vector<Tile::Pitch>* nodes);
+  void Split(int minlevel, Splitable* splitable, std::vector<Tile::Pitch>* nodes);
  private:
   void InitNode();
   void SplitPitch(Node* node);
@@ -128,30 +128,14 @@ class FrustrumSplit : public QuadTree::Splitable {
 };
 
 inline void QuadTree::InitNode() {
-  tail_ = 0;
+  tail_ = 1;
   Node& n = (nodes_.get())[0];
   n.splitted = false;
   n.pitch.left = 0;
   n.pitch.top = 0;
   n.pitch.right = kCellNum - 1;
   n.pitch.bottom = kCellNum - 1;
-}
-
-inline void QuadTree::Split(Splitable* splitable, std::vector<Tile::Pitch>* final) {
-  InitNode();
-  int cur = tail_;
-  Node* node = nodes_.get();
-  while (cur <= tail_) {
-    int32 visible = splitable->Split(*node);
-    if (visible > kPartialVisible) {
-      SplitPitch(node);
-    } else if (visible == kFullyVisible) {
-      final->push_back(node->pitch);
-    } else {
-    }
-    cur++;
-    node++;
-  }
+  n.level = kLevel;
 }
 
 inline Tile::Pitch& Tile::Pitch::operator = (const Pitch& pitch) {

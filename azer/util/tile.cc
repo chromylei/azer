@@ -154,5 +154,30 @@ VisibleState FrustrumSplit::Split(const QuadTree::Node& node) {
     return kNoneVisible;
   }
 }
+
+void QuadTree::Split(int minlevel, Splitable* splitable,
+                     std::vector<Tile::Pitch>* final) {
+  DCHECK_GE(minlevel, 0);
+  InitNode();
+  int cur = 0;
+  Node* node = nodes_.get();
+  while (cur < tail_) {
+    if (node->level == minlevel) {
+      final->push_back(node->pitch);
+    } else {
+      DCHECK_GT(node->level, minlevel);
+      int32 visible = splitable->Split(*node);
+      if (visible == kPartialVisible) {
+        SplitPitch(node);
+      } else if (visible == kFullyVisible) {
+        final->push_back(node->pitch);
+      } else {
+      }
+    }
+    cur++;
+    node++;
+  }
+}
+
 }  // namespace azer {
 }  // namespace util
