@@ -76,8 +76,10 @@ class AZER_EXPORT IndicesBuffer : public Lockable {
   virtual void unmap() = 0;
   IndicesData::IndexType type() const { return indices_data_->type();}
   IndicesData* data() { return indices_data_.get();}
+
+  const Options& options() const { return options_;}
  protected:
-  const Options& options_;
+  const Options options_;
   IndicesDataPtr indices_data_;
   DISALLOW_COPY_AND_ASSIGN(IndicesBuffer);
 };
