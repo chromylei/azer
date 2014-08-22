@@ -15,17 +15,21 @@ void Tile::Init() {
   max_z_ = -std::numeric_limits<float>::max();
   yspec_ = false;
   InitVertex();
+  Pitch pitch;
+  pitch.left = 0;
+  pitch.top = 0;
+  pitch.right = kCellNum_;
+  pitch.bottom = kCellNum_;
+  InitPitchIndices(pitch, &indices_);
 }
 
 void Tile::InitVertex() {
-  const int kRow = kCellNum_;
-  const int kColumn = kCellNum_;
-  const int kVertexNum = kRow * kColumn;
-  for (int i = 0; i < kColumn; ++i) {
-    for (int j = 0; j < kRow; ++j) {
-      int idx = i * kRow + j;
-      float x = (float)j - kRow / 2.0f;
-      float z = (float)i - kColumn / 2.0f;
+  const int kVertexNum = kCellNum_ * kCellNum_;
+  for (int i = 0; i < kCellNum_; ++i) {
+    for (int j = 0; j < kCellNum_; ++j) {
+      int idx = i * kCellNum_ + j;
+      float x = (float)j - kCellNum_ / 2.0f;
+      float z = (float)i - kCellNum_ / 2.0f;
       vertices_.push_back(azer::vec3(x, 0.0f, z));
       if (x > max_x_) max_x_ = x;
       if (x < min_x_) min_x_ = x;
@@ -33,16 +37,20 @@ void Tile::InitVertex() {
       if (z < min_z_) min_z_ = z;
     }
   }
+}
 
-  const int kTriangleNum = (kRow - 1) * (kColumn - 1) * 2;
-  for (int i = 0; i < kColumn-1; ++i) {
-    for (int j = 0; j < kRow-1; ++j) {
-      indices_.push_back(i * kRow + j);
-      indices_.push_back((i + 1) * kRow + j);
-      indices_.push_back((i + 1) * kRow + j + 1);
-      indices_.push_back(i * kRow + j);
-      indices_.push_back((i + 1) * kRow + j + 1);
-      indices_.push_back(i * kRow + j + 1);
+void InitPitchIndices(const Tile::Pitch& pitch, std::vector<int32>* indices) {
+  indices->clear();
+  const int cell = pitch.right - pitch.left;
+  const int kTriangleNum = (cell - 1) * (cell - 1) * 2;
+  for (int i = 0; i < cell - 1; ++i) {
+    for (int j = 0; j < cell - 1; ++j) {
+      indices->push_back(i * cell + j);
+      indices->push_back((i + 1) * cell + j);
+      indices->push_back((i + 1) * cell + j + 1);
+      indices->push_back(i * cell + j);
+      indices->push_back((i + 1) * cell + j + 1);
+      indices->push_back(i * cell + j + 1);
     }
   }
 }
@@ -127,8 +135,22 @@ void QuadTree::SplitPitch(Node* node) {
   n4.splitted = false;
 }
 
-bool FrustrumSplit::Split(const QuadTree::Node& node) {
-  return true;
+int32 FrustrumSplit::Split(const QuadTree::Node& node) {
+  azer::Vector3& pos1 = tile_->vertex(node.pitch.left, node.pitch.top);
+  azer::Vector3& pos2 = tile_->vertex(node.pitch.left, node.pitch.bottom);
+  azer::Vector3& pos3 = tile_->vertex(node.pitch.right, node.pitch.top);
+  azer::Vector3& pos4 = tile_->vertex(node.pitch.right, node.pitch.bottom);
+  bool v1 = frustrum_->IsVisible(pos1);
+  bool v2 = frustrum_->IsVisible(pos2);
+  bool v3 = frustrum_->IsVisible(pos3);
+  bool v4 = frustrum_->IsVisible(pos4);
+  if (v1 && v2 && v3 && v4) {
+    return 0;
+  } else if (v1 || v2 || v3 || v4) {
+    return 1;
+  } else {
+    return -1;
+  }
 }
 }  // namespace azer {
 }  // namespace util

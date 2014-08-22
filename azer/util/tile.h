@@ -10,6 +10,9 @@
 #include "azer/render/render.h"
 
 namespace azer {
+
+class Frustrum;
+
 namespace util {
 class Tile {
  public:
@@ -18,12 +21,25 @@ class Tile {
       , kLevel_(level) {
   }
 
+  struct Pitch {
+    int left;
+    int right;
+    int top;
+    int bottom;
+
+    Pitch(): left(-1), right(-1), top(-1), bottom(-1) {}
+    Pitch(const Pitch& pitch) {*this = pitch; }
+    Pitch& operator = (const Pitch& pitch);
+  };
+
   void Init();
   const std::vector<azer::Vector3>& vertices() { return vertices_;}
   const std::vector<azer::Vector3>& normal() { return normal_;}
   const std::vector<int32>& indices() { return indices_;}
 
   void SetHeight(int x, int z, float height);
+  azer::Vector3& vertex(int x, int z);
+  const azer::Vector3& vertex(int x, int z) const;
 
   int GetCellNum() const { return kCellNum_;}
   int GetVertexNum() const { return vertices_.size();}
@@ -43,6 +59,7 @@ class Tile {
   float z_range() const { return maxz() - minz();}
  private:
   void InitVertex();
+  void InitIndices();
   std::vector<azer::Vector3> vertices_;
   std::vector<azer::Vector3> normal_;
   std::vector<int32> indices_;
@@ -53,21 +70,12 @@ class Tile {
   DISALLOW_COPY_AND_ASSIGN(Tile);
 };
 
+void InitPitchIndices(const Tile::Pitch& pitch, std::vector<int32>* indices);
+
 class QuadTree {
  public:
-  struct Pitch {
-    int left;
-    int right;
-    int top;
-    int bottom;
-
-    Pitch(): left(-1), right(-1), top(-1), bottom(-1) {}
-    Pitch(const Pitch& pitch) {*this = pitch; }
-    Pitch& operator = (const Pitch& pitch);
-  };
-
   struct Node {
-    Pitch pitch;
+    Tile::Pitch pitch;
     int children[4];
     int level;
     bool splitted;
@@ -86,7 +94,12 @@ class QuadTree {
 
   class Splitable {
    public:
-    virtual bool Split(const Node& node) = 0;
+    /**
+     * == 0  all visible
+     *  > 0  partical visible
+     *  < 0  non visible
+     */
+    virtual int32 Split(const Node& node) = 0;
   };
   void Split(Splitable* splitable, std::deque<Node*>* nodes);
  private:
@@ -101,10 +114,12 @@ class QuadTree {
 
 class FrustrumSplit : public QuadTree::Splitable {
  public:
-  FrustrumSplit(Tile* tile) : tile_(tile) {}
-  virtual bool Split(const QuadTree::Node& node) OVERRIDE;
+  FrustrumSplit(Tile* tile, Frustrum* frustrum)
+    : tile_(tile), frustrum_(frustrum) {}
+  virtual int32 Split(const QuadTree::Node& node) OVERRIDE;
  private:
   Tile* tile_;
+  Frustrum* frustrum_;
   DISALLOW_COPY_AND_ASSIGN(FrustrumSplit);
 };
 
@@ -123,15 +138,19 @@ inline void QuadTree::Split(Splitable* splitable, std::deque<Node*>* final) {
   int cur = tail_;
   Node* node = nodes_.get();
   while (cur <= tail_) {
-    if (!splitable->Split(*node)) {
+    int32 visible = splitable->Split(*node);
+    if (visible > 0) {
+      SplitPitch(node);
+    } else if (visible == 0) {
       final->push_back(node);
+    } else {
     }
     cur++;
     node++;
   }
 }
 
-inline QuadTree::Pitch& QuadTree::Pitch::operator = (const Pitch& pitch) {
+inline Tile::Pitch& Tile::Pitch::operator = (const Pitch& pitch) {
   left = pitch.left;
   right = pitch.right;
   top = pitch.top;
@@ -164,6 +183,14 @@ inline float Tile::minz() const {
 inline float Tile::maxz() const {
   DCHECK_GT(vertices_.size(), 0u);
   return max_z_;
+}
+
+inline azer::Vector3& Tile::vertex(int x, int z) {
+  return vertices_[z * kCellNum_ + x];
+}
+
+inline const azer::Vector3& Tile::vertex(int x, int z) const {
+  return vertices_[z * kCellNum_ + x];
 }
 }  // namespace util
 }  // namespace azer

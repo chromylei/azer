@@ -40,7 +40,6 @@ class AZER_EXPORT Frustrum {
 
   bool IsVisible(const Vector3& point) const;
   bool IsVisible(const Vector3& center, const Vector3& halfsize) const;
-  
 
   // recalc frustrum plane of camera
   void UpdatePlane();
