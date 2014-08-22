@@ -21,7 +21,7 @@ void Tile::Init() {
   pitch.top = 0;
   pitch.right = kCellNum_;
   pitch.bottom = kCellNum_;
-  InitPitchIndices(pitch, &indices_);
+  InitPitchIndices(0, pitch, &indices_);
 }
 
 void Tile::InitVertex() {
@@ -40,17 +40,17 @@ void Tile::InitVertex() {
   }
 }
 
-void InitPitchIndices(const Tile::Pitch& pitch, std::vector<int32>* indices) {
-  const int cell = pitch.right - pitch.left;
-  const int kTriangleNum = (cell - 1) * (cell - 1) * 2;
-  for (int i = 0; i < cell - 1; ++i) {
-    for (int j = 0; j < cell - 1; ++j) {
-      indices->push_back(i * cell + j);
-      indices->push_back((i + 1) * cell + j);
-      indices->push_back((i + 1) * cell + j + 1);
-      indices->push_back(i * cell + j);
-      indices->push_back((i + 1) * cell + j + 1);
-      indices->push_back(i * cell + j + 1);
+void Tile::InitPitchIndices(int level, const Tile::Pitch& pitch, 
+                      std::vector<int32>* indices) {
+  const int step = std::pow(2.0, level);;
+  for (int i = pitch.top; i < pitch.bottom - 1; i += step) {
+    for (int j = pitch.left; j < pitch.right - 1; j += step) {
+      indices->push_back(i * kCellNum_ + j);
+      indices->push_back((i + step) * kCellNum_ + j);
+      indices->push_back((i + step) * kCellNum_ + j + step);
+      indices->push_back(i * kCellNum_ + j);
+      indices->push_back((i + step) * kCellNum_ + j + step);
+      indices->push_back(i * kCellNum_ + j + step);
     }
   }
 }

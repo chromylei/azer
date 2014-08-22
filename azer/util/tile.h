@@ -38,6 +38,10 @@ class Tile {
   const std::vector<azer::Vector3>& normal() { return normal_;}
   const std::vector<int32>& indices() { return indices_;}
 
+  // indices will append
+  void InitPitchIndices(int level, const Tile::Pitch& pitch,
+                        std::vector<int32>* indices);
+
   void SetHeight(int x, int z, float height);
   azer::Vector3& vertex(int x, int z);
   const azer::Vector3& vertex(int x, int z) const;
@@ -72,9 +76,6 @@ class Tile {
   bool yspec_;
   DISALLOW_COPY_AND_ASSIGN(Tile);
 };
-
-// indices will append
-void InitPitchIndices(const Tile::Pitch& pitch, std::vector<int32>* indices);
 
 class QuadTree {
  public:
