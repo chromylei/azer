@@ -70,5 +70,4 @@ void D3D11VertexBuffer::unmap() {
   d3d_context->Unmap(buffer_, 0);
   locked_ = false;
 }
-
 }  // namespace azer

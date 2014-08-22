@@ -16,8 +16,11 @@ class D3D11IndicesBuffer : public IndicesBuffer {
   }
 
   virtual bool Init();
-  virtual IndicesData* Lock() {return NULL;}
-  virtual void Unlock() {}
+  /**
+   * 对于 VertexBuffer 来说，它是不分行和列的， 仅仅知道大小
+   */
+  virtual LockDataPtr map(MapType flags) OVERRIDE;
+  virtual void unmap() OVERRIDE;
 
   bool Initialized() { return NULL != indices_buffer_;}
  private:

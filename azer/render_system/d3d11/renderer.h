@@ -61,7 +61,7 @@ class D3D11Renderer : public Renderer {
   virtual void Draw(VertexBuffer* vb, PrimitiveTopology primitive,
                       int32 num_of_vertices, int32 first_vertex) OVERRIDE;
   virtual void DrawIndex(VertexBuffer* vb, IndicesBuffer* ib,
-                         PrimitiveTopology primitive, int32 num_of_vertices,
+                         PrimitiveTopology primitive, int32 num_of_indices,
                          int32 first_indices, int32 index_base) OVERRIDE;
   virtual void DrawInstanced(int32 instance_num, VertexBuffer* vb,
                              PrimitiveTopology primitive,
@@ -69,7 +69,7 @@ class D3D11Renderer : public Renderer {
                              int32 instance_start_index) OVERRIDE;
   virtual void DrawIndexInstanced(int32 instance_num, VertexBuffer* vb,
                                   IndicesBuffer* ib, PrimitiveTopology primitive,
-                                  int32 num_of_vertces, int32 first_indices,
+                                  int32 num_of_indices, int32 first_indices,
                                   int32 index_base,
                                   int32 instance_start_index) OVERRIDE;
 

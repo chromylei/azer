@@ -31,4 +31,38 @@ bool D3D11IndicesBuffer::Init() {
 
   return true;
 }
+
+LockDataPtr D3D11IndicesBuffer::map(MapType flags) {
+  HRESULT hr;
+  DCHECK(!locked_) << "Vertex Buffer(" << options_.name << ") has been locked";
+  ID3D11Device* d3d_device = render_system_->GetDevice();
+  ID3D11DeviceContext* d3d_context = NULL;
+  d3d_device->GetImmediateContext(&d3d_context);
+  ScopedRefCOM autocom(d3d_context);
+  D3D11_MAPPED_SUBRESOURCE mapped;
+  D3D11_MAP d3d11_map = TranslateMapType(flags);
+  hr = d3d_context->Map(buffer_, 0, d3d11_map, 0, &mapped);
+  if (FAILED(hr)) {
+    LOG(ERROR) << "D3D11 VertexBuffer: Map failed, desc: "
+               << ::base::HRMessage(hr);
+    return NULL;
+  }
+
+  LockDataPtr data(new LockData);
+  SetLockDataPtr(mapped.pData, data.get());
+  SetLockDataRowSize(mapped.RowPitch, data.get());
+  SetLockDataColumnNum(mapped.DepthPitch, data.get());
+  locked_ = true;
+  return data;
+}
+
+void D3D11IndicesBuffer::unmap() {
+  DCHECK(locked_) << "Vertex Buffer(" << options_.name << ") has not been locked";
+  ID3D11Device* d3d_device = render_system_->GetDevice();
+  ID3D11DeviceContext* d3d_context = NULL;
+  d3d_device->GetImmediateContext(&d3d_context);
+  ScopedRefCOM autocom(d3d_context);
+  d3d_context->Unmap(buffer_, 0);
+  locked_ = false;
+}
 }  // namespace azer

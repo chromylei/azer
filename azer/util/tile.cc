@@ -40,7 +40,6 @@ void Tile::InitVertex() {
 }
 
 void InitPitchIndices(const Tile::Pitch& pitch, std::vector<int32>* indices) {
-  indices->clear();
   const int cell = pitch.right - pitch.left;
   const int kTriangleNum = (cell - 1) * (cell - 1) * 2;
   for (int i = 0; i < cell - 1; ++i) {

@@ -70,6 +70,7 @@ class Tile {
   DISALLOW_COPY_AND_ASSIGN(Tile);
 };
 
+// indices will append
 void InitPitchIndices(const Tile::Pitch& pitch, std::vector<int32>* indices);
 
 class QuadTree {
@@ -101,7 +102,7 @@ class QuadTree {
      */
     virtual int32 Split(const Node& node) = 0;
   };
-  void Split(Splitable* splitable, std::deque<Node*>* nodes);
+  void Split(Splitable* splitable, std::vector<Node*>* nodes);
  private:
   void InitNode();
   void SplitPitch(Node* node);
@@ -133,7 +134,7 @@ inline void QuadTree::InitNode() {
   n.pitch.bottom = kCellNum;
 }
 
-inline void QuadTree::Split(Splitable* splitable, std::deque<Node*>* final) {
+inline void QuadTree::Split(Splitable* splitable, std::vector<Node*>* final) {
   InitNode();
   int cur = tail_;
   Node* node = nodes_.get();
