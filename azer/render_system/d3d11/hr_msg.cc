@@ -3,6 +3,9 @@
 #include <windows.h>
 #include <tchar.h>
 
+#include "azer/base/string.h"
+#include "base/strings/utf_string_conversions.h"
+
 namespace base {
 string16 HRMessage(uint32 hr) {
   string16 msg;

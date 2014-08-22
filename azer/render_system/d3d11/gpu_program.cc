@@ -3,6 +3,8 @@
 #include "azer/render_system/d3d11/enum_transform.h"
 #include "azer/render_system/d3d11/util.h"
 
+#include "azer/base/string.h"
+
 namespace azer {
 
 bool D3D11VertexGpuProgram::Init(RenderSystem* vrs) {

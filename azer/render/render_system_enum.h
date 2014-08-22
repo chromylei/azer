@@ -116,7 +116,7 @@ enum MapType {
 };
 
 enum VisibleState {
-  kNonVisible     = -1,
+  kNoneVisible    = -1,
   kFullyVisible   = 0,
   kPartialVisible = 1,
   

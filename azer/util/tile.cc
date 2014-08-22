@@ -141,7 +141,18 @@ VisibleState FrustrumSplit::Split(const QuadTree::Node& node) {
 
   AxisAlignedBox box(Vector3(minpos.x, tile_->miny(), minpos.z),
                      Vector3(maxpos.x, tile_->maxy(), maxpos.z));
-  return box.IsVisible(*frustrum_, Matrix4::kIdentity);
+  VisibleState state = box.IsVisible(*frustrum_, Matrix4::kIdentity);
+  if (state == kPartialVisible || state == kFullyVisible) {
+    return state;
+  }
+
+  const Vector3& pos = frustrum_->camera()->position();
+  if (pos.x >= minpos.x && pos.z >= minpos.z
+      && pos.x <= maxpos.x && pos.z <= maxpos.z) {
+    return kPartialVisible;
+  } else {
+    return kNoneVisible;
+  }
 }
 }  // namespace azer {
 }  // namespace util

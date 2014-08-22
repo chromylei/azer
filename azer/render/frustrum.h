@@ -44,6 +44,7 @@ class AZER_EXPORT Frustrum {
 
   // recalc frustrum plane of camera
   void UpdatePlane();
+  const Camera* camera() const { return camera_;}
  private:
   void GenProjMatrix();
   Radians fovY_;

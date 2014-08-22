@@ -38,6 +38,10 @@ bool D3D11VertexBuffer::Init() {
 }
 
 LockDataPtr D3D11VertexBuffer::map(MapType flags) {
+  DCHECK(options_.usage & GraphicBuffer::kDynamic
+         || options_.usage & GraphicBuffer::kStaging);
+  DCHECK(options_.cpu_access & kCPUWrite || options_.cpu_access & kCPURead);
+
   HRESULT hr;
   DCHECK(!locked_) << "Vertex Buffer(" << options_.name << ") has been locked";
   ID3D11Device* d3d_device = render_system_->GetDevice();

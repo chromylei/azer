@@ -47,7 +47,7 @@ void Frustrum::UpdatePlane() {
 VisibleState Frustrum::IsVisible(const Vector3& point) const {
   for (int i = 0; i < 6; ++i) {
     if (planes_[i].GetSide(point) == Plane::kNegative) {
-      return kNonVisible;
+      return kNoneVisible;
     }
   }
 
@@ -58,7 +58,7 @@ VisibleState Frustrum::IsVisible(const Vector3& center,
                          const Vector3& halfsize) const {
   for (int i = 0; i < 6; ++i) {
     if (planes_[i].GetSide(center, halfsize) == Plane::kNegative) {
-      return kNonVisible;
+      return kNoneVisible;
     }
   }
 
