@@ -5,7 +5,7 @@
 #include "base/basictypes.h"
 #include "azer/base/render_export.h"
 #include "azer/render/vertex_data.h"
-#include "azer/render/lockable.h"
+#include "azer/render/hardware_buffer.h"
 
 namespace azer {
 class AZER_EXPORT IndicesData {
@@ -53,7 +53,7 @@ class AZER_EXPORT IndicesData {
 
 typedef std::shared_ptr<IndicesData> IndicesDataPtr;
 
-class AZER_EXPORT IndicesBuffer : public Lockable {
+class AZER_EXPORT IndicesBuffer : public HardwareBuffer {
  public:
   struct Options {
     GraphicBuffer::Usage usage;
@@ -72,7 +72,7 @@ class AZER_EXPORT IndicesBuffer : public Lockable {
   virtual ~IndicesBuffer() {}
 
   virtual bool Init() = 0;
-  virtual LockDataPtr map(MapType flags) = 0;
+  virtual HardwareBufferDataPtr map(MapType flags) = 0;
   virtual void unmap() = 0;
   IndicesData::IndexType type() const { return indices_data_->type();}
   IndicesData* data() { return indices_data_.get();}

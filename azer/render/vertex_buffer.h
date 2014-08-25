@@ -7,12 +7,12 @@
 #include "azer/render/vertex_data.h"
 #include "azer/base/render_export.h"
 #include "azer/render/render_system_enum.h"
-#include "azer/render/lockable.h"
+#include "azer/render/hardware_buffer.h"
 
 namespace azer {
 
 class Renderer;
-class AZER_EXPORT VertexBuffer : public Lockable {
+class AZER_EXPORT VertexBuffer : public HardwareBuffer {
  public:
   struct Options {
     char name[128];
@@ -34,7 +34,7 @@ class AZER_EXPORT VertexBuffer : public Lockable {
   /**
    * 从 Lockable 继承的借口
    */
-  virtual LockDataPtr map(MapType flags) = 0;
+  virtual HardwareBufferDataPtr map(MapType flags) = 0;
   virtual void unmap() = 0;
 
   const VertexDescPtr& desc() const { return data_ptr_->desc();}

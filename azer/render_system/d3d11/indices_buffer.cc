@@ -32,7 +32,7 @@ bool D3D11IndicesBuffer::Init() {
   return true;
 }
 
-LockDataPtr D3D11IndicesBuffer::map(MapType flags) {
+HardwareBufferDataPtr D3D11IndicesBuffer::map(MapType flags) {
   DCHECK(options_.usage & GraphicBuffer::kDynamic
          || options_.usage & GraphicBuffer::kStaging);
   DCHECK(options_.cpu_access & kCPUWrite || options_.cpu_access & kCPURead);
@@ -50,7 +50,7 @@ LockDataPtr D3D11IndicesBuffer::map(MapType flags) {
     return NULL;
   }
 
-  LockDataPtr data(new LockData);
+  HardwareBufferDataPtr data(new HardwareBufferData);
   SetLockDataPtr(mapped.pData, data.get());
   SetLockDataRowSize(mapped.RowPitch, data.get());
   SetLockDataColumnNum(mapped.DepthPitch, data.get());

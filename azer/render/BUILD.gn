@@ -47,6 +47,7 @@ shared_library("render") {
     "frustrum.h",
     "gpu_constants_table.cc",
     "gpu_constants_table.h",
+    "hardware_buffer.h",
     "light.cc",
     "light.h",
     "mesh.cc",
