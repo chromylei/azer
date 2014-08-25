@@ -37,6 +37,8 @@ class AZER_EXPORT HardwareBuffer {
 
   virtual HardwareBufferDataPtr map(MapType flags) = 0;
   virtual void unmap() = 0;
+
+  virtual void CopyTo(int x, int y, int z, HardwareBufferData* data) = 0;
  protected:
   void SetLockDataPtr(void* ptr, HardwareBufferData* data) {
     data->data_ = (uint8*)ptr;

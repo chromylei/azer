@@ -42,6 +42,8 @@ class AZER_EXPORT IndicesData {
   IndexType type() const { return type_;}
   int32 num() const { return num_;}
   int32 unit_size() const;
+
+  void reset() { data_.reset();}
  protected:
   IndexType type_;
   MemoryMode mode_;

@@ -117,6 +117,8 @@ class AZER_EXPORT VertexData {
   int32 buffer_size() const {
     return vertex_num() * stride();
   }
+
+  void reset() { data_.reset();}
  private:
   int32 vertex_num_;
   std::unique_ptr<uint8[]> data_;
