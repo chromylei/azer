@@ -55,13 +55,13 @@ VisibleState Frustrum::IsVisible(const Vector3& point) const {
 }
 
 VisibleState Frustrum::IsVisible(const Vector3& center,
-                         const Vector3& halfsize) const {
+                                 const Vector3& halfsize) const {
   for (int i = 0; i < 6; ++i) {
     if (planes_[i].GetSide(center, halfsize) == Plane::kNegative) {
       return kNoneVisible;
     }
   }
 
-  return kFullyVisible;
+  return kPartialVisible;
 }
 }  // namespace azer
