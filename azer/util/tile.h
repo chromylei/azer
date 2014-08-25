@@ -123,12 +123,12 @@ class QuadTree {
 
 class FrustrumSplit : public QuadTree::Splitable {
  public:
-  FrustrumSplit(Tile* tile, Frustrum* frustrum)
+  FrustrumSplit(const Tile* tile, const Frustrum* frustrum)
     : tile_(tile), frustrum_(frustrum) {}
   virtual SplitRes Split(const QuadTree::Node& node) OVERRIDE;
  private:
-  Tile* tile_;
-  Frustrum* frustrum_;
+  const Tile* tile_;
+  const Frustrum* frustrum_;
   DISALLOW_COPY_AND_ASSIGN(FrustrumSplit);
 };
 
