@@ -2,6 +2,8 @@
 #include "gtest/gtest.h"
 
 using azer::util::Tile;
+using azer::util::QuadTree;
+
 TEST(Tile, Indices) {
   int level = 8;
   Tile tile(level);
@@ -12,4 +14,29 @@ TEST(Tile, Indices) {
 }
 
 TEST(Tile, PitchIndices) {
+}
+
+namespace {
+class TileQuadTreeBase : public QuadTree::Splitable {
+ public:
+  virtual SplitRes Split(const QuadTree::Node& node) {
+    if (node.level > 0) {
+      return QuadTree::Splitable::kSplit;
+    } else {
+      return QuadTree::Splitable::kKeep;
+    }
+  }
+};
+}
+
+TEST(TileQuadTree, Base) {
+  int level = 2;
+  Tile tile(level);
+  tile.Init();
+
+  TileQuadTreeBase basequad;
+  QuadTree quad(level);
+  std::vector<Tile::Pitch> nodes;
+  quad.Split(level - 1, &basequad, &nodes);
+  ASSERT_EQ(nodes.size(), 4u);
 }

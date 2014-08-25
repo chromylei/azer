@@ -18,7 +18,7 @@ namespace util {
 class Tile {
  public:
   Tile(const int level = 8)
-      : kCellNum_(std::pow(2.0f, level) + 1)
+      : kGridLine(std::pow(2.0f, level) + 2)
       , kLevel_(level) {
   }
 
@@ -46,7 +46,7 @@ class Tile {
   azer::Vector3& vertex(int x, int z);
   const azer::Vector3& vertex(int x, int z) const;
 
-  int GetCellNum() const { return kCellNum_;}
+  int GetCellNum() const { return kGridLine;}
   int GetVertexNum() const { return vertices_.size();}
   int GetIndicesNum() const { return indices_.size();}  
   void CalcNormal();
@@ -70,7 +70,7 @@ class Tile {
   std::vector<azer::Vector3> vertices_;
   std::vector<azer::Vector3> normal_;
   std::vector<int32> indices_;
-  const int kCellNum_;
+  const int kGridLine;
   const int kLevel_;
   float min_x_, max_x_, min_y_, max_y_, min_z_, max_z_;
   bool yspec_;
@@ -92,19 +92,19 @@ class QuadTree {
   explicit QuadTree(int level)
       : tail_(-1)
       , kLevel(level)
-      , kCellNum(std::pow(2.0, level) + 1) {
+      , kGridLine(std::pow(2.0, level) + 1) {
     int max_cell = (int)std::pow(4.0, level) / 3;
     nodes_.reset(new Node[max_cell]);
   }
 
   class Splitable {
    public:
-    /**
-     * == 0  all visible
-     *  > 0  partical visible
-     *  < 0  non visible
-     */
-    virtual VisibleState Split(const Node& node) = 0;
+    enum SplitRes {
+      kSplit,
+      kKeep,
+      kDrop,
+    };
+    virtual SplitRes Split(const Node& node) = 0;
   };
   void Split(int minlevel, Splitable* splitable, std::vector<Tile::Pitch>* nodes);
  private:
@@ -113,7 +113,7 @@ class QuadTree {
   int tail_;
   std::unique_ptr<Node[]> nodes_;
   const int kLevel;
-  const int kCellNum;
+  const int kGridLine;
   DISALLOW_COPY_AND_ASSIGN(QuadTree);
 };
 
@@ -121,7 +121,7 @@ class FrustrumSplit : public QuadTree::Splitable {
  public:
   FrustrumSplit(Tile* tile, Frustrum* frustrum)
     : tile_(tile), frustrum_(frustrum) {}
-  virtual VisibleState Split(const QuadTree::Node& node) OVERRIDE;
+  virtual SplitRes Split(const QuadTree::Node& node) OVERRIDE;
  private:
   Tile* tile_;
   Frustrum* frustrum_;
@@ -134,8 +134,8 @@ inline void QuadTree::InitNode() {
   n.splitted = false;
   n.pitch.left = 0;
   n.pitch.top = 0;
-  n.pitch.right = kCellNum - 1;
-  n.pitch.bottom = kCellNum - 1;
+  n.pitch.right = kGridLine;
+  n.pitch.bottom = kGridLine;
   n.level = kLevel;
 }
 
@@ -175,11 +175,11 @@ inline float Tile::maxz() const {
 }
 
 inline azer::Vector3& Tile::vertex(int x, int z) {
-  return vertices_[z * kCellNum_ + x];
+  return vertices_[z * kGridLine + x];
 }
 
 inline const azer::Vector3& Tile::vertex(int x, int z) const {
-  return vertices_[z * kCellNum_ + x];
+  return vertices_[z * kGridLine + x];
 }
 }  // namespace util
 }  // namespace azer

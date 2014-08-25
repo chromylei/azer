@@ -19,18 +19,18 @@ void Tile::Init() {
   Pitch pitch;
   pitch.left = 0;
   pitch.top = 0;
-  pitch.right = kCellNum_;
-  pitch.bottom = kCellNum_;
+  pitch.right = kGridLine - 1;
+  pitch.bottom = kGridLine - 1;
   InitPitchIndices(0, pitch, &indices_);
 }
 
 void Tile::InitVertex() {
-  const int kVertexNum = kCellNum_ * kCellNum_;
-  for (int i = 0; i < kCellNum_; ++i) {
-    for (int j = 0; j < kCellNum_; ++j) {
-      int idx = i * kCellNum_ + j;
-      float x = (float)j - kCellNum_ / 2.0f;
-      float z = (float)i - kCellNum_ / 2.0f;
+  const int kVertexNum = kGridLine * kGridLine;
+  for (int i = 0; i < kGridLine; ++i) {
+    for (int j = 0; j < kGridLine; ++j) {
+      int idx = i * kGridLine + j;
+      float x = (float)j - kGridLine / 2.0f;
+      float z = (float)i - kGridLine / 2.0f;
       vertices_.push_back(azer::vec3(x, 0.0f, z));
       if (x > max_x_) max_x_ = x;
       if (x < min_x_) min_x_ = x;
@@ -45,12 +45,12 @@ void Tile::InitPitchIndices(int level, const Tile::Pitch& pitch,
   const int step = std::pow(2.0, level);;
   for (int i = pitch.top; i < pitch.bottom - 1; i += step) {
     for (int j = pitch.left; j < pitch.right - 1; j += step) {
-      indices->push_back(i * kCellNum_ + j);
-      indices->push_back((i + step) * kCellNum_ + j);
-      indices->push_back((i + step) * kCellNum_ + j + step);
-      indices->push_back(i * kCellNum_ + j);
-      indices->push_back((i + step) * kCellNum_ + j + step);
-      indices->push_back(i * kCellNum_ + j + step);
+      indices->push_back(i * kGridLine + j);
+      indices->push_back((i + step) * kGridLine + j);
+      indices->push_back((i + step) * kGridLine + j + step);
+      indices->push_back(i * kGridLine + j);
+      indices->push_back((i + step) * kGridLine + j + step);
+      indices->push_back(i * kGridLine + j + step);
     }
   }
 }
@@ -82,7 +82,7 @@ void Tile::CalcNormal() {
 }
 
 void Tile::SetHeight(int x, int z, float height) {
-  vertices_[x * kCellNum_ + z].y = height;
+  vertices_[x * kGridLine + z].y = height;
   if (height < min_y_) min_y_ = height;
   if (height > max_y_) max_y_ = height;
   yspec_ = true;
@@ -135,23 +135,25 @@ void QuadTree::SplitPitch(Node* node) {
   n4.splitted = false;
 }
 
-VisibleState FrustrumSplit::Split(const QuadTree::Node& node) {
+QuadTree::Splitable::SplitRes FrustrumSplit::Split(const QuadTree::Node& node) {
   const Vector3& minpos = tile_->vertex(node.pitch.left, node.pitch.top);
   const Vector3& maxpos = tile_->vertex(node.pitch.right,node.pitch.bottom);
 
   AxisAlignedBox box(Vector3(minpos.x, tile_->miny(), minpos.z),
                      Vector3(maxpos.x, tile_->maxy(), maxpos.z));
   VisibleState state = box.IsVisible(*frustrum_, Matrix4::kIdentity);
-  if (state == kPartialVisible || state == kFullyVisible) {
-    return state;
+  if (state == kPartialVisible) {
+    return kSplit;
+  } else if (state == kFullyVisible) {
+    return kKeep;
   }
 
   const Vector3& pos = frustrum_->camera()->position();
   if (pos.x >= minpos.x && pos.z >= minpos.z
       && pos.x <= maxpos.x && pos.z <= maxpos.z) {
-    return kPartialVisible;
+    return kSplit;
   } else {
-    return kNoneVisible;
+    return kDrop;
   }
 }
 
@@ -167,9 +169,9 @@ void QuadTree::Split(int minlevel, Splitable* splitable,
     } else {
       DCHECK_GT(node->level, minlevel);
       int32 visible = splitable->Split(*node);
-      if (visible == kPartialVisible) {
+      if (visible == Splitable::kSplit) {
         SplitPitch(node);
-      } else if (visible == kFullyVisible) {
+      } else if (visible == Splitable::kKeep) {
         final->push_back(node->pitch);
       } else {
       }
