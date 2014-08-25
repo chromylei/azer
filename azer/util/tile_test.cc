@@ -8,9 +8,9 @@ TEST(Tile, Indices) {
   int level = 8;
   Tile tile(level);
   tile.Init();
-  int edge = (std::pow(2.0, level) + 1);
-  ASSERT_EQ(tile.vertices().size(), edge * edge);
-  ASSERT_EQ(tile.indices().size(), (edge - 1) * (edge - 1) * 2 * 3);
+  const int kGridLine = (std::pow(2.0, level) + 1);
+  ASSERT_EQ(tile.vertices().size(), kGridLine * kGridLine);
+  ASSERT_EQ(tile.indices().size(), (kGridLine - 1) * (kGridLine - 1) * 2 * 3);
 }
 
 TEST(Tile, PitchIndices) {

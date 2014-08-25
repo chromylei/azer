@@ -25,7 +25,9 @@ void Tile::Init() {
 }
 
 void Tile::InitVertex() {
+  vertices_.clear();
   const int kVertexNum = kGridLine * kGridLine;
+  vertices_.reserve(kVertexNum);
   for (int i = 0; i < kGridLine; ++i) {
     for (int j = 0; j < kGridLine; ++j) {
       int idx = i * kGridLine + j;
@@ -42,9 +44,9 @@ void Tile::InitVertex() {
 
 void Tile::InitPitchIndices(int level, const Tile::Pitch& pitch, 
                       std::vector<int32>* indices) {
-  const int step = std::pow(2.0, level);;
-  for (int i = pitch.top; i < pitch.bottom - 1; i += step) {
-    for (int j = pitch.left; j < pitch.right - 1; j += step) {
+  const int step = std::pow(2.0, level);
+  for (int i = pitch.top; i < pitch.bottom; i += step) {
+    for (int j = pitch.left; j < pitch.right; j += step) {
       indices->push_back(i * kGridLine + j);
       indices->push_back((i + step) * kGridLine + j);
       indices->push_back((i + step) * kGridLine + j + step);

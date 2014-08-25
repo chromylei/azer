@@ -17,8 +17,12 @@ class Frustrum;
 namespace util {
 class Tile {
  public:
+  /**
+   * tile 的 grid line 个数的计算公式是 2 ^ level + 1
+   * 采用这种方法的好处是可以非常容易的计算中点位置 2 ^ (level - 1) + 1
+   */
   Tile(const int level = 8)
-      : kGridLine(std::pow(2.0f, level) + 2)
+      : kGridLine(std::pow(2.0f, level) + 1)
       , kLevel_(level) {
   }
 
@@ -46,7 +50,7 @@ class Tile {
   azer::Vector3& vertex(int x, int z);
   const azer::Vector3& vertex(int x, int z) const;
 
-  int GetCellNum() const { return kGridLine;}
+  int GetGridLineNum() const { return kGridLine;}
   int GetVertexNum() const { return vertices_.size();}
   int GetIndicesNum() const { return indices_.size();}  
   void CalcNormal();
@@ -85,8 +89,8 @@ class QuadTree {
     int level;
     bool splitted;
     Node(): level(-1), splitted(false) {}
-    int midx() const { return std::pow(2.0, level - 1) +  pitch.left;}
-    int midy() const { return std::pow(2.0, level - 1) +  pitch.top;}
+    int midx() const { return std::pow(2.0, level - 1) + pitch.left;}
+    int midy() const { return std::pow(2.0, level - 1) + pitch.top;}
   };
 
   explicit QuadTree(int level)
@@ -134,8 +138,8 @@ inline void QuadTree::InitNode() {
   n.splitted = false;
   n.pitch.left = 0;
   n.pitch.top = 0;
-  n.pitch.right = kGridLine;
-  n.pitch.bottom = kGridLine;
+  n.pitch.right = kGridLine - 1;
+  n.pitch.bottom = kGridLine - 1;
   n.level = kLevel;
 }
 
