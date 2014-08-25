@@ -26,3 +26,16 @@ static_library("azer_util") {
     ":azer_devil_util",
   ]
 }
+
+test("azer_util_unittest") {
+  sources = [
+    "tile_test.cc",
+  ]
+  deps = [
+    "//azer/render:render",
+    "//third_party/gtest:gtest",
+    "//base:test_main",
+    ":azer_util",
+  ]
+  if (is_win) {deps += ["//azer/render_system/d3d11:d3d11_render_system"]}
+}
