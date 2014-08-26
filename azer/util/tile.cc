@@ -43,16 +43,18 @@ void Tile::InitVertex() {
 }
 
 void Tile::InitPitchIndices(int level, const Tile::Pitch& pitch, 
-                      std::vector<int32>* indices) {
+                            std::vector<int32>* indices) {
   const int step = std::pow(2.0, level);
   for (int i = pitch.top; i < pitch.bottom; i += step) {
     for (int j = pitch.left; j < pitch.right; j += step) {
-      indices->push_back(i * kGridLine + j);
-      indices->push_back((i + step) * kGridLine + j);
-      indices->push_back((i + step) * kGridLine + j + step);
-      indices->push_back(i * kGridLine + j);
-      indices->push_back((i + step) * kGridLine + j + step);
-      indices->push_back(i * kGridLine + j + step);
+      int cur_line = i * kGridLine;
+      int next_line = (i + step) * kGridLine;
+      indices->push_back(cur_line  + j);
+      indices->push_back(next_line + j);
+      indices->push_back(next_line + j + step);
+      indices->push_back(cur_line  + j);
+      indices->push_back(next_line + j + step);
+      indices->push_back(cur_line  + j + step);
     }
   }
 }
