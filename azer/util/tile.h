@@ -42,9 +42,9 @@ class Tile {
   const std::vector<azer::Vector3>& normal() { return normal_;}
   const std::vector<int32>& indices() { return indices_;}
 
-  // indices will append
-  void InitPitchIndices(int level, const Tile::Pitch& pitch,
-                        std::vector<int32>* indices);
+  // 直接操作内存要大大快于使用 std::vector<int32> push_back
+  // dbg 版本提升了至少 10 倍
+  int32* InitPitchIndices(int level, const Tile::Pitch& pitch, int32* indices);
 
   void SetHeight(int x, int z, float height);
   azer::Vector3& vertex(int x, int z);
@@ -185,5 +185,6 @@ inline azer::Vector3& Tile::vertex(int x, int z) {
 inline const azer::Vector3& Tile::vertex(int x, int z) const {
   return vertices_[z * kGridLine + x];
 }
+
 }  // namespace util
 }  // namespace azer

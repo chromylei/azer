@@ -21,7 +21,8 @@ void Tile::Init() {
   pitch.top = 0;
   pitch.right = kGridLine - 1;
   pitch.bottom = kGridLine - 1;
-  InitPitchIndices(0, pitch, &indices_);
+  indices_.resize((kGridLine - 1) * (kGridLine - 1) * 6);
+  InitPitchIndices(0, pitch, &(indices_[0]));
 }
 
 void Tile::InitVertex() {
@@ -42,21 +43,22 @@ void Tile::InitVertex() {
   }
 }
 
-void Tile::InitPitchIndices(int level, const Tile::Pitch& pitch, 
-                            std::vector<int32>* indices) {
-  const int step = std::pow(2.0, level);
+int32* Tile::InitPitchIndices(int level, const Tile::Pitch& pitch, int32* indices) {
+  const int step = std::pow(2.0f, level);
+  int32* cur = indices;
   for (int i = pitch.top; i < pitch.bottom; i += step) {
     for (int j = pitch.left; j < pitch.right; j += step) {
       int cur_line = i * kGridLine;
       int next_line = (i + step) * kGridLine;
-      indices->push_back(cur_line  + j);
-      indices->push_back(next_line + j);
-      indices->push_back(next_line + j + step);
-      indices->push_back(cur_line  + j);
-      indices->push_back(next_line + j + step);
-      indices->push_back(cur_line  + j + step);
+      *cur++ = cur_line  + j;
+      *cur++ = next_line + j;
+      *cur++ = next_line + j + step;
+      *cur++ = cur_line  + j;
+      *cur++ = next_line + j + step;
+      *cur++ = cur_line  + j + step;
     }
   }
+  return cur;
 }
 
 void Tile::CalcNormal() {
@@ -184,6 +186,5 @@ void QuadTree::Split(int minlevel, Splitable* splitable,
     node++;
   }
 }
-
 }  // namespace azer {
 }  // namespace util
