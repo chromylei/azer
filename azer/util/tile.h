@@ -42,8 +42,6 @@ class Tile {
   const std::vector<azer::Vector3>& normal() { return normal_;}
   const std::vector<int32>& indices() { return indices_;}
 
-  // 直接操作内存要大大快于使用 std::vector<int32> push_back
-  // dbg 版本提升了至少 10 倍
   int32* InitPitchIndices(int level, const Tile::Pitch& pitch, int32* indices);
 
   void SetHeight(int x, int z, float height);

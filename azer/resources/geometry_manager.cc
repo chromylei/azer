@@ -110,8 +110,7 @@ SubMeshPtr GeometryManager::LoadSubMesh(const ResFilePath& path, RenderSystem* r
   if (raw_mesh.indices.get() != NULL) {
     int32 indices_size = raw_mesh.head.indices_num * raw_mesh.head.indices_unit_size;
     IndicesDataPtr id_ptr(new IndicesData(
-        raw_mesh.head.indices_num, GetIndicesType(raw_mesh.head.indices_unit_size),
-        IndicesData::kGPUMemory));
+        raw_mesh.head.indices_num, GetIndicesType(raw_mesh.head.indices_unit_size)));
     memcpy(id_ptr->pointer(), raw_mesh.indices.get(), indices_size);
     submesh_ptr->ib_ptr.reset(
         rs->CreateIndicesBuffer(IndicesBuffer::Options(), id_ptr));

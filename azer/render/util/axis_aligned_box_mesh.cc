@@ -71,8 +71,7 @@ void AABBMesh::InitIndicesBuffer(RenderSystem* rs) {
   // create indices for face
   {
     const int kTriangleNum = 12;
-    IndicesDataPtr idata(new IndicesData(kTriangleNum * 3, IndicesData::kUint32,
-                                         IndicesData::kMainMemory));
+    IndicesDataPtr idata(new IndicesData(kTriangleNum * 3, IndicesData::kUint32));
     int32 indices[kTriangleNum * 3] = {
       0,3,1, 1,3,2,  // top
       4,5,7, 7,5,6,  // bottom
@@ -89,8 +88,7 @@ void AABBMesh::InitIndicesBuffer(RenderSystem* rs) {
   // create for line
   {
     const int kEdgeNum = 12;
-    IndicesDataPtr edge_idata(new IndicesData(kEdgeNum * 2, IndicesData::kUint32,
-                                           IndicesData::kMainMemory));
+    IndicesDataPtr edge_idata(new IndicesData(kEdgeNum * 2, IndicesData::kUint32));
     int32 edge_data[kEdgeNum * 2] = {
       0, 1, 1, 2, 2, 3, 3, 0,
       0, 4, 1, 5, 2, 6, 3, 7,

@@ -17,13 +17,8 @@ class AZER_EXPORT IndicesData {
     kUint32,
   };
 
-  enum MemoryMode {
-    kMainMemory,
-    kGPUMemory,
-  };
-
-  IndicesData(int num, IndexType type, MemoryMode mode)
-      : type_(type), mode_(mode), size_(0) {
+  IndicesData(int num, IndexType type)
+      : type_(type), size_(0) {
     size_ = num * unit_size();
     num_ = num;
     data_.reset(new uint8[size_]);
@@ -46,7 +41,6 @@ class AZER_EXPORT IndicesData {
   void reset() { data_.reset();}
  protected:
   IndexType type_;
-  MemoryMode mode_;
   int32 size_;
   int32 num_;
   std::unique_ptr<uint8[]> data_;
