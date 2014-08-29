@@ -5,8 +5,6 @@
 #include "azer/render/axis_aligned_box.h"
 
 namespace azer {
-namespace util {
-
 void Tile::Init() {
   min_x_ = std::numeric_limits<float>::max();
   max_x_ = -std::numeric_limits<float>::max();
@@ -44,7 +42,7 @@ void Tile::InitVertex() {
 }
 
 int32* Tile::InitPitchIndices(int level, const Tile::Pitch& pitch, int32* indices) {
-  return azer::util::InitPitchIndices(level, pitch, kGridLine, indices);
+  return azer::InitPitchIndices(level, pitch, kGridLine, indices);
 }
 
 void Tile::CalcNormal() {
@@ -80,7 +78,7 @@ void Tile::SetHeight(int x, int z, float height) {
   yspec_ = true;
 }
 
-void QuadTree::SplitPitch(Node* node) {
+void Tile::QuadTree::SplitPitch(Node* node) {
   DCHECK_GT(tail_, 0);
   DCHECK_GE(node->level, 0);
   Node* nodes = nodes_.get();
@@ -127,7 +125,8 @@ void QuadTree::SplitPitch(Node* node) {
   n4.splitted = false;
 }
 
-QuadTree::Splitable::SplitRes FrustrumSplit::Split(const QuadTree::Node& node) {
+Tile::QuadTree::Splitable::SplitRes FrustrumSplit::Split(
+    const Tile::QuadTree::Node& node) {
   const Vector3& minpos = tile_->vertex(node.pitch.left, node.pitch.top);
   const Vector3& maxpos = tile_->vertex(node.pitch.right,node.pitch.bottom);
 
@@ -149,8 +148,8 @@ QuadTree::Splitable::SplitRes FrustrumSplit::Split(const QuadTree::Node& node) {
   }
 }
 
-void QuadTree::Split(int minlevel, Splitable* splitable,
-                     std::vector<Tile::Pitch>* final) {
+void Tile::QuadTree::Split(int minlevel, Splitable* splitable,
+                           std::vector<Tile::Pitch>* final) {
   DCHECK_GE(minlevel, 0);
   InitNode();
   int cur = 0;
@@ -191,5 +190,4 @@ int32* InitPitchIndices(int level, const Tile::Pitch& pitch, int kGridLine,
   }
   return cur;
 }
-}  // namespace azer
 }  // namespace util

@@ -13,8 +13,6 @@
 namespace azer {
 
 class Frustrum;
-
-namespace util {
 class Tile {
  public:
   /**
@@ -66,6 +64,46 @@ class Tile {
   float z_range() const { return maxz() - minz();}
 
   int level() const { return kLevel_;}
+
+  class QuadTree {
+   public:
+    struct Node {
+      Tile::Pitch pitch;
+      int children[4];
+      int level;
+      bool splitted;
+      Node(): level(-1), splitted(false) {}
+      int midx() const { return std::pow(2.0, level - 1) + pitch.left;}
+      int midy() const { return std::pow(2.0, level - 1) + pitch.top;}
+    };
+
+    explicit QuadTree(int level)
+        : tail_(-1)
+        , kLevel(level)
+        , kGridLine(std::pow(2.0, level) + 1) {
+      int max_cell = (int)std::pow(4.0, level) / 3;
+      nodes_.reset(new Node[max_cell]);
+    }
+
+    class Splitable {
+     public:
+      enum SplitRes {
+        kSplit,
+        kKeep,
+        kDrop,
+      };
+      virtual SplitRes Split(const Node& node) = 0;
+    };
+    void Split(int minlevel, Splitable* splitable, std::vector<Tile::Pitch>* nodes);
+   private:
+    void InitNode();
+    void SplitPitch(Node* node);
+    int tail_;
+    std::unique_ptr<Node[]> nodes_;
+    const int kLevel;
+    const int kGridLine;
+    DISALLOW_COPY_AND_ASSIGN(QuadTree);
+  };
  private:
   void InitVertex();
   void InitIndices();
@@ -82,58 +120,18 @@ class Tile {
 int32* InitPitchIndices(int level, const Tile::Pitch& pitch, int kGridLine,
                         int32* indices);
 
-class QuadTree {
- public:
-  struct Node {
-    Tile::Pitch pitch;
-    int children[4];
-    int level;
-    bool splitted;
-    Node(): level(-1), splitted(false) {}
-    int midx() const { return std::pow(2.0, level - 1) + pitch.left;}
-    int midy() const { return std::pow(2.0, level - 1) + pitch.top;}
-  };
-
-  explicit QuadTree(int level)
-      : tail_(-1)
-      , kLevel(level)
-      , kGridLine(std::pow(2.0, level) + 1) {
-    int max_cell = (int)std::pow(4.0, level) / 3;
-    nodes_.reset(new Node[max_cell]);
-  }
-
-  class Splitable {
-   public:
-    enum SplitRes {
-      kSplit,
-      kKeep,
-      kDrop,
-    };
-    virtual SplitRes Split(const Node& node) = 0;
-  };
-  void Split(int minlevel, Splitable* splitable, std::vector<Tile::Pitch>* nodes);
- private:
-  void InitNode();
-  void SplitPitch(Node* node);
-  int tail_;
-  std::unique_ptr<Node[]> nodes_;
-  const int kLevel;
-  const int kGridLine;
-  DISALLOW_COPY_AND_ASSIGN(QuadTree);
-};
-
-class FrustrumSplit : public QuadTree::Splitable {
+class FrustrumSplit : public Tile::QuadTree::Splitable {
  public:
   FrustrumSplit(const Tile* tile, const Frustrum* frustrum)
     : tile_(tile), frustrum_(frustrum) {}
-  virtual SplitRes Split(const QuadTree::Node& node) OVERRIDE;
+  virtual SplitRes Split(const Tile::QuadTree::Node& node) OVERRIDE;
  private:
   const Tile* tile_;
   const Frustrum* frustrum_;
   DISALLOW_COPY_AND_ASSIGN(FrustrumSplit);
 };
 
-inline void QuadTree::InitNode() {
+inline void Tile::QuadTree::InitNode() {
   tail_ = 1;
   Node& n = (nodes_.get())[0];
   n.splitted = false;
@@ -186,6 +184,4 @@ inline azer::Vector3& Tile::vertex(int x, int z) {
 inline const azer::Vector3& Tile::vertex(int x, int z) const {
   return vertices_[z * kGridLine + x];
 }
-
-}  // namespace util
 }  // namespace azer
