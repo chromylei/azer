@@ -30,8 +30,8 @@ void Tile::InitVertex() {
   for (int i = 0; i < kGridLine; ++i) {
     for (int j = 0; j < kGridLine; ++j) {
       int idx = i * kGridLine + j;
-      float x = (float)j - kGridLine / 2.0f;
-      float z = (float)i - kGridLine / 2.0f;
+      float x = ((float)j - kGridLine / 2.0f) * kCellWidth;
+      float z = ((float)i - kGridLine / 2.0f) * kCellWidth;
       vertices_.push_back(azer::vec3(x, 0.0f, z));
       if (x > max_x_) max_x_ = x;
       if (x < min_x_) min_x_ = x;

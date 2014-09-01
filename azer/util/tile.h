@@ -19,9 +19,10 @@ class Tile {
    * tile 的 grid line 个数的计算公式是 2 ^ level + 1
    * 采用这种方法的好处是可以非常容易的计算中点位置 2 ^ (level - 1) + 1
    */
-  Tile(const int level = 8)
+  Tile(const int level = 8, float width = 1.0f)
       : kGridLine(std::pow(2.0f, level) + 1)
-      , kLevel_(level) {
+      , kLevel_(level)
+      , kCellWidth(width) {
   }
 
   struct Pitch {
@@ -31,6 +32,7 @@ class Tile {
     int bottom;
 
     Pitch(): left(-1), right(-1), top(-1), bottom(-1) {}
+    Pitch(int l, int t, int r, int b): left(l), right(r), top(t), bottom(b) {}
     Pitch(const Pitch& pitch) {*this = pitch; }
     Pitch& operator = (const Pitch& pitch);
   };
@@ -112,6 +114,7 @@ class Tile {
   std::vector<int32> indices_;
   const int kGridLine;
   const int kLevel_;
+  const float kCellWidth;
   float min_x_, max_x_, min_y_, max_y_, min_z_, max_z_;
   bool yspec_;
   DISALLOW_COPY_AND_ASSIGN(Tile);
