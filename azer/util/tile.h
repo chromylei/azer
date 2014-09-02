@@ -44,6 +44,10 @@ class Tile {
 
   int32* InitPitchIndices(int level, const Tile::Pitch& pitch, int32* indices);
 
+  /**
+   * 注意： 以下三个函数， x, z 是以 grid line 为坐标，而非实际的 3D 世界坐标
+   * 3D 世界坐标与 kCellWidth 相关
+   */
   void SetHeight(int x, int z, float height);
   azer::Vector3& vertex(int x, int z);
   const azer::Vector3& vertex(int x, int z) const;
