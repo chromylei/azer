@@ -20,7 +20,7 @@ class Tile {
    * 采用这种方法的好处是可以非常容易的计算中点位置 2 ^ (level - 1) + 1
    */
   Tile(const int level = 8, float width = 1.0f)
-      : kGridLine(std::pow(2.0f, level) + 1)
+      : kGridLine(1 << (level + 1))
       , kLevel_(level)
       , kCellWidth(width) {
   }
@@ -75,14 +75,14 @@ class Tile {
       int level;
       bool splitted;
       Node(): level(-1), splitted(false) {}
-      int midx() const { return std::pow(2.0, level - 1) + pitch.left;}
-      int midy() const { return std::pow(2.0, level - 1) + pitch.top;}
+      int midx() const { return (1 << level) + pitch.left;}
+      int midy() const { return (1 << level) + pitch.top;}
     };
 
     explicit QuadTree(int level)
         : tail_(-1)
         , kLevel(level)
-        , kGridLine(std::pow(2.0, level) + 1) {
+        , kGridLine((1 << (level + 1)) + 1) {
       int max_cell = (int)std::pow(4.0, level) / 3;
       nodes_.reset(new Node[max_cell]);
     }
@@ -96,6 +96,7 @@ class Tile {
       };
       virtual SplitRes Split(const Node& node) = 0;
     };
+
     void Split(int minlevel, Splitable* splitable, std::vector<Tile::Pitch>* nodes);
    private:
     void InitNode();

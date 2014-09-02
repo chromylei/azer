@@ -174,7 +174,7 @@ void Tile::QuadTree::Split(int minlevel, Splitable* splitable,
 
 int32* InitPitchIndices(int level, const Tile::Pitch& pitch, int kGridLine,
                         int32* indices) {
-  const int step = std::pow(2.0f, level);
+  const int step = 1 << level;
   int32* cur = indices;
   for (int i = pitch.top; i < pitch.bottom; i += step) {
     for (int j = pitch.left; j < pitch.right; j += step) {
