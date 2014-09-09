@@ -20,7 +20,7 @@ class Tile {
    * 采用这种方法的好处是可以非常容易的计算中点位置 2 ^ (level - 1) + 1
    */
   Tile(const int level = 8, float width = 1.0f)
-      : kGridLine(1 << (level + 1))
+      : kGridLine((1 << level) + 1)
       , kLevel_(level)
       , kCellWidth(width) {
   }

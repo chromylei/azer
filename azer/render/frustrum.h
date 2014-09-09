@@ -39,6 +39,17 @@ class AZER_EXPORT Frustrum {
     kBottomPlane,
   };
 
+  enum CheckVisibleOption {
+    kCheckNearPlane      = 0x00000001,
+    kCheckFarPlane       = 0x00000002,
+    kCheckLeftPlane      = 0x00000004,
+    kCheckRightPlane     = 0x00000008,
+    kCheckTopPlane       = 0x00000010,
+    kCheckBottomPlane    = 0x00000020,
+    kCheckWithoutHeight  = 0x0000000F,
+    kCheckAll            = 0x0000003F,
+  };
+  VisibleState IsVisible(const Vector3& point, CheckVisibleOption opt) const;
   VisibleState IsVisible(const Vector3& point) const;
   VisibleState IsVisible(const Vector3& center, const Vector3& halfsize) const;
 
@@ -83,4 +94,7 @@ inline void Frustrum::GenProjMatrix() {
   projection_ = PerspectiveRHD3D(fovY_, aspect_, near_, far_);
 }
 
+inline VisibleState Frustrum::IsVisible(const Vector3& point) const {
+  return IsVisible(point, kCheckAll);
+}
 }  // namespace azer
