@@ -1,4 +1,15 @@
 
+static_library("azer_devil_util") {
+  sources = [
+    "util/ilimage_wrapper.cc",
+    "util/ilimage_wrapper.h",
+  ]
+  deps = [
+    "//third_party/devil:devil",
+    "//third_party/devil:devilu",
+  ]
+}
+
 shared_library("render") {
   sources = [
     "../animation/bone.cc",
@@ -73,6 +84,8 @@ shared_library("render") {
     "util/render_system_loader.h",
     "util/shader_array.cc",
     "util/shader_array.h",
+    "util/image.cc",
+    "util/image.h",
     "win/window_host.cc",
     "win/window_host.h",
     "win/window_host_win.cc",
@@ -84,6 +97,7 @@ shared_library("render") {
     "//azer/math:math",
     "//ui/gfx:gfx",
     "//base:base",
+    ":azer_devil_util",
   ]
 
   defines = ["BUILD_AZER_RENDER"]

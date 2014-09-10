@@ -197,18 +197,6 @@ Texture* D3D11RenderSystem::CreateTexture(const Texture::Options& opt) {
   return new D3D11Texture2D(opt, this);
 }
 
-Texture* D3D11RenderSystem::CreateTextureFromFile(const Texture::Type type,
-                                                  const ::base::FilePath& path) {
-  Texture::Options opt;
-  opt.type = type;
-  std::unique_ptr<D3D11Texture2D> tex(new D3D11Texture2D(opt, this));
-  if (tex->LoadFromFile(path)) {
-    return tex.release();
-  } else {
-    return NULL;
-  }
-}
-
 /*
 RenderTarget* D3D11RenderSystem::CreateRenderTarget(const Texture::Options& opt) {
   std::unique_ptr<D3D11RenderTarget> target(new D3D11RenderTarget(opt, false, this));

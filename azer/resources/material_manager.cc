@@ -2,6 +2,8 @@
 
 #include "azer/resources/resource_manager.h"
 #include "azer/resources/json_util.h"
+#include "azer/base/image.h"
+#include "azer/render/util/image.h"
 #include "base/json/json_reader.h"
 
 namespace azer {
@@ -32,7 +34,10 @@ TexturePtr MaterialManager::LoadTexture(const ResFilePath& path, RenderSystem* r
   CHECK(rs != NULL);
   ::base::FilePath abso_path;
   if (res_mgr_->GetAbsoluteFilePath(path, &abso_path)) {
-    return TexturePtr(rs->CreateTextureFromFile(azer::Texture::k2D, abso_path));
+    azer::Texture::Options texopt;
+    texopt.target = azer::Texture::kShaderResource;
+    azer::ImagePtr imgptr(azer::LoadImageFromFile(abso_path));
+    return TexturePtr(rs->CreateTexture(texopt, imgptr.get()));
   }
   LOG(ERROR) << "No such filepath " << path.value() << " for texture";
   return NULL;

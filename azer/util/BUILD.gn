@@ -1,20 +1,8 @@
 import("//build/templates/afx.gni")
 
-static_library("azer_devil_util") {
-  sources = [
-    "ilimage_wrapper.cc",
-    "ilimage_wrapper.h",
-  ]
-  deps = [
-    "//third_party/devil:devil",
-    "//third_party/devil:devilu",
-  ]
-}
 
 static_library("azer_util") {
   sources = [
-    "image.cc",
-    "image.h",
     "tile.cc",
     "tile.h",
     "util.h",
@@ -23,7 +11,6 @@ static_library("azer_util") {
     "//azer/render:render"
     "//azer/math:math"
     "//ui/gfx:gfx"
-    ":azer_devil_util",
   ]
 }
 

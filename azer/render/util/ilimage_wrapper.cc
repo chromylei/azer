@@ -1,4 +1,4 @@
-#include "azer/util/ilimage_wrapper.h"
+#include "azer/render/util/ilimage_wrapper.h"
 
 #include "base/file_util.h"
 #include "base/files/file_path.h"
@@ -10,7 +10,6 @@
 #include "IL/ilu.h"
 
 namespace azer {
-namespace util {
 namespace detail {
 ilImageWrapper::~ilImageWrapper() {
   if (image_id_ != (uint32)-1) {
@@ -195,5 +194,4 @@ void ilImageWrapper::CopyToImage(azer::Image* image) {
   }
 }
 }  // namespace detail
-}  // namespace util
 }  // namespace azer

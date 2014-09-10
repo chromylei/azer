@@ -6,7 +6,6 @@
 #include "azer/render/render_system_enum.h"
 
 namespace azer {
-namespace util {
 namespace detail {
 class ilImageWrapper {
  public:
@@ -42,5 +41,4 @@ class ilImageWrapper {
 };
 
 }  // namespace detail
-}  // namespace util
 }  // namespace azer
