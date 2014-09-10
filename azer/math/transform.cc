@@ -77,4 +77,26 @@ Matrix4 LookAtLH(const Vector3& eye, const Vector3& lookat, const Vector3& up) {
   mat[2][3] = -camera_z.dot(eye);
   return mat;
 }
+
+#define SQR(x) ((x) * (x))
+
+Matrix4 MirrorTrans(const Plane& plane) {
+  // reference http://en.wikipedia.org/wiki/Transformation_matrix
+  Matrix4 mat = Matrix4::kIdentity;
+  mat[0][0] = 1 - 2 * SQR(plane.normal().x);
+  mat[0][1] = -2 * plane.normal().x * plane.normal().y;
+  mat[0][2] = -2 * plane.normal().x * plane.normal().z;
+  mat[0][3] = -2 * plane.normal().x * plane.d();
+
+  mat[1][0] = -2 * plane.normal().x * plane.normal().y;
+  mat[1][1] = 1 - 2 * SQR(plane.normal().y);
+  mat[1][2] = -2 * plane.normal().y * plane.normal().z;
+  mat[1][3] = -2 * plane.normal().y * plane.d();
+
+  mat[2][0] = -2 * plane.normal().x * plane.normal().z;
+  mat[2][1] = -2 * plane.normal().y * plane.normal().z;
+  mat[2][2] = 1 - 2 * SQR(plane.normal().z);
+  mat[2][3] = -2 * plane.normal().z * plane.d();
+  return mat;
+}
 }  // namespace azer

@@ -105,4 +105,6 @@ inline Matrix4 LookAtRH(const Vector3& eye, const Vector3& lookat,
   Vector3 camera_z = (eye - lookat).NormalizeCopy();
   return LookDirRH(eye, -camera_z, up);
 }
+
+Matrix4 MirrorTrans(const Plane& plane);
 }  // namespace azer
