@@ -19,7 +19,9 @@ class Plane {
 
   Plane& operator = (const Plane& plane);
   Vector3& normal() { return normal_;}
+  const Vector3& normal() const { return normal_;}
   float& d() { return d_;}
+  float d() const { return d_;}
 
   Plane& Normalize();
 
