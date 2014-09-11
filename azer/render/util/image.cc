@@ -37,4 +37,11 @@ azer::ImagePtr LoadImageFromFile(const ::base::FilePath& path) {
   ilimg.CopyToImage(ptr.get());
   return ptr;
 }
+
+Texture* CreateShaderTexture(const ::base::FilePath& path, azer::RenderSystem* rs) {
+  Texture::Options texopt;
+  texopt.target = Texture::kShaderResource;
+  ImagePtr imgptr(LoadImageFromFile(path));
+  return rs->CreateTexture(texopt, imgptr.get());
+}
 }  // namespace azer
