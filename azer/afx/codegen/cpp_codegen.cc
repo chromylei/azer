@@ -221,7 +221,8 @@ std::string CppCodeGen::GenVertexStruct(const TechniqueParser::Technique& tech) 
     ss << "    " << UniformType(struct_field->GetType()) << " "
        << struct_field->fieldname() << ";\n";
   }
-  ss << "    Vertex(";
+  ss << "     Vertex(){}\n"
+     << "    Vertex(";
   int cnt = 0;
   for (auto iter = decl->fields().begin(); iter != decl->fields().end();
        ++iter, ++cnt) {
