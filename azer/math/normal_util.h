@@ -11,6 +11,9 @@ Vector3 CalcTangent(const Vector3& p1, const Vector2& tex1,
                     const Vector3& p2, const Vector2& tex2,
                     const Vector3& p3, const Vector2& tex3);
 
+/**
+ * 此函数几通常用作计算 bumpmap TBN 当中的 tb
+ */
 void CalcTangentAndBinormal(const Vector3& p1, const Vector2& tex1,
                             const Vector3& p2, const Vector2& tex2,
                             const Vector3& p3, const Vector2& tex3,
