@@ -31,7 +31,7 @@ class D3D11Overlay : public Overlay {
   virtual ~D3D11Overlay() {}
   virtual OverlayEffect* CreateDefaultEffect();
  protected:
-
+  bool Init(azer::RenderSystem* rs);
   D3D11RenderSystem* render_system_;
   friend class D3D11RenderSystem;
   DISALLOW_COPY_AND_ASSIGN(D3D11Overlay);

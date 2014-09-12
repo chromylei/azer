@@ -28,7 +28,11 @@ typedef std::shared_ptr<OverlayEffect> OverlayEffectPtr;
 
 class AZER_EXPORT Overlay {
  public:
-  Overlay(const gfx::RectF& rect) : rect_(rect) {}
+  /**
+   * overlay 的坐标与 3D 坐标系一致
+   * 可以将它认为是 view volumn 的切面
+   */
+  explicit Overlay(const gfx::RectF& rect) : rect_(rect) {}
   virtual ~Overlay() {}
   virtual void Render(Renderer* rs);
 
@@ -51,7 +55,7 @@ class AZER_EXPORT Overlay {
     Vertex() {}
   };
 
-  bool Init(RenderSystem* rs);
+  bool InitVertex(RenderSystem* rs);
 
   gfx::RectF rect_;
   VertexBufferPtr vb_ptr_;

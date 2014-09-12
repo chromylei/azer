@@ -18,7 +18,7 @@ const azer::VertexDesc::Desc Overlay::kVertexDesc[] = {
 
 const int Overlay::kVertexDescNum = arraysize(Overlay::kVertexDesc);
 
-bool Overlay::Init(RenderSystem* rs) {
+bool Overlay::InitVertex(RenderSystem* rs) {
   // create vertex buffer
   vertex_desc_ptr_.reset(new VertexDesc(kVertexDesc, kVertexDescNum));
   VertexDataPtr data(new VertexData(vertex_desc_ptr_, kVertexNum));

@@ -58,4 +58,12 @@ OverlayEffect* D3D11Overlay::CreateDefaultEffect() {
     return NULL;
   }
 }
+
+bool D3D11Overlay::Init(azer::RenderSystem* rs) {
+  if (!Overlay::InitVertex(rs)) {
+    return false;
+  }
+  SetEffect(OverlayEffectPtr(CreateDefaultEffect()));
+  return true;
+}
 }  // namespace azer
