@@ -41,6 +41,13 @@ class AZER_EXPORT Overlay {
   EffectPtr& GetEffect() { return effect_ptr_;}
   void SetEffect(EffectPtr& ptr) { effect_ptr_ = ptr;}
 
+  /**
+   * Overlay 的顶点格式
+   * struct Vertex {
+   *   vec4 position;
+   *   vec3 texcoord;
+   * };
+   */
   VertexDescPtr GetVertexDesc() { return vertex_desc_ptr_;}
 
   static const int kVertexDescNum;
