@@ -5,6 +5,7 @@
 #include "base/logging.h"
 #include "azer/render/util/ilimage_wrapper.h"
 #include "azer/base/image.h"
+#include "azer/base/string.h"
 
 namespace azer {
 
@@ -42,6 +43,11 @@ Texture* CreateShaderTexture(const ::base::FilePath& path, azer::RenderSystem* r
   Texture::Options texopt;
   texopt.target = Texture::kShaderResource;
   ImagePtr imgptr(LoadImageFromFile(path));
-  return rs->CreateTexture(texopt, imgptr.get());
+  if (imgptr.get()) {
+    return rs->CreateTexture(texopt, imgptr.get());
+  } else {
+    LOG(ERROR) << "failed to load texture: \"" << path.value() << "\"";
+    return NULL;
+  }
 }
 }  // namespace azer
