@@ -63,7 +63,7 @@ bool D3D11Overlay::Init(azer::RenderSystem* rs) {
   if (!Overlay::InitVertex(rs)) {
     return false;
   }
-  SetEffect(OverlayEffectPtr(CreateDefaultEffect()));
+  SetEffect(EffectPtr(CreateDefaultEffect()));
   return true;
 }
 }  // namespace azer

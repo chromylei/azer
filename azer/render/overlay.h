@@ -38,8 +38,8 @@ class AZER_EXPORT Overlay {
 
   virtual OverlayEffect* CreateDefaultEffect() = 0;
 
-  OverlayEffectPtr GetEffect() { return effect_ptr_;}
-  void SetEffect(OverlayEffectPtr ptr) { effect_ptr_ = ptr;}
+  EffectPtr& GetEffect() { return effect_ptr_;}
+  void SetEffect(EffectPtr& ptr) { effect_ptr_ = ptr;}
 
   VertexDescPtr GetVertexDesc() { return vertex_desc_ptr_;}
 
@@ -60,7 +60,7 @@ class AZER_EXPORT Overlay {
   gfx::RectF rect_;
   VertexBufferPtr vb_ptr_;
   VertexDescPtr vertex_desc_ptr_;
-  OverlayEffectPtr effect_ptr_;
+  EffectPtr effect_ptr_;
   static const int kVertexNum = 6;
   DISALLOW_COPY_AND_ASSIGN(Overlay);
 };

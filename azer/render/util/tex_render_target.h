@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "azer/render/render_system.h"
 #include "azer/render/renderer.h"
 #include "azer/base/render_export.h"
@@ -51,4 +53,5 @@ inline void TexRenderTarget::Reset(azer::Renderer* renderer) {
 }
 
 
+typedef std::shared_ptr<TexRenderTarget> TexRenderTargetPtr;
 }  // namespace azer
