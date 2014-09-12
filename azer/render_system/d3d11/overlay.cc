@@ -10,10 +10,10 @@ const char* D3D11OverlayEffect::kVertexShaderProg = ""
     "  float4 Pos : SV_POSITION;                         \n"
     "  float2 texcoord : TEXCOORD;                       \n"
     "};                                                  \n"
-    "VS_OUTPUT vs_main(float3 inpos : POSITION,          \n"
+    "VS_OUTPUT vs_main(float4 inpos : POSITION,          \n"
     "                  float2 tex : TEXCOORD) {          \n"
     "  VS_OUTPUT output;                                 \n"
-    "  output.Pos = float4(inpos, 1.0f);                 \n"
+    "  output.Pos = inpos;                               \n"
     "  inpos.z = 0.0f;                                   \n"
     "  output.texcoord = tex;                            \n"
     "  return output;                                    \n"
@@ -63,7 +63,6 @@ bool D3D11Overlay::Init(azer::RenderSystem* rs) {
   if (!Overlay::InitVertex(rs)) {
     return false;
   }
-  SetEffect(EffectPtr(CreateDefaultEffect()));
   return true;
 }
 }  // namespace azer

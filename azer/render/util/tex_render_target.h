@@ -22,7 +22,7 @@ class TexRenderTarget {
   }
 
   void Init(azer::RenderSystem* rs);
-  void BeginRender(const azer::Vector4& color);
+  azer::Renderer* Begin(const azer::Vector4& color);
   void Reset(azer::Renderer* renderer);
 
   azer::TexturePtr GetRTTex() {
@@ -42,10 +42,13 @@ inline void TexRenderTarget::Init(azer::RenderSystem* rs) {
   renderer_->EnableDepthTest(true);
 }
 
-inline void TexRenderTarget::BeginRender(const azer::Vector4& color) {
+inline azer::Renderer* TexRenderTarget::Begin(const azer::Vector4& color) {
   renderer_->Use();
+  renderer_->SetViewport(Renderer::Viewport(0, 0, options_.width, options_.height));
   renderer_->Clear(color);
   renderer_->ClearDepthAndStencil();
+  
+  return renderer_.get();
 }
 
 inline void TexRenderTarget::Reset(azer::Renderer* renderer) {
