@@ -355,11 +355,9 @@ bool FuncProtoNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
     DCHECK((*iter)->IsParamNode());
     ParamNode* param = (*iter)->ToParamNode();
     ss << DumpFullType(param->GetType()) << " " << param->paramname();
-    /*
-    if (field->GetType()->IsTexture()) {
-      ss << ", SamplerState " << HLSLUniformTextureSamplerFullName(field);
+    if (param->GetType()->IsTexture()) {
+      ss << ", SamplerState " << HLSLUniformTextureSamplerFullName(param);
     }
-    */
   }
 
   *code = ss.str();

@@ -311,13 +311,15 @@ TEST(HLSLCodeGenerator, Texture) {
 
 TEST(HLSLCodeGenerator, TextureAsParam) {
   const std::string expect =
-      "Texture2D texdiffuse;\n"
-      "SamplerState texdiffuse__d3d_sampler;\n"
-      "void psmain() {texdiffuse.Sample(texdiffuse__d3d_sampler, float2(1, 1));}"
+      "Texture2D tex1;\n"
+      "SamplerState tex1__d3d_sampler;\n"
+      "float4 sample(Texture2D tex, SamplerState tex__d3d_sampler, float2 coord) {"
+      "return tex.Sample(tex__d3d_sampler, coord);}"
+      "float4 psmain() {return sample(tex1, float2(1.00000f, 1.00000f));}"
       ;
   const std::string str =
       "uniform Texture2D tex1;\n"
-      "vec4 sample(Texture2D tex, vec2 coord) {return sample2D(tex1, coord);}\n"
+      "vec4 sample(Texture2D tex, vec2 coord) {return sample2D(tex, coord);}\n"
       "vec4 psmain() {\n"
       "  return sample(tex1, vec2(1.0f, 1.0f));\n"
       "}\n"

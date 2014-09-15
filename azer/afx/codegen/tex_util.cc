@@ -76,6 +76,8 @@ std::string GenReferredTextureVarName(ASTNode* node) {
     return node->ToRefSymbolNode()->symbolname();
   } else if (node->IsSymbolNode()) {
     return node->ToSymbolNode()->symbolname();
+  } else if (node->IsParamNode()) {
+    return node->ToParamNode()->paramname();
   } else if (node->IsBinaryOpNode()) {
     TextureNameGenerator gen;
     BinaryOpNode* binary = node->ToBinaryOpNode();
@@ -399,6 +401,9 @@ bool IsParameterTextureNode(ASTNode* node) {
     }
   } else if (node->IsFieldNode()) {
     TypedNode* typed = node->ToFieldNode()->GetTypedNode();
+    return typed->GetType()->IsTexture();
+  } else if (node->IsParamNode()) {
+    TypedNode* typed = node->ToParamNode()->GetTypedNode();
     return typed->GetType()->IsTexture();
   } else if (node->IsConstNode()) {
     return false;
