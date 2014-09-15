@@ -27,6 +27,12 @@ namespace {
 bool NeedBraceForOp(ASTNode* node);
 std::string MapBuiltInFunc(const std::string& name);
 std::string DumpParamList(FuncCallNode* func, int start);
+
+/**
+ * 带有 sampler 检查
+ * 如果遇到 texture 类型，他的 sampler 也将作为参数 dump 出来
+ */
+std::string DumpParamListWithTexSampler(FuncCallNode* func, int start);
 }  // namespace
 
 // class BinaryOpNodeHLSLCodeGen
@@ -288,7 +294,7 @@ bool FuncCallNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
     }
   } else {
     ss << PackagePrefix(func->GetContext()) << func->funcname()
-       << "(" << DumpParamList(func, 0) << ")";
+       << "(" << DumpParamListWithTexSampler(func, 0) << ")";
   }
   *code = ss.str();
   return false;
@@ -714,6 +720,28 @@ bool NeedBraceForOp(ASTNode* node) {
 
 std::string MapBuiltInFunc(const std::string& name) {
   return name;
+}
+
+std::string DumpParamListWithTexSampler(FuncCallNode* func, int start) {
+  HLSLCodeGeneratorFactory factory;
+  SnippetCodeGenerator codegen(&factory);
+  std::stringstream ss;
+  size_t num = func->GetParams().size();
+  for (auto i = start; i < num; ++i) {
+    ASTNode* node = func->GetParams()[i];
+    if (i != start) {
+      ss << ", ";
+    }
+
+    if (IsNodeTypeTexture(node)) {
+      ss << HLSLRefferedTextureFullName(node);
+      ss << ", " << HLSLUniformTextureSamplerFullName(node);
+    } else {
+      codegen.GenCode(node);
+      ss << codegen.GetCode();
+    }
+  }
+  return ss.str();
 }
 
 std::string DumpParamList(FuncCallNode* func, int start) {

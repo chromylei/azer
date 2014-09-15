@@ -20,10 +20,10 @@ std::string FormatCode(const std::string& code) {
       cur += 2;
       depth--;
     } else if (StartsWithASCII(cur, ";\n", true)) {
-	  out << ";\n";
+      out << ";\n";
       prev_new_line = true;
       cur += 2;
-	} else if (*cur == '}') {
+    } else if (*cur == '}') {
       out << "}\n";
       prev_new_line = true;
       cur++;
