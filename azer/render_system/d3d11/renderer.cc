@@ -178,13 +178,13 @@ void D3D11Renderer::ResetShader(RenderPipelineStage stage) {
 }
 
 void D3D11Renderer::Draw(VertexBuffer* vvb, PrimitiveTopology primitive,
-                               int vertices_num, int32 start_vertex) {
+                         int vertices_num, int32 start_vertex) {
   const int num_of_vertices =
-      (vertices_num != -1) ? vertices_num : vvb->data()->vertex_num();
+      (vertices_num != -1) ? vertices_num : vvb->vertex_num();
   CHECK(num_of_vertices > 0);
   D3D11VertexBuffer* vb = (D3D11VertexBuffer*)vvb;
   DCHECK(vb->Initialized()) << "VertexBuffer not initialized.";
-  UINT stride = vvb->desc()->stride();
+  UINT stride = vvb->element_size();
   UINT offset = 0;
   d3d_context_->IASetVertexBuffers(0, 1, &vb->buffer_, &stride, &offset);
   d3d_context_->IASetPrimitiveTopology(
@@ -197,7 +197,7 @@ void D3D11Renderer::DrawIndex(VertexBuffer* vvb, IndicesBuffer* vib,
                               int32 first_indices, int32 index_base) {
   const int num_of_indices =
       (indices_num != -1) ? indices_num : vib->data()->num();
-  UINT stride = vvb->desc()->stride();
+  UINT stride = vvb->element_size();
   UINT offset = 0;
   D3D11VertexBuffer* vb = (D3D11VertexBuffer*)vvb;
   DCHECK(NULL != vb && vb->Initialized()) << "VertexBuffer not initialized.";
@@ -218,8 +218,8 @@ void D3D11Renderer::DrawInstanced(int32 instance_num, VertexBuffer* vvb,
   D3D11VertexBuffer* vb = (D3D11VertexBuffer*)vvb;
   DCHECK(NULL != vb && vb->Initialized()) << "VertexBuffer not initialized.";
   const int num_of_vertices =
-      (vertices_num != -1) ? vertices_num : vb->data()->vertex_num();
-  UINT stride = vvb->desc()->stride();
+      (vertices_num != -1) ? vertices_num : vb->vertex_num();
+  UINT stride = vvb->element_size();
   UINT offset = 0;
   d3d_context_->IASetVertexBuffers(0, 1, &vb->buffer_, &stride, &offset);
   d3d_context_->IASetPrimitiveTopology(TranslatePrimitiveTopology(primitive));
@@ -235,7 +235,7 @@ void D3D11Renderer::DrawIndexInstanced(int32 instance_num, VertexBuffer* vvb,
                                        int32 instance_start_index) {
   const int num_of_indices =
       (indices_num != -1) ? indices_num : vib->data()->num();
-  UINT stride = vvb->desc()->stride();
+  UINT stride = vvb->element_size();
   UINT offset = 0;
   D3D11VertexBuffer* vb = (D3D11VertexBuffer*)vvb;
   DCHECK(NULL != vb && vb->Initialized()) << "VertexBuffer not initialized.";

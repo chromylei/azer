@@ -31,7 +31,7 @@ class D3D11RenderSystem : public RenderSystem {
   virtual Renderer* CreateDeferredRenderer(const Texture::Options& opt) OVERRIDE;
   virtual Blending* CreateBlending(const Blending::Desc& desc) OVERRIDE;
   virtual VertexBuffer* CreateVertexBuffer(const VertexBuffer::Options& opt,
-                                           VertexDataPtr) OVERRIDE;
+                                           VertexData*) OVERRIDE;
   virtual IndicesBuffer* CreateIndicesBuffer(const IndicesBuffer::Options& opt,
                                              IndicesDataPtr) OVERRIDE;
   virtual GpuConstantsTable* CreateGpuConstantsTable(

@@ -100,11 +100,11 @@ SubMeshPtr GeometryManager::LoadSubMesh(const ResFilePath& path, RenderSystem* r
 
   // create SubMesh
   Mesh::SubMeshPtr submesh_ptr(new Mesh::SubMesh);
-  VertexDataPtr vertex_data(new VertexData(desc_ptr, raw_mesh.head.vertex_num));
-  memcpy(vertex_data->pointer(), raw_mesh.vertices.get(),
+  VertexData vertex_data(desc_ptr, raw_mesh.head.vertex_num);
+  memcpy(vertex_data.pointer(), raw_mesh.vertices.get(),
          raw_mesh.head.vertex_num * raw_mesh.head.vertex_unit_size);
   submesh_ptr->vb_ptr.reset(rs->CreateVertexBuffer(
-      VertexBuffer::Options(), vertex_data));
+      VertexBuffer::Options(), &vertex_data));
 
   // create indices
   if (raw_mesh.indices.get() != NULL) {

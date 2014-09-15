@@ -71,7 +71,7 @@ void CoordinateGrid::Init() {
     vertex->position = Vector4(x, 0.0f, (float)kHeight / 2.0f, 1.0f);
     vertex++;
   }
-  vb_.reset(render_system_->CreateVertexBuffer(VertexBuffer::Options(), data_));
+  vb_.reset(render_system_->CreateVertexBuffer(VertexBuffer::Options(), data_.get()));
 }
 
 void CoordinateGrid::Render(Renderer* renderer) {

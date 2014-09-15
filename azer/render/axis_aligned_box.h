@@ -19,7 +19,6 @@ class AZER_EXPORT AxisAlignedBox : public BoundingVolumn {
   AxisAlignedBox(const Vector3& minimum, const Vector3& maximum);
   AxisAlignedBox(const AxisAlignedBox& box);
   static AxisAlignedBox CalcForVertexData(const VertexData& vdata);
-  static AxisAlignedBox CalcForMesh(const Mesh& mesh);
 
   AxisAlignedBox& operator = (const AxisAlignedBox& box);
 

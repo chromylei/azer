@@ -11,7 +11,8 @@
 
 namespace azer {
 
-bool D3D11VertexBuffer::Init() {
+bool D3D11VertexBuffer::Init(const VertexData* dataptr) {
+  DCHECK(element_size_ == -1 && buffer_size_ == -1 && vertex_num_ == -1);
   ID3D11Device* d3d_device = render_system_->GetDevice();
 
   // attention
@@ -25,15 +26,18 @@ bool D3D11VertexBuffer::Init() {
   vb_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
   vb_desc.CPUAccessFlags = TranslateCPUAccess(options_.cpu_access);
   vb_desc.MiscFlags = 0;
-  vb_desc.ByteWidth = data_ptr_->buffer_size();
+  vb_desc.ByteWidth = dataptr->buffer_size();
 
   D3D11_SUBRESOURCE_DATA d3d_vdata;
   ZeroMemory(&d3d_vdata, sizeof(d3d_vdata));
-  d3d_vdata.pSysMem = data_ptr_->pointer();
+  d3d_vdata.pSysMem = dataptr->pointer();
   HRESULT hr;
   hr = d3d_device->CreateBuffer(&vb_desc, &d3d_vdata, &buffer_);
   HRESULT_HANDLE(hr, ERROR, "D3D11: CreateVertexBuffer failed ");
 
+  element_size_ = dataptr->desc()->stride();
+  buffer_size_ = dataptr->buffer_size();
+  vertex_num_ = dataptr->vertex_num();
   return true;
 }
 

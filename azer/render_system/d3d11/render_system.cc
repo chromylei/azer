@@ -109,10 +109,10 @@ const StringType& D3D11RenderSystem::short_name() const {
 }
 
 VertexBuffer* D3D11RenderSystem::CreateVertexBuffer(
-    const VertexBuffer::Options& opt, VertexDataPtr dataptr) {
+    const VertexBuffer::Options& opt, VertexData* dataptr) {
   std::unique_ptr<D3D11VertexBuffer> vertex_buffer(
-      new D3D11VertexBuffer(opt, dataptr, this));
-  if (vertex_buffer->Init()) {
+      new D3D11VertexBuffer(opt, this));
+  if (vertex_buffer->Init(dataptr)) {
     return vertex_buffer.release();
   } else {
     return NULL;

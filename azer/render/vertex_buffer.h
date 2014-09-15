@@ -25,9 +25,12 @@ class AZER_EXPORT VertexBuffer : public HardwareBuffer {
     }
   };
 
-  VertexBuffer(const Options &opt, VertexDataPtr dataptr)
+  VertexBuffer(const Options &opt)
       : options_(opt)
-      , data_ptr_(dataptr){}
+      , element_size_(-1)
+      , buffer_size_(-1)
+      , vertex_num_(-1) {
+  }
 
   virtual ~VertexBuffer() {}
 
@@ -37,11 +40,14 @@ class AZER_EXPORT VertexBuffer : public HardwareBuffer {
   virtual HardwareBufferDataPtr map(MapType flags) = 0;
   virtual void unmap() = 0;
 
-  const VertexDescPtr& desc() const { return data_ptr_->desc();}
-  const VertexDataPtr& data() const { return data_ptr_;}
+  int32 vertex_num() const { return vertex_num_;}
+  int32 buffer_size() const { return vertex_num_;}
+  int32 element_size() const { return element_size_;}
  protected:
-  VertexDataPtr data_ptr_;
   const Options options_;
+  int32 element_size_;
+  int32 buffer_size_;
+  int32 vertex_num_;
   DISALLOW_COPY_AND_ASSIGN(VertexBuffer);
 };
 

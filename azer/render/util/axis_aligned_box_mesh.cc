@@ -51,8 +51,8 @@ void AABBMesh::Init(RenderSystem* rs) {
 
 void AABBMesh::InitVertexBuffer(RenderSystem* rs) {
   const int kVertexNum = 8;
-  VertexDataPtr data(new VertexData(effect_->GetVertexDesc(), kVertexNum));
-  Vector4* begin_vptr = (Vector4*)data->pointer();
+  VertexData data(effect_->GetVertexDesc(), kVertexNum);
+  Vector4* begin_vptr = (Vector4*)data.pointer();
   Vector4* vptr = begin_vptr;
   //
   *vptr++ = azer::Vector4(-0.5f,  0.5f,  0.5f, 1.0f);
@@ -64,7 +64,7 @@ void AABBMesh::InitVertexBuffer(RenderSystem* rs) {
   *vptr++ = azer::Vector4(-0.5f, -0.5f, -0.5f, 1.0f);
   *vptr++ = azer::Vector4( 0.5f, -0.5f, -0.5f, 1.0f);
   *vptr++ = azer::Vector4( 0.5f, -0.5f,  0.5f, 1.0f);
-  vb_.reset(rs->CreateVertexBuffer(azer::VertexBuffer::Options(), data));
+  vb_.reset(rs->CreateVertexBuffer(azer::VertexBuffer::Options(), &data));
 }
 
 void AABBMesh::InitIndicesBuffer(RenderSystem* rs) {

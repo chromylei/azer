@@ -46,7 +46,7 @@ class AZER_EXPORT RenderSystem {
    * Create Vertex Buffer
    */
   virtual VertexBuffer* CreateVertexBuffer(const VertexBuffer::Options& opt,
-                                           VertexDataPtr) = 0;
+                                           VertexData*) = 0;
   virtual IndicesBuffer* CreateIndicesBuffer(const IndicesBuffer::Options& opt,
                                              IndicesDataPtr) = 0;
   virtual GpuConstantsTable* CreateGpuConstantsTable(

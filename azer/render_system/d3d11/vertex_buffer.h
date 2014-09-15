@@ -12,7 +12,7 @@ class D3D11VertexBuffer : public VertexBuffer {
     SAFE_RELEASE(buffer_);
   }
   
-  bool Init();
+  bool Init(const VertexData* dataptr);
 
   /**
    * 对于 VertexBuffer 来说，它是不分行和列的， 仅仅知道大小
@@ -22,9 +22,8 @@ class D3D11VertexBuffer : public VertexBuffer {
 
   bool Initialized() const { return NULL != buffer_;}
  private:
-  D3D11VertexBuffer(const Options &opt, const VertexDataPtr& dataptr,
-                    D3D11RenderSystem* rs)
-      : VertexBuffer(opt, dataptr)
+  D3D11VertexBuffer(const Options &opt, D3D11RenderSystem* rs)
+      : VertexBuffer(opt)
       , locked_(false)
       , buffer_(NULL)
       , render_system_(rs) {

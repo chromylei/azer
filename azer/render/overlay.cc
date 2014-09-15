@@ -21,8 +21,8 @@ const int Overlay::kVertexDescNum = arraysize(Overlay::kVertexDesc);
 bool Overlay::InitVertex(RenderSystem* rs) {
   // create vertex buffer
   vertex_desc_ptr_.reset(new VertexDesc(kVertexDesc, kVertexDescNum));
-  VertexDataPtr data(new VertexData(vertex_desc_ptr_, kVertexNum));
-  Vertex* ptr = (Vertex*)data->pointer();
+  VertexData data(vertex_desc_ptr_, kVertexNum);
+  Vertex* ptr = (Vertex*)data.pointer();
   ptr->position = azer::Vector4(rect_.x(), rect_.bottom(), 0.0f, 1.0f);
   ptr->texcoord = azer::Vector2(0.0f, 0.0f);
   ptr++;
@@ -42,7 +42,7 @@ bool Overlay::InitVertex(RenderSystem* rs) {
   ptr->position = azer::Vector4(rect_.right(), rect_.y(), 0.0f, 1.0f);
   ptr->texcoord = azer::Vector2(1.0f, 1.0f);
 
-  vb_ptr_.reset(rs->CreateVertexBuffer(VertexBuffer::Options(), data));
+  vb_ptr_.reset(rs->CreateVertexBuffer(VertexBuffer::Options(), &data));
   if (!vb_ptr_.get()) {
     return false;
   }

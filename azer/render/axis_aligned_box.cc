@@ -50,6 +50,7 @@ AxisAlignedBox AxisAlignedBox::CalcForVertexData(
   return AxisAlignedBox(min_pos, max_pos);
 }
 
+/*
 AxisAlignedBox AxisAlignedBox::CalcForMesh(const Mesh& mesh) {
   azer::Vector4 min_pos(std::numeric_limits<float>::max(),
                         std::numeric_limits<float>::max(),
@@ -69,6 +70,7 @@ AxisAlignedBox AxisAlignedBox::CalcForMesh(const Mesh& mesh) {
 
   return ret;
 }
+*/
 
 AxisAlignedBox AxisAlignedBox::TransformCopy(const Matrix4& trans) {
   AxisAlignedBox box;
