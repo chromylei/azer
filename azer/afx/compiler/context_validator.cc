@@ -106,7 +106,7 @@ bool ContextValidator::LookupField(ASTNode* node, FieldNode* field) {
 }
 
 bool ContextValidator::LookupTypeDecl(SymbolNode* node) {
-  DCHECK_EQ(node->type(), ASTNode::kSymbolNode);
+  DCHECK(node->IsSymbolNode());
   if (!node->GetType()->IsStructure()) return true;
   if (node->GetType()->IsAnomyousStruct()) return true;
 
@@ -164,7 +164,7 @@ bool ContextValidator::LookupFunctionDecl(FuncCallNode* node) {
 }
 
 bool ContextValidator::AddSymbolToScoped(SymbolNode* node) {
-  DCHECK_EQ(node->type(), ASTNode::kSymbolNode);
+  DCHECK(node->IsSymbolNode());
   ScopedNode* scoped = GetScopedNode(node);
   ASTNode* decl = scoped->LookupSymbolLocally(node->symbolname());
   if (decl != NULL) {
@@ -234,6 +234,9 @@ bool ContextValidator::CheckRefTexture(RefSymbolNode* reftype) {
   SymbolNode* decl = reftype->GetDeclNode();
   if (decl->GetType()->IsTexture()) {
     if (decl->GetType()->storage_qualifier() & kUniform) {
+      return true;
+    } else if (decl->IsActParamNode()) {
+      // actural param of function
       return true;
     } else {
       std::stringstream ss;

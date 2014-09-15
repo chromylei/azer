@@ -120,8 +120,8 @@ extern char* yytext;
 %type<astnode.node> struct_specifier anonymous_specifier;
 
 // function
-%type<astnode.fieldnode> parameter_declaration parameter_declarator;
-%type<astnode.fieldnode> parameter_type_specifier;
+%type<astnode.node> parameter_declaration parameter_declarator;
+%type<astnode.node> parameter_type_specifier;
 %type<astnode.func_declare_node> function_header function_header_with_parameters;
 %type<astnode.func_declare_node> function_prototype;
 
@@ -722,18 +722,18 @@ function_definition
 
 parameter_declaration
 : type_qualifier parameter_declarator {
-  FieldNode* field = $2->ToFieldNode();
-  field->GetType()->SetStorageQualifier($1.storage_qualifier);
-  $$ = field;
+  ParamNode* param = $2->ToParamNode();
+  param->GetType()->SetStorageQualifier($1.storage_qualifier);
+  $$ = param;
 }
 | parameter_declarator {
   $$ = $1;
   }
 /// parameter without name
 | type_qualifier parameter_type_specifier {
-  FieldNode* field = $2->ToFieldNode();
-  field->GetType()->SetStorageQualifier($1.storage_qualifier);
-  $$ = field;
+  ParamNode* param = $2->ToParamNode();
+  param->GetType()->SetStorageQualifier($1.storage_qualifier);
+  $$ = param;
 }
 | parameter_type_specifier {
   $$ = $1;
@@ -746,9 +746,9 @@ parameter_declarator
   const SourceLoc& loc = $1->loc();
   DCHECK($1->IsTypedNode());
   TypedNode* typed = $1->ToTypedNode();
-  FieldNode* field = CreateFieldNode(*$2.identifier, typed, loc, parseContext);
+  ParamNode* param = CreateParamNode(*$2.identifier, typed, loc, parseContext);
 
-  $$ = field;
+  $$ = param;
   delete $2.identifier;
 }
 | type_specifier IDENTIFIER array_specifier {
@@ -758,8 +758,8 @@ parameter_declarator
   DCHECK($3->IsTypedNode());
   TypedNode* typednode = $3->ToTypedNode();
   typednode->SetType($1->ToTypedNode()->GetType());
-  FieldNode* field = CreateFieldNode(*$2.identifier, typednode, loc, parseContext);
-  $$ = field;
+  ParamNode* param = CreateParamNode(*$2.identifier, typednode, loc, parseContext);
+  $$ = param;
   delete $2.identifier;
 }
 ;
@@ -769,8 +769,8 @@ parameter_type_specifier
 : type_specifier {
   PARSER_TRACE << "parameter_type_specifier" << std::endl;
   DCHECK($1->IsTypedNode());
-  $$ = parseContext->Create(ASTNode::kFieldNode, $1->loc())->ToFieldNode();
-  $$->ToFieldNode()->SetTypedNode($1);
+  $$ = parseContext->Create(ASTNode::kParamNode, $1->loc())->ToParamNode();
+  $$->ToParamNode()->SetTypedNode($1);
 }
 ;
 

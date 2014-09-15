@@ -25,7 +25,7 @@ SymbolNode* CreateSymbolDecl(const std::string& identifier, TypedNode* typed,
                              ASTNode* initializer, DeclarationNode* node,
                              const SourceLoc& loc, ParseContext* context);
 // 根据函数体的参数创建 Symbol
-SymbolNode* CreateForFuncDefParams(FieldNode* field, ParseContext* context);
+ActParamNode* CreateForFuncDefParams(ParamNode* param, ParseContext* context);
 TypedNode* CreateTypedNode(TypePtr type, const SourceLoc& loc, ParseContext* ctx);
 TypedNode* CreateTypedNode(BasicType type, const SourceLoc& loc, ParseContext* ctx);
 TypedNode* CreateTypedNode(const std::string& name, const SourceLoc& loc,
@@ -37,6 +37,8 @@ TypedNode* CreateArraySpecifierTypedNode(ASTNode* node, const SourceLoc& loc,
                                          ParseContext* context);
 
 FieldNode* CreateFieldNode(const std::string& name, TypedNode* typed,
+                           const SourceLoc& loc, ParseContext* context);
+ParamNode* CreateParamNode(const std::string& name, TypedNode* typed,
                            const SourceLoc& loc, ParseContext* context);
 FuncProtoNode* CreateFuncProto(const std::string& name, TypedNode* rettype,
                                const SourceLoc& loc, ParseContext* context);

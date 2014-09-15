@@ -58,11 +58,12 @@ SymbolNode* CreateSymbolDecl(const std::string& identifier, TypedNode* typed,
   return symbol;
 }
 
-SymbolNode* CreateForFuncDefParams(FieldNode* field, ParseContext* context) {
-  SymbolNode* symbol = context->Create(ASTNode::kSymbolNode,
-                                       field->loc())->ToSymbolNode();
-  symbol->SetTypedNode(field->GetTypedNode());
-  symbol->SetSymbolName(field->fieldname());
+ActParamNode* CreateForFuncDefParams(ParamNode* param, ParseContext* context) {
+  ActParamNode* symbol = context->Create(ASTNode::kActParamNode,
+                                       param->loc())->ToActParamNode();
+  symbol->SetTypedNode(param->GetTypedNode());
+  symbol->SetSymbolName(param->paramname());
+  symbol->SetParam(param);
   return symbol;
 }
 
@@ -110,6 +111,14 @@ FieldNode* CreateFieldNode(const std::string& name, TypedNode* typed,
                            const SourceLoc& loc, ParseContext* context) {
   FieldNode* field = context->Create(ASTNode::kFieldNode, loc)->ToFieldNode();
   field->SetFieldName(name);
+  field->SetTypedNode(typed);
+  return field;
+}
+
+ParamNode* CreateParamNode(const std::string& name, TypedNode* typed,
+                           const SourceLoc& loc, ParseContext* context) {
+  ParamNode* field = context->Create(ASTNode::kParamNode, loc)->ToParamNode();
+  field->SetParamName(name);
   field->SetTypedNode(typed);
   return field;
 }

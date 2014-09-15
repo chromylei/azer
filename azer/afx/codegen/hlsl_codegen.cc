@@ -352,9 +352,9 @@ bool FuncProtoNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
     if (iter != func->GetParams().begin()) {
       ss << ", ";
     }
-    DCHECK((*iter)->IsFieldNode());
-    FieldNode* field = (*iter)->ToFieldNode();
-    ss << DumpFullType(field->GetType()) << " __" << field->fieldname();
+    DCHECK((*iter)->IsParamNode());
+    ParamNode* param = (*iter)->ToParamNode();
+    ss << DumpFullType(param->GetType()) << " " << param->paramname();
     /*
     if (field->GetType()->IsTexture()) {
       ss << ", SamplerState " << HLSLUniformTextureSamplerFullName(field);
@@ -521,10 +521,10 @@ bool SwitchNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
 // class SymbolNodeHLSLCodeGen
 bool SymbolNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
   TRACE();
-  DCHECK_EQ(node()->type(), ASTNode::kSymbolNode);
+  DCHECK(node()->IsSymbolNode());
   SymbolNode* symbol = node()->ToSymbolNode();
-  if (symbol->IsFuncParamSymbol()) return false;
-  DCHECK (!symbol->GetType()->IsTexture());
+  DCHECK(symbol->GetDeclarationNode() != NULL);
+  DCHECK(!symbol->GetType()->IsTexture());
   return GenCommonCode(symbol, code);
 }
 
@@ -547,6 +547,14 @@ bool SymbolNodeHLSLCodeGen::GenCommonCode(SymbolNode* symbol, std::string* code)
   }
   
   *code = ss.str();
+  return false;
+}
+
+
+// class ActParamNodeHLSLCodeGen
+bool ActParamNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
+  TRACE();
+  DCHECK(node()->IsActParamNode());
   return false;
 }
 
@@ -674,6 +682,8 @@ ASTCodeGenerator* HLSLCodeGeneratorFactory::CreateCodeGen(ASTNode* node) {
       generator = new SwitchNodeHLSLCodeGen(node); break;
     case ASTNode::kSymbolNode:
       generator = new SymbolNodeHLSLCodeGen(node); break;
+    case ASTNode::kActParamNode:
+      generator = new ActParamNodeHLSLCodeGen(node); break;
     case ASTNode::kUnaryOpNode:
       generator = new UnaryOpNodeHLSLCodeGen(node); break;
     case ASTNode::kWhileLoopNode: 

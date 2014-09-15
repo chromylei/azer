@@ -64,6 +64,7 @@ class ExpressionValidator {
   bool ValidArrayDimSpecified(TypedNode* typed);
   bool CheckInitializer(ASTNode* node);
   bool InitFieldNodeType(ASTNode* node);
+  bool InitParamNodeType(ASTNode* node);
   int CalcInitializerDim(ASTNode* node, ASTNodeVec* vec);
   int CalcInitializerLevelDim(const ASTNodeVec& node, ASTNodeVec* vec);
 
@@ -72,7 +73,6 @@ class ExpressionValidator {
    * 合理性计算有 valid*** 相关函数完成
    */
   BasicType MaxType(TypePtr type1, TypePtr type2);
-  TypePtr GetFieldType(RefSymbolNode* symbol, FieldNode* field);
   TypePtr GetMulOperType(ASTNode* node1, ASTNode* node2);
   bool ValidMulOperType(ASTNode* node1, ASTNode* node2);
   ParseContext* context_;

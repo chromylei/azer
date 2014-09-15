@@ -202,9 +202,9 @@ std::string CppCodeGen::GenVertexStruct(const TechniqueParser::Technique& tech) 
   FuncProtoNode* proto = stageinfo.entry->ToFuncDefNode()->GetProtoNode();
   DCHECK(proto != NULL);
   DCHECK_EQ(proto->GetParams().size(), 1u);
-  DCHECK(proto->GetParams().at(0)->IsFieldNode());
-  FieldNode* field = proto->GetParams().at(0)->ToFieldNode();
-  TypedNode* typed = field->GetTypedNode();
+  DCHECK(proto->GetParams().at(0)->IsParamNode());
+  ParamNode* param = proto->GetParams().at(0)->ToParamNode();
+  TypedNode* typed = param->GetTypedNode();
   DCHECK(typed != NULL && typed->GetStructDecl() != NULL);
   StructDeclNode* decl = typed->GetStructDecl();
 
@@ -251,9 +251,9 @@ std::string CppCodeGen::GenVertexDesc(const TechniqueParser::Technique& tech) {
   FuncProtoNode* proto = stageinfo.entry->ToFuncDefNode()->GetProtoNode();
   DCHECK(proto != NULL);
   DCHECK_EQ(proto->GetParams().size(), 1u);
-  DCHECK(proto->GetParams().at(0)->IsFieldNode());
-  FieldNode* field = proto->GetParams().at(0)->ToFieldNode();
-  TypedNode* typed = field->GetTypedNode();
+  DCHECK(proto->GetParams().at(0)->IsParamNode());
+  ParamNode* param = proto->GetParams().at(0)->ToParamNode();
+  TypedNode* typed = param->GetTypedNode();
   DCHECK(typed != NULL && typed->GetStructDecl());
   StructDeclNode* decl = typed->GetStructDecl();
 

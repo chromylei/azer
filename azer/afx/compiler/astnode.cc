@@ -255,7 +255,7 @@ DeclarationNode::DeclarationNode(const std::string& source, const SourceLoc& loc
 }
 
 void DeclarationNode::AddSymbol(ASTNode* node) {
-  DCHECK_EQ(node->type(), ASTNode::kSymbolNode);
+  DCHECK(node->IsSymbolNode());
   AddChildren(node);
 }
 
@@ -374,8 +374,8 @@ void FuncDefNode::SetProtoNode(ASTNode* node) {
   loc.lineno = -1;
   for (auto iter = prototype_->GetParams().begin();
        iter != prototype_->GetParams().end(); ++iter) {
-    FieldNode* field = (*iter)->ToFieldNode();
-    SymbolNode* symbol = CreateForFuncDefParams(field, context_);
+    ParamNode* param = (*iter)->ToParamNode();
+    SymbolNode* symbol = CreateForFuncDefParams(param, context_);
     // need to register the symbol, which will be done at SyntaxValidator
     // scoped_node_->RegisteSymbolLocally(symbol);
     if (scoped_node_->HasChildren()) {
@@ -413,8 +413,8 @@ void FuncProtoNode::SetRetTyped(ASTNode* node) {
 }
 
 void FuncProtoNode::AddParam(ASTNode* node) {
-  DCHECK(node->IsFieldNode());
-  params_.push_back(node->ToFieldNode());
+  DCHECK(node->IsParamNode());
+  params_.push_back(node->ToParamNode());
 }
 
 const std::string& FuncProtoNode::funcsync() {
@@ -492,7 +492,7 @@ JumpNode::JumpNode(const std::string& source, const SourceLoc& loc)
 
 // ScopedNode
 void ScopedNode::RegisteSymbolLocally(SymbolNode* node) {
-  DCHECK_EQ(node->type(), kSymbolNode);
+  DCHECK(node->IsSymbolNode());
   symbols_.insert(std::make_pair(node->symbolname(), node));
 }
 
@@ -563,7 +563,7 @@ RefSymbolNode::RefSymbolNode(const std::string& source, const SourceLoc& loc,
 
 void RefSymbolNode::SetDeclNode(SymbolNode* node) {
   DCHECK(decl_node_ == NULL);
-  DCHECK_EQ(node->type(), kSymbolNode);
+  DCHECK(node->IsSymbolNode());
   decl_node_ = node;
 }
 
@@ -784,6 +784,8 @@ ASTNode* ASTNodeFactory::Create(ASTNode::ASTNodeType type, const std::string& so
       node = new SwitchNode(source, loc); break;
     case ASTNode::kSymbolNode:
       node = new SymbolNode(source, loc); break;
+    case ASTNode::kActParamNode:
+      node = new ActParamNode(source, loc); break;
     case ASTNode::kTypedNode:
       node = new TypedNode(source, loc); break;
     case ASTNode::kUnaryOpNode:
@@ -826,6 +828,7 @@ const char* ASTNodeName(ASTNode::ASTNodeType type) {
     case ASTNode::kStructExternDeclNode: return "StructExternDeclNode";
     case ASTNode::kSwitchNode: return "SwitchNode";
     case ASTNode::kSymbolNode: return "SymbolNode";
+    case ASTNode::kActParamNode: return "ActParamNode";
     case ASTNode::kTypedNode: return "TypedNode";
     case ASTNode::kUnaryOpNode: return "UnaryOpNode";
     case ASTNode::kWhileLoopNode: return "WhileLoopNode";

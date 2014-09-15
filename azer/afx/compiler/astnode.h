@@ -43,6 +43,7 @@ class StructDeclNode;
 class StructExternDeclNode;
 class SwitchNode;
 class SymbolNode;
+class ActParamNode;
 class TypedNode;
 class UnaryOpNode;
 class WhileLoopNode;
@@ -78,6 +79,7 @@ class ASTNode : public TreeNodeDownUp<ASTNode> {
     kStructExternDeclNode,
     kSwitchNode,
     kSymbolNode,
+    kActParamNode,
     kTypedNode,
     kUnaryOpNode,
     kWhileLoopNode,
@@ -114,6 +116,7 @@ class ASTNode : public TreeNodeDownUp<ASTNode> {
   virtual StructExternDeclNode* ToStructExternDeclNode() { NOTREACHED(); return NULL;}
   virtual SwitchNode* ToSwitchNode() { NOTREACHED(); return NULL;}
   virtual SymbolNode* ToSymbolNode() { NOTREACHED(); return NULL;}
+  virtual ActParamNode* ToActParamNode() { NOTREACHED(); return NULL;}
   virtual TypedNode* ToTypedNode() { NOTREACHED(); return NULL;}
   virtual UnaryOpNode* ToUnaryOpNode() { NOTREACHED(); return NULL;}
   virtual WhileLoopNode* ToWhileLoopNode() { NOTREACHED(); return NULL;}
@@ -144,6 +147,7 @@ class ASTNode : public TreeNodeDownUp<ASTNode> {
   virtual bool IsStructDeclNode() {return false;}
   virtual bool IsSwitchNode() {return false;}
   virtual bool IsSymbolNode() {return false;}
+  virtual bool IsActParamNode() {return false;}
   virtual bool IsTypedNode() {return false;}
   virtual bool IsUnaryOpNode() {return false;}
   virtual bool IsWhileLoopNode() {return false;}
@@ -446,7 +450,7 @@ class FuncProtoNode : public ASTNode {
    * FuncCallNode 仅仅拥有函数的参数信息，而不知道返回值信息，只能通过遍历查找
    */
   const std::string& funcsync();
-  const std::vector<FieldNode*>& GetParams() const { return params_;}
+  const std::vector<ParamNode*>& GetParams() const { return params_;}
   TypedNode* rettype() { return ret_typed_;}
 
   void SetFuncName(const std::string& name);
@@ -456,7 +460,7 @@ class FuncProtoNode : public ASTNode {
   std::string func_name_;
   std::string func_sync_;
   TypedNode* ret_typed_;
-  std::vector<FieldNode*> params_;
+  std::vector<ParamNode*> params_;
   DISALLOW_COPY_AND_ASSIGN(FuncProtoNode);
 };
 
@@ -549,8 +553,8 @@ class ParamNode : public ASTNode {
   virtual ParamNode* ToParamNode() OVERRIDE { return this;}
   virtual bool IsParamNode() OVERRIDE { return true;}
 
-  const std::string& fieldname() { return fieldname_;}
-  void SetFieldName(const std::string& v) { fieldname_ = v;}
+  const std::string& paramname() { return paramname_;}
+  void SetParamName(const std::string& v) { paramname_ = v;}
   void SetAttributes(ASTNode* node);
   void SetTypedNode(ASTNode* node);
   AttributesNode* attributes() { return attributes_;}
@@ -560,7 +564,7 @@ class ParamNode : public ASTNode {
   TypedNode* GetTypedNode() { return typed_node_;}
  private:
   TypedNode* typed_node_;
-  std::string fieldname_;
+  std::string paramname_;
   AttributesNode* attributes_;
   DISALLOW_COPY_AND_ASSIGN(ParamNode);
 };
@@ -687,6 +691,7 @@ class SwitchNode : public ASTNode {
 class SymbolNode : public ASTNode {
  public:
   SymbolNode(const std::string& source, const SourceLoc& loc);
+  
   virtual SymbolNode* ToSymbolNode() OVERRIDE { return this;}
   virtual bool IsSymbolNode() OVERRIDE { return true;}
 
@@ -700,17 +705,33 @@ class SymbolNode : public ASTNode {
   DeclarationNode* GetDeclarationNode() { return declared_;}
   TypedNode* GetTypedNode() { return typed_node_;}
 
-  // is function's parameters
-  bool IsFuncParamSymbol() const { return declared_ == NULL;}
   const std::string& symbolname();
   TypePtr& GetType();
   const TypePtr& GetType() const;
+ protected:
+  SymbolNode(const std::string& source, const SourceLoc& loc, ASTNodeType type)
+      : ASTNode(source, loc, type) {}
  private:
   std::string symbol_name_;
   TypedNode* typed_node_;
   DeclarationNode* declared_;
   ASTNode* initializer_;
   DISALLOW_COPY_AND_ASSIGN(SymbolNode);
+};
+
+class ActParamNode : public SymbolNode {
+ public:
+  ActParamNode(const std::string& source, const SourceLoc& loc)
+      : SymbolNode(source, loc, kActParamNode)
+      , param_(NULL) {
+  }
+  virtual ActParamNode* ToActParamNode() OVERRIDE { return this;}
+  virtual bool IsActParamNode() OVERRIDE { return true;}
+  void SetParam(ParamNode* param) { param_ = param; }
+  ParamNode* GetParamNode() { return param_;}
+ private:
+  ParamNode* param_;
+  DISALLOW_COPY_AND_ASSIGN(ActParamNode);
 };
 
 /**

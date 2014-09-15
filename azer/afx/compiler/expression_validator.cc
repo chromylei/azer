@@ -40,6 +40,8 @@ ValuePtr GetNodeValue(ASTNode* node) {
     return ValuePtr(new Value(proto->rettype()->GetType()));
   } else if (node->IsFieldNode()) {
     return ValuePtr(new Value(node->ToFieldNode()->GetType()));
+  } else if (node->IsParamNode()) {
+    return ValuePtr(new Value(node->ToParamNode()->GetType()));
   } else {
     NOTREACHED();
     return ValuePtr(new Value);
@@ -116,6 +118,8 @@ TypePtr GetNodeType(ASTNode* node) {
     return node->ToBinaryOpNode()->GetResultType();
   } else if (node->IsFieldNode()) {
     return node->ToFieldNode()->GetType();
+  } else if (node->IsParamNode()) {
+    return node->ToParamNode()->GetType();
   } else {
     NOTREACHED();
     return NULL;
@@ -171,10 +175,12 @@ bool ExpressionValidator::Valid(ASTNode* node) {
         return false;
       }
     }
-
+  } else if (node->IsParamNode()) {
+    ASTNode* parent = node->parent();
+    DCHECK(parent != NULL);
     if (parent->IsFuncProtoNode() && parent->parent()
         && parent->parent()->IsFuncDefNode()) {
-      if (!InitFieldNodeType(node)) {
+      if (!InitParamNodeType(node)) {
         return false;
       }
     }
@@ -217,6 +223,36 @@ bool ExpressionValidator::InitFieldNodeType(ASTNode* node) {
   DCHECK(node->IsFieldNode());
   FieldNode* field_node = node->ToFieldNode();
   TypedNode* typed = field_node->GetTypedNode();
+  DCHECK(NULL != typed);
+  if (typed->GetDim().size() > 0) {
+    TypePtr ptr = typed->GetType();
+    for (int i = 0; i < (int)typed->GetDim().size(); ++i) {
+      ASTNode* dimnode = typed->GetDim()[i];
+      if (!CheckConstantExpression(dimnode)) {
+        std::stringstream ss;
+        ss << "array dim not consistent between initializer and constant";
+        ReportError(ss.str(), typed, kArrayDimNotConsistent);
+        return false;
+      }
+
+      ValuePtr vptr = GetNodeValue(dimnode);
+      if (IsIntegerScalar(vptr->type())) {
+        typed->GetType()->PushDim(GetInteger(vptr));
+      } else {
+        std::stringstream ss;
+        ss << "array dim not consistent between initializer and constant";
+        ReportError(ss.str(), typed, kArrayDimNotConsistent);
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool ExpressionValidator::InitParamNodeType(ASTNode* node) {
+  DCHECK(node->IsParamNode());
+  ParamNode* param_node = node->ToParamNode();
+  TypedNode* typed = param_node->GetTypedNode();
   DCHECK(NULL != typed);
   if (typed->GetDim().size() > 0) {
     TypePtr ptr = typed->GetType();
@@ -448,30 +484,6 @@ void ExpressionValidator::CalcUnaryOperType(UnaryOpNode* node) {
     default: NOTREACHED(); break;
   }
   node->SetValue(v);
-}
-
-TypePtr ExpressionValidator::GetFieldType(RefSymbolNode* ref, FieldNode* field) {
-  DCHECK(ref->GetDeclNode() != NULL);
-  if(ref->GetDeclNode()->GetType()->IsStructure()) {
-    DCHECK(ref->GetDeclNode()->IsSymbolNode());
-    SymbolNode* symbol = ref->GetDeclNode();
-    TypedNode* typed = symbol->GetTypedNode();
-    DCHECK(typed != NULL && typed->GetStructDecl());
-    DCHECK(typed->GetStructDecl() != NULL);
-    DCHECK(typed->GetStructDecl()->HasField(field->fieldname()));
-    return field->GetType();
-  } else if (ref->GetDeclNode()->GetType()->IsVector()) {
-    switch (field->fieldname().length()) {
-      case 1:return TypePtr(new Type(kFloat));
-      case 2:return TypePtr(new Type(kVector2));
-      case 3:return TypePtr(new Type(kVector3));
-      case 4:return TypePtr(new Type(kVector4));
-      default: NOTREACHED(); return NULL;
-    }
-  } else {
-    NOTREACHED();
-    return NULL;
-  }
 }
 
 bool ExpressionValidator::ValidMulOperType(ASTNode* node1, ASTNode* node2) {

@@ -264,6 +264,16 @@ class SymbolNodeHLSLCodeGen : public ASTCodeGenerator {
   DISALLOW_COPY_AND_ASSIGN(SymbolNodeHLSLCodeGen);
 };
 
+class ActParamNodeHLSLCodeGen : public ASTCodeGenerator {
+ public:
+  ActParamNodeHLSLCodeGen(ASTNode* node) : ASTCodeGenerator(node) {}
+  
+  virtual bool GenCodeBegin(std::string* code) OVERRIDE;
+  virtual void GenCodeEnd(std::string* code) OVERRIDE {};
+ private:
+  DISALLOW_COPY_AND_ASSIGN(ActParamNodeHLSLCodeGen);
+};
+
 class UnaryOpNodeHLSLCodeGen : public ASTCodeGenerator {
  public:
   UnaryOpNodeHLSLCodeGen(ASTNode* node) : ASTCodeGenerator(node) {}
