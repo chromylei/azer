@@ -105,10 +105,30 @@ std::string DumpRefSymbolNode(ASTNode* node) {
   return ss.str();
 }
 
+std::string DumpParamNode(ASTNode* node) {
+  DCHECK_EQ(node->type(), ASTNode::kParamNode);
+  std::stringstream ss;
+  ParamNode* param = node->ToParamNode();
+  ss << ASTNodeName(node->type()) << "[" << param->paramname() << "]";
+  return ss.str();
+}
+
 std::string DumpSymbolNode(ASTNode* node) {
   DCHECK_EQ(node->type(), ASTNode::kSymbolNode);
   std::stringstream ss;
   SymbolNode* ref = node->ToSymbolNode();
+  ss << ASTNodeName(node->type()) << "{";
+
+  ss << ref->symbolname();
+  if (ref->GetType()->IsArray()) { ss << "[]";}
+  ss << "}";
+  return ss.str();
+}
+
+std::string DumpActParamNode(ASTNode* node) {
+  DCHECK_EQ(node->type(), ASTNode::kActParamNode);
+  std::stringstream ss;
+  ActParamNode* ref = node->ToActParamNode();
   ss << ASTNodeName(node->type()) << "{";
 
   ss << ref->symbolname();
@@ -170,6 +190,8 @@ std::string DumpNodeInfo(ASTNode* node) {
     case ASTNode::kNullNode:
       return new NullNode(source, loc);
       */
+    case ASTNode::kParamNode:
+      return DumpParamNode(node);
     case ASTNode::kRefSymbolNode:
       return DumpRefSymbolNode(node);
       /*
@@ -184,6 +206,8 @@ std::string DumpNodeInfo(ASTNode* node) {
       */
     case ASTNode::kSymbolNode:
       return DumpSymbolNode(node);
+    case ASTNode::kActParamNode:
+      return DumpActParamNode(node);
     case ASTNode::kUnaryOpNode:
       return DumpUnaryOpNode(node);
       /*

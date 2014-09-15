@@ -429,7 +429,7 @@ TEST(ASTree, SwitchCase) {
       " FuncDefNode{psmain}\n"
       "  FuncProtoNode{psmain}\n"
       "  ScopedNode\n"
-      "   SymbolNode{a}\n"
+      "   ActParamNode{a}\n"
       "    TypedNode\n"
       "   StatementNode\n"
       "    SwitchNode\n"
