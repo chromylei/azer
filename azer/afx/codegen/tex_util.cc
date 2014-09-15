@@ -71,7 +71,7 @@ void TextureNameGenerator::OnVisitEnd(ASTNode* node)  {
 }
 
 std::string GenReferredTextureVarName(ASTNode* node) {
-  DCHECK(IsParameterTextureNode(node));
+  DCHECK(IsNodeTypeTexture(node));
   if (node->IsRefSymbolNode()) {
     return node->ToRefSymbolNode()->symbolname();
   } else if (node->IsSymbolNode()) {
@@ -101,7 +101,7 @@ std::string HLSLUniformTextureSamplerDeclFullName(ASTNode* node) {
 }
 
 std::string HLSLDeclaredTextureFullName(ASTNode* node) {
-  DCHECK(IsParameterTextureNode(node));
+  DCHECK(IsNodeTypeTexture(node));
   TypedNode* typed = GetTexNode(node);
   DCHECK(typed != NULL);
   std::stringstream ss;
@@ -114,7 +114,7 @@ std::string HLSLDeclaredTextureFullName(ASTNode* node) {
 }
 
 TypedNode* GetTexNode(ASTNode* node) {
-  DCHECK(IsParameterTextureNode(node));
+  DCHECK(IsNodeTypeTexture(node));
   if (node->IsRefSymbolNode()) {
     SymbolNode* symbol = node->ToRefSymbolNode()->GetDeclNode();
     return symbol->GetTypedNode();
@@ -141,7 +141,7 @@ TypedNode* GetTexNode(ASTNode* node) {
 }
 
 TypePtr GetTextureType(ASTNode* node) {
-  DCHECK(IsParameterTextureNode(node));
+  DCHECK(IsNodeTypeTexture(node));
   if (node->IsRefSymbolNode()) {
     SymbolNode* symbol = node->ToRefSymbolNode()->GetDeclNode();
     TypePtr ptr = symbol->GetType();
@@ -160,7 +160,7 @@ TypePtr GetTextureType(ASTNode* node) {
 }
 
 std::string HLSLTextureTypeName(ASTNode* node) {
-  DCHECK(IsParameterTextureNode(node));
+  DCHECK(IsNodeTypeTexture(node));
   TypePtr ptr = GetTextureType(node);
   return HLSLTypeName(ptr);
 }
@@ -217,7 +217,7 @@ bool IsTextureArray(ASTNode* node) {
 }
 
 void GetTexRefferPath(ASTNode* node, std::vector<std::string>* path) {
-  DCHECK(IsParameterTextureNode(node));
+  DCHECK(IsNodeTypeTexture(node));
   if (node->IsRefSymbolNode()) {
     path->push_back(node->ToRefSymbolNode()->symbolname());
     return;
@@ -369,36 +369,46 @@ std::string HLSLTextureUniformFuncName(ASTNode* node) {
   }
 }
 
-bool IsParameterTextureNode(ASTNode* node) {
+bool IsUniformTexture(ASTNode* node) {
+  if (!IsNodeTypeTexture(node)) {
+    return false;
+  }
+
+  if (node->IsActParamNode()) {
+    return false;
+  } else if (node->IsSymbolNode()) {
+    return true;
+  } else if (node->IsRefSymbolNode()) {
+    SymbolNode* symbol = node->ToRefSymbolNode()->GetDeclNode();
+    DCHECK(symbol != NULL);
+    return  IsUniformTexture(symbol);
+  } else {
+    NOTREACHED();
+    return false;
+  }
+}
+
+bool IsNodeTypeTexture(ASTNode* node) {
   if (node->IsBinaryOpNode()) {
     TypePtr ptr = node->ToBinaryOpNode()->GetResultType();
     DCHECK(ptr.get() != NULL);
-    if (ptr->IsTexture()) {
-      return true;
-    } else {
-      return false;
-    }
+    return ptr->IsTexture();
+  } else if (node->IsActParamNode()) {
+    SymbolNode* symbol = node->ToSymbolNode();
+    DCHECK(symbol != NULL);
+    TypePtr ptr = symbol->GetType();
+    return ptr->IsTexture();
   } else if (node->IsSymbolNode()) {
     // to generator SamplerState, symbolNode maybe as a parameters
     SymbolNode* symbol = node->ToSymbolNode();
     DCHECK(symbol != NULL);
     TypePtr ptr = symbol->GetType();
     DCHECK(ptr.get() != NULL);
-    if (ptr->IsTexture()) {
-      return true;
-    } else {
-      return false;
-    }
+    return ptr->IsTexture();
   } else if (node->IsRefSymbolNode()) {
     SymbolNode* symbol = node->ToRefSymbolNode()->GetDeclNode();
     DCHECK(symbol != NULL);
-    TypePtr ptr = symbol->GetType();
-    DCHECK(ptr.get() != NULL);
-    if (ptr->IsTexture()) {
-      return true;
-    } else {
-      return false;
-    }
+    return IsNodeTypeTexture(symbol);
   } else if (node->IsFieldNode()) {
     TypedNode* typed = node->ToFieldNode()->GetTypedNode();
     return typed->GetType()->IsTexture();
@@ -410,7 +420,7 @@ bool IsParameterTextureNode(ASTNode* node) {
   } else if (node->IsFuncCallNode()) {
     return false;
   } else if (node->IsUnaryOpNode()) {
-    return IsParameterTextureNode(node->ToUnaryOpNode()->GetOper());
+    return IsNodeTypeTexture(node->ToUnaryOpNode()->GetOper());
   } else {
     NOTREACHED();
     return false;

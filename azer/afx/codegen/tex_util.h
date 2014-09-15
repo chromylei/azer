@@ -82,10 +82,12 @@ std::string HLSLTextureTypeName(ASTNode* node);
  */
 void GetTexRefferPath(ASTNode* node, std::vector<std::string>* path);
 
+bool IsUniformTexture(ASTNode* node);
+
 /**
- * 判断函数的参数是否是 Texture node
+ * 判断函数的参数是否是 Texture(最终结果是否是 texture 类型)
  */
-bool IsParameterTextureNode(ASTNode* node);
+bool IsNodeTypeTexture(ASTNode* node);
 
 bool HasTextureField(ASTNode* field);
 bool HasOnlyTextureField(ASTNode* node);

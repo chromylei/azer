@@ -131,3 +131,39 @@ TEST(AfxCppCodeGen, PointLight) {
   ASSERT_TRUE(CompareCode(cpppath, cppcodegen.GetCppCode()));
 }
 
+TEST(AfxCppCodeGen, TextureAdParam) {
+  const std::string effect_name = "shadowmap";
+  const std::string afx_path = "azer/afx/testdata/shadowmap.afx";
+  std::vector<std::string> inc;
+  inc.push_back(kTestdataDir);
+  AfxLinker::Options opt;
+  opt.parse_astree = false;
+  azer::afx::FileLoader loader(inc);
+  AfxLinker linker(&loader, opt);
+  std::string content;
+  ASSERT_TRUE(::base::ReadFileToString(
+      ::base::FilePath(::base::UTF8ToWide(afx_path)), &content));
+  EXPECT_TRUE(linker.Load(content, afx_path));
+
+  LOG_IF(ERROR, !linker.success()) << linker.GetErrorText();
+  // Dump(&linker);
+
+  ParseContext* context = linker.root()->GetContext();
+  DUMP_AFXCOMPILE_ERROR(*context);
+
+  TechniqueParser tparser;
+  EXPECT_TRUE(tparser.Parse(context));
+  TechniqueParser::Technique* technique = NULL;
+  ASSERT_TRUE(tparser.GetTechnique(effect_name, &technique));
+  ASSERT_EQ(technique->name, effect_name);
+  const TechniqueParser::StageInfo& shader = technique->shader[azer::kPixelStage];
+  ASSERT_TRUE(shader.entry != NULL);
+  azer::afx::CppCodeGen cppcodegen;
+  cppcodegen.GenCode(*technique);
+
+  ::base::FilePath hpppath(AZER_LITERAL("azer/afx/testdata/cpp/shadowmap.afx.h"));
+  ::base::FilePath cpppath(AZER_LITERAL("azer/afx/testdata/cpp/shadowmap.afx.cc"));
+  ASSERT_TRUE(CompareCode(hpppath, cppcodegen.GetHeadCode()));
+  ASSERT_TRUE(CompareCode(cpppath, cppcodegen.GetCppCode()));
+}
+

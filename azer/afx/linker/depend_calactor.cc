@@ -165,7 +165,7 @@ bool DependCalactor::OnVisitBegin(ASTNode* node) {
 }
 
 void DependCalactor::AddTexture(ASTNode* node)  {
-  if (!IsParameterTextureNode(node)) {
+  if (!IsUniformTexture(node)) {
     return;
   }
 
@@ -174,21 +174,6 @@ void DependCalactor::AddTexture(ASTNode* node)  {
   if (iter == tex_inserted_.end()) {
     textures_.push_back(node);
     tex_inserted_.insert(var);
-  }
-}
-
-void DependCalactor::CheckUniformTexture(ASTNode* node) {
-  if (node->IsRefSymbolNode()) {
-    SymbolNode* decl = node->ToRefSymbolNode()->GetDeclNode();
-    if (decl->GetType()->IsStructure()) {
-      AddTexture(node);
-      textures_.push_back(node);
-    }
-  } else if (node->IsFieldNode()) {
-    if (node->parent()->IsBinaryOpNode()) {
-      AddTexture(node);
-      textures_.push_back(node);
-    }
   }
 }
 

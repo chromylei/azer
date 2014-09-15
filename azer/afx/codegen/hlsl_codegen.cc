@@ -727,7 +727,7 @@ std::string DumpParamList(FuncCallNode* func, int start) {
       ss << ", ";
     }
 
-    if (IsParameterTextureNode(node)) {
+    if (IsNodeTypeTexture(node)) {
       ss << HLSLRefferedTextureFullName(node);
     } else {
       codegen.GenCode(node);
