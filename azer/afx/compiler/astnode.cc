@@ -520,6 +520,35 @@ SymbolNode* ScopedNode::LookupSymbolGlobally(const std::string& node) {
   return NULL;
 }
 
+// class ParamNode
+ParamNode::ParamNode(const std::string& source, const SourceLoc& loc)
+    : ASTNode(source, loc, kParamNode)
+    , attributes_(NULL)
+    , typed_node_(NULL) {
+}
+
+TypePtr& ParamNode::GetType() {
+  DCHECK(typed_node_ != NULL);
+  return typed_node_->GetType();
+}
+
+const TypePtr& ParamNode::GetType() const {
+  DCHECK(typed_node_ != NULL);
+  return typed_node_->GetType();
+}
+
+void ParamNode::SetTypedNode(ASTNode* node) {
+  DCHECK(node != NULL && node->IsTypedNode());
+  typed_node_ = node->ToTypedNode();
+}
+
+void ParamNode::SetAttributes(ASTNode* node) {
+  DCHECK(attributes_ == NULL);
+  DCHECK_EQ(node->type(), ASTNode::kAttributesNode);
+  attributes_ = (AttributesNode*)node;
+  AddChildren(node);
+}
+
 // class RefSymbolNode
 RefSymbolNode::RefSymbolNode(const std::string& source, const SourceLoc& loc)
     : ASTNode(source, loc, kRefSymbolNode)
@@ -737,6 +766,8 @@ ASTNode* ASTNodeFactory::Create(ASTNode::ASTNodeType type, const std::string& so
       node = new NullNode(source, loc); break;
     case ASTNode::kPackageNode:
       node = new PackageNode(source, loc); break;
+    case ASTNode::kParamNode:
+      node = new ParamNode(source, loc); break;
     case ASTNode::kRefSymbolNode:
       node = new RefSymbolNode(source, loc); break;
     case ASTNode::kReturnNode:
@@ -786,6 +817,7 @@ const char* ASTNodeName(ASTNode::ASTNodeType type) {
     case ASTNode::kJumpNode: return "JumpNode";
     case ASTNode::kNullNode: return "NullNode";
     case ASTNode::kPackageNode: return "PackageNode";
+    case ASTNode::kParamNode: return "ParamNode";
     case ASTNode::kRefSymbolNode: return "RefSymbolNode";
     case ASTNode::kReturnNode: return "ReturnNode";
     case ASTNode::kScopedNode: return "ScopedNode";

@@ -34,6 +34,7 @@ class InitializerNode;
 class JumpNode;
 class NullNode;
 class PackageNode;
+class ParamNode;
 class RefSymbolNode;
 class ReturnNode;
 class ScopedNode;
@@ -68,6 +69,7 @@ class ASTNode : public TreeNodeDownUp<ASTNode> {
     kJumpNode,
     kNullNode,
     kPackageNode,
+    kParamNode,
     kRefSymbolNode,
     kReturnNode,
     kScopedNode,
@@ -103,6 +105,7 @@ class ASTNode : public TreeNodeDownUp<ASTNode> {
   virtual JumpNode* ToJumpNode() { NOTREACHED(); return NULL;}
   virtual NullNode* ToNullNode() { NOTREACHED(); return NULL;}
   virtual PackageNode* ToPackageNode() { NOTREACHED(); return NULL;}
+  virtual ParamNode* ToParamNode() { NOTREACHED(); return NULL;}
   virtual RefSymbolNode* ToRefSymbolNode() { NOTREACHED(); return NULL;}
   virtual ReturnNode* ToReturnNode() { NOTREACHED(); return NULL;}
   virtual ScopedNode* ToScopedNode() { NOTREACHED(); return NULL;}
@@ -133,6 +136,7 @@ class ASTNode : public TreeNodeDownUp<ASTNode> {
   virtual bool IsJumpNode() {return false;}
   virtual bool IsNullNode() {return false;}
   virtual bool IsPackageNode() {return false;}
+  virtual bool IsParamNode() { return false;}
   virtual bool IsRefSymbolNode() {return false;}
   virtual bool IsReturnNode() {return false;}
   virtual bool IsScopedNode() {return false;}
@@ -525,7 +529,6 @@ class NullNode : public ASTNode {
   DISALLOW_COPY_AND_ASSIGN(NullNode);
 };
 
-
 class PackageNode : public ASTNode {
  public:
   PackageNode(const std::string& source, const SourceLoc& loc)
@@ -538,6 +541,28 @@ class PackageNode : public ASTNode {
  private:
   std::string packagename_;
   DISALLOW_COPY_AND_ASSIGN(PackageNode);
+};
+
+class ParamNode : public ASTNode {
+ public:
+  ParamNode(const std::string& source, const SourceLoc& loc);
+  virtual ParamNode* ToParamNode() OVERRIDE { return this;}
+  virtual bool IsParamNode() OVERRIDE { return true;}
+
+  const std::string& fieldname() { return fieldname_;}
+  void SetFieldName(const std::string& v) { fieldname_ = v;}
+  void SetAttributes(ASTNode* node);
+  void SetTypedNode(ASTNode* node);
+  AttributesNode* attributes() { return attributes_;}
+  
+  TypePtr& GetType();
+  const TypePtr& GetType() const;
+  TypedNode* GetTypedNode() { return typed_node_;}
+ private:
+  TypedNode* typed_node_;
+  std::string fieldname_;
+  AttributesNode* attributes_;
+  DISALLOW_COPY_AND_ASSIGN(ParamNode);
 };
 
 class RefSymbolNode : public ASTNode {

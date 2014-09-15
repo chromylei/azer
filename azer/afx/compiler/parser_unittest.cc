@@ -301,6 +301,20 @@ TEST(AfxParser, Texture) {
   ASSERT_TRUE(parser.Parse(&context));
 }
 
+TEST(AfxParser, TextureAsParam) {
+  const std::string str =
+      "vec4 Sample(Texture2D tex, vec2 coord) {\n"
+      "  sample2D(tex, coord);\n"
+      "}\n"
+      ;
+  ParseContext::Options opt;
+  // opt.dump_parser = true;
+  // opt.dump_tokenizer = true;
+  ASTNodeFactory factory;
+  ParseContext context("", "", str, &factory, opt);
+  Parser parser;
+  ASSERT_TRUE(parser.Parse(&context));
+}
 
 TEST(AfxParser, FunctionDefiniation) {
   const std::string str =

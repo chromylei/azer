@@ -60,11 +60,18 @@ std::string HLSLDeclaredTextureFullName(ASTNode* node);
  * 一种 DeclFullName，在声明时使用，除了名称之外，它还带有 array specifier
  * 另外一个函数访问时使用
  */
-std::string HLSLTextureSamplerDeclFullName(ASTNode* node);
-std::string HLSLTextureSamplerFullName(ASTNode* node);
+std::string HLSLUniformTextureSamplerDeclFullName(ASTNode* node);
+std::string HLSLUniformTextureSamplerFullName(ASTNode* node);
 
+
+/**
+ * 设置 uniform texture 的函数名
+ */
 std::string HLSLTextureUniformFuncName(ASTNode* node);
 
+/**
+ * texture 后面的 array specified
+ */
 std::string HLSLTextureArraySpecifier(ASTNode* node);
 
 std::string HLSLTextureTypeName(ASTNode* node);

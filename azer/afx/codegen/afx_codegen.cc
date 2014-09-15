@@ -94,7 +94,7 @@ std::string AfxCodegen::GenTextures(const std::vector<ASTNode*>& textures,
     ss << HLSLTextureTypeName(node) << " "
        << HLSLDeclaredTextureFullName(node) << ";\n";
     if (stage_ == kPixelStage) {
-      ss << "SamplerState " << HLSLTextureSamplerDeclFullName(node) << ";\n";
+      ss << "SamplerState " << HLSLUniformTextureSamplerDeclFullName(node) << ";\n";
     }
   }
   return ss.str();

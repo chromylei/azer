@@ -88,7 +88,7 @@ std::string GenReferredTextureVarName(ASTNode* node) {
   }
 }
 
-std::string HLSLTextureSamplerDeclFullName(ASTNode* node) {
+std::string HLSLUniformTextureSamplerDeclFullName(ASTNode* node) {
   std::stringstream ss;
   ss << GenReferredTextureVarName(node) << AfxD3DSamplerSupfix;
   TypedNode* typed = GetTexNode(node);
@@ -233,7 +233,7 @@ void GetTexRefferPath(ASTNode* node, std::vector<std::string>* path) {
   }
 }
 
-std::string HLSLTextureSamplerFullName(ASTNode* node) {
+std::string HLSLUniformTextureSamplerFullName(ASTNode* node) {
   std::stringstream ss;
   ss << GenReferredTextureVarName(node) << AfxD3DSamplerSupfix;
   if (node->IsBinaryOpNode()) {

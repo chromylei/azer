@@ -309,6 +309,34 @@ TEST(HLSLCodeGenerator, Texture) {
   ASSERT_EQ(generator.GetCode(), expect);
 }
 
+TEST(HLSLCodeGenerator, TextureAsParam) {
+  const std::string expect =
+      "Texture2D texdiffuse;\n"
+      "SamplerState texdiffuse__d3d_sampler;\n"
+      "void psmain() {texdiffuse.Sample(texdiffuse__d3d_sampler, float2(1, 1));}"
+      ;
+  const std::string str =
+      "uniform Texture2D tex1;\n"
+      "vec4 sample(Texture2D tex, vec2 coord) {return sample2D(tex1, coord);}\n"
+      "vec4 psmain() {\n"
+      "  return sample(tex1, vec2(1.0f, 1.0f));\n"
+      "}\n"
+      ;
+  ParseContext::Options opt;
+  // opt.dump_parser = true;
+  // opt.dump_tokenizer = true;
+  ASTNodeFactory factory;
+  ParseContext context("", "", str, &factory, opt);
+  Parser parser;
+  EXPECT_TRUE(parser.Parse(&context));
+  DUMP_AFXCOMPILE_ERROR(context);
+
+  HLSLCodeGeneratorFactory gen_factory;
+  SnippetCodeGenerator generator(&gen_factory);
+  generator.GenCode(context.root());
+  ASSERT_EQ(generator.GetCode(), expect);
+}
+
 TEST(HLSLCodeGenerator, Material) {
   const std::string expect = ""
       "struct Material {"

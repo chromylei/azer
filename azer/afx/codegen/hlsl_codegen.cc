@@ -174,7 +174,7 @@ bool DeclarationNodeHLSLCodeGen::GenCodeForTexture(std::string* code) {
       }
 
       ss << ";\n";
-      ss << "SamplerState " << HLSLTextureSamplerFullName(cur) << ";\n";
+      ss << "SamplerState " << HLSLUniformTextureSamplerFullName(cur) << ";\n";
     } else {
       DCHECK(cur->IsAttributesNode());
     }
@@ -311,7 +311,7 @@ std::string FuncCallNodeHLSLCodeGen::GenCodeForSample() {
   ASTNode* tex = func->GetParams()[0];
   ASTNode* coord = func->GetParams()[1];
   std::string symbolname = HLSLRefferedTextureFullName(tex);
-  ss << symbolname << ".Sample(" << HLSLTextureSamplerFullName(tex) << ", ";
+  ss << symbolname << ".Sample(" << HLSLUniformTextureSamplerFullName(tex) << ", ";
 
   HLSLCodeGeneratorFactory factory;
   SnippetCodeGenerator codegen(&factory);
@@ -354,7 +354,12 @@ bool FuncProtoNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
     }
     DCHECK((*iter)->IsFieldNode());
     FieldNode* field = (*iter)->ToFieldNode();
-    ss << DumpFullType(field->GetType()) << " " << field->fieldname();
+    ss << DumpFullType(field->GetType()) << " __" << field->fieldname();
+    /*
+    if (field->GetType()->IsTexture()) {
+      ss << ", SamplerState " << HLSLUniformTextureSamplerFullName(field);
+    }
+    */
   }
 
   *code = ss.str();
