@@ -60,23 +60,24 @@ class AZER_EXPORT IndicesBuffer : public HardwareBuffer {
     }
   };
 
-  IndicesBuffer(const Options& opt, IndicesDataPtr data)
+  IndicesBuffer(const Options& opt)
       : options_(opt)
-      , indices_data_(data) {
+      , indices_num_(-1)
+      , type_(IndicesData::kUndefined) {
   }
 
   virtual ~IndicesBuffer() {}
 
-  virtual bool Init() = 0;
   virtual HardwareBufferDataPtr map(MapType flags) = 0;
   virtual void unmap() = 0;
-  IndicesData::IndexType type() const { return indices_data_->type();}
-  IndicesData* data() { return indices_data_.get();}
+  IndicesData::IndexType type() const { return type_;}
 
   const Options& options() const { return options_;}
+  int32 indices_num() const { return indices_num_;}
  protected:
   const Options options_;
-  IndicesDataPtr indices_data_;
+  int32 indices_num_;
+  IndicesData::IndexType type_;
   DISALLOW_COPY_AND_ASSIGN(IndicesBuffer);
 };
 

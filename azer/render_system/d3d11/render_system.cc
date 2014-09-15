@@ -121,10 +121,10 @@ VertexBuffer* D3D11RenderSystem::CreateVertexBuffer(
 
 
 IndicesBuffer* D3D11RenderSystem::CreateIndicesBuffer(
-    const IndicesBuffer::Options& opt, IndicesDataPtr dataptr) {
+    const IndicesBuffer::Options& opt, IndicesData* dataptr) {
   std::unique_ptr<D3D11IndicesBuffer> indices_buffer(
-      new D3D11IndicesBuffer(opt, dataptr, this));
-  if (indices_buffer->Init()) {
+      new D3D11IndicesBuffer(opt, this));
+  if (indices_buffer->Init(dataptr)) {
     return indices_buffer.release();
   } else {
     return NULL;
@@ -142,6 +142,7 @@ GpuProgram* D3D11RenderSystem::CreateGpuProgram(RenderPipelineStage stage,
       gpu_program.reset(new D3D11GeometryGpuProgram(program));
       break;
     case kVertexStage:
+      CHECK(false) << "Vertex GpuProgram has its own ";
     default:
       CHECK(false) << "No such GpuProgram Type: " << (int32)stage;
       return NULL;

@@ -196,7 +196,7 @@ void D3D11Renderer::DrawIndex(VertexBuffer* vvb, IndicesBuffer* vib,
                               PrimitiveTopology primitive, int indices_num,
                               int32 first_indices, int32 index_base) {
   const int num_of_indices =
-      (indices_num != -1) ? indices_num : vib->data()->num();
+      (indices_num != -1) ? indices_num : vib->indices_num();
   UINT stride = vvb->element_size();
   UINT offset = 0;
   D3D11VertexBuffer* vb = (D3D11VertexBuffer*)vvb;
@@ -234,7 +234,7 @@ void D3D11Renderer::DrawIndexInstanced(int32 instance_num, VertexBuffer* vvb,
                                        int32 index_base,
                                        int32 instance_start_index) {
   const int num_of_indices =
-      (indices_num != -1) ? indices_num : vib->data()->num();
+      (indices_num != -1) ? indices_num : vib->indices_num();
   UINT stride = vvb->element_size();
   UINT offset = 0;
   D3D11VertexBuffer* vb = (D3D11VertexBuffer*)vvb;

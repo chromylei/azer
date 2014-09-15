@@ -33,7 +33,7 @@ class D3D11RenderSystem : public RenderSystem {
   virtual VertexBuffer* CreateVertexBuffer(const VertexBuffer::Options& opt,
                                            VertexData*) OVERRIDE;
   virtual IndicesBuffer* CreateIndicesBuffer(const IndicesBuffer::Options& opt,
-                                             IndicesDataPtr) OVERRIDE;
+                                             IndicesData*) OVERRIDE;
   virtual GpuConstantsTable* CreateGpuConstantsTable(
       int32 num, const GpuConstantsTable::Desc* desc) OVERRIDE;
 
