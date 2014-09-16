@@ -13,7 +13,8 @@ const std::string kTestdataDir = "azer/afx/testdata";
 
 TEST(AfxCodegen, EffectVertex) {
   const std::string expect = ""
-      "// using row_major\n#pragma pack_matrix(row_major)\n\n"
+      "// using row_major\n"
+      "#pragma pack_matrix(row_major)\n\n"
       "struct VSOutput {"
       "float3 position:SV_POSITION;"
       "float3 normal:NORMAL;"
@@ -212,6 +213,46 @@ TEST(AfxCodegen, LineEffect) {
   technique = parser.GetTechnique("line");
   ASSERT_TRUE(technique != NULL);
   ASSERT_EQ(technique->name, "line");
+  const TechniqueParser::StageInfo& shader = technique->shader[azer::kPixelStage];
+  ASSERT_TRUE(shader.entry != NULL);
+
+  azer::afx::HLSLCodeGeneratorFactory gen_factory;
+  AfxCodegen codegen(&gen_factory);
+  ASSERT_EQ(codegen.GenCode(azer::kPixelStage, shader), expect);
+}
+
+TEST(AfxCodegen, Shadowmap) {
+  const std::string expect = ""
+      "// using row_major\n"
+      "#pragma pack_matrix(row_major)\n\n"
+      "bool afx__InShadow(Texture2D smtex, SamplerState smtex__d3d_sampler, "
+      "float4 sm_position) {return true;}"
+      "struct VsOutput {"
+      "float4 position:SV_POSITION;"
+      "float4 sm_position:SM_POSITION;};"
+      "Texture2D shadowmap_tex;\n"
+      "SamplerState shadowmap_tex__d3d_sampler;\n"
+      "float4 ps_main(VsOutput o):SV_TARGET {"
+      "if (afx__InShadow(shadowmap_tex, shadowmap_tex__d3d_sampler, "
+      "o.sm_position)){return float4(1, 1, 1, 1);} "
+      "else {return float4(1, 1, 1, 1);}}"
+      ;
+
+  std::vector<std::string> inc;
+  inc.push_back(kTestdataDir);
+  AfxLinker::Options opt;
+  opt.parse_astree = false;
+  azer::afx::AfxParser parser(inc, opt);
+  EXPECT_TRUE(parser.Parse("azer/afx/testdata/shadowmap.afx"));
+
+  LOG_IF(ERROR, !parser.success()) << parser.GetErrorText();
+  ParseContext* context = parser.GetContext();
+  DUMP_AFXCOMPILE_ERROR(*context);
+
+  TechniqueParser::Technique* technique = NULL;
+  technique = parser.GetTechnique("diffuse");
+  ASSERT_TRUE(technique != NULL);
+  ASSERT_EQ(technique->name, "diffuse");
   const TechniqueParser::StageInfo& shader = technique->shader[azer::kPixelStage];
   ASSERT_TRUE(shader.entry != NULL);
 

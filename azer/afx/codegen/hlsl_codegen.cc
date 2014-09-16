@@ -293,7 +293,9 @@ bool FuncCallNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
       ss << MapBuiltInFunc(func->funcname()) << "(" << DumpParamList(func, 0) << ")";
     }
   } else {
-    ss << PackagePrefix(func->GetContext()) << func->funcname()
+    FuncDefNode* funcdef = func->GetFuncDefNode();
+    DCHECK(NULL != funcdef);
+    ss << PackagePrefix(funcdef->GetContext()) << funcdef->funcname()
        << "(" << DumpParamListWithTexSampler(func, 0) << ")";
   }
   *code = ss.str();
@@ -444,9 +446,20 @@ bool JumpNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
 bool RefSymbolHLSLCodeGen::GenCodeBegin(std::string* code) {
   TRACE();
   DCHECK(node()->GetContext());
-  RefSymbolNode* symbol = node()->ToRefSymbolNode();
-  code->append(std::move(PackagePrefix(node()->GetContext())));
-  code->append(symbol->symbolname());
+  RefSymbolNode* refsymbol = node()->ToRefSymbolNode();
+  SymbolNode* symbol = refsymbol->GetDeclNode();
+  DCHECK(symbol != NULL);
+
+  /**
+   * 判断是否是全局变量，如果是全局变量，需要输出 package_name
+   * 如果是局部变量则不需要
+   */
+  ScopedNode* scoped = symbol->GetScoped();
+  if (scoped == NULL) {
+    code->append(std::move(PackagePrefix(node()->GetContext())));
+  }
+
+  code->append(refsymbol->symbolname());
   return false;
 }
 

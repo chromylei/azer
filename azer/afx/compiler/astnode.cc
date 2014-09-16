@@ -45,6 +45,19 @@ void ASTNode::AddChildren(ASTNode* node) {
   }
 }
 
+ScopedNode* ASTNode::GetScoped() {
+  ASTNode* cur = parent();
+  while (cur) {
+    if (cur->IsScopedNode()) {
+      return cur->ToScopedNode();
+    }
+
+    cur = cur->parent();
+  }
+
+  return NULL;
+}
+
 // class AttributesNode
 bool AttributesNode::Add(const std::string& name, const std::string& field) {
   auto iter = fields_.find(name);
@@ -835,6 +848,5 @@ const char* ASTNodeName(ASTNode::ASTNodeType type) {
     default: NOTREACHED(); return "";
   }
 }
-
 }  // namespace afx
 }  // namespace azer

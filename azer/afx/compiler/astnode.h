@@ -165,6 +165,8 @@ class ASTNode : public TreeNodeDownUp<ASTNode> {
   void* extra() { return extra_;}
   void set_extra(void* v) { extra_ = v;}
   const char* name();
+
+  ScopedNode* GetScoped();
  protected:
   void SetError(const std::string& errmsg) { error_msg_ = errmsg;}
   std::string error_msg_;

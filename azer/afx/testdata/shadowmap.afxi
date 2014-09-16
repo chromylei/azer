@@ -1,0 +1,5 @@
+#package afx;
+
+bool InShadow(Texture2D smtex, vec4 sm_position) {
+  return true;
+}
