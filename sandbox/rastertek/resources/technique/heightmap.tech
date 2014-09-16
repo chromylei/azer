@@ -1,8 +1,0 @@
-{
-  "vertex_stage": {
-    "program": "technique/heightmap.vs",
-    "vertex_desc": "vdesc/heightmap.vdesc:desc",
-  },
-
-  "pixel_stage": "technique/heightmap.ps",
-}
