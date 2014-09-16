@@ -1,0 +1,15 @@
+#package afx;
+
+
+vec4 SampleProjmap(vec4 projpos, Texture2D tex) {
+  vec2 proj_texcoord;
+  proj_texcoord.x = projpos.x / projpos.w / 2.0f + 0.5f;
+  proj_texcoord.y = -projpos.y / projpos.w /2.0f + 0.5f;
+
+  if (proj_texcoord.x >= 0.0 && proj_texcoord.x <= 1.0
+      && proj_texcoord.y >= 0.0 && proj_texcoord.y <= 1.0) {
+    return sample2D(tex, proj_texcoord);
+  } else {
+    return vec4(0.0f, 0.0f, 0.0f, 1.0f);
+  }
+}
