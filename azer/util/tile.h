@@ -54,7 +54,8 @@ class Tile {
 
   int GetGridLineNum() const { return kGridLine;}
   int GetVertexNum() const { return vertices_.size();}
-  int GetIndicesNum() const { return indices_.size();}  
+  int GetIndicesNum() const { return indices_.size();}
+  float cell_width() const { return kCellWidth;}
   void CalcNormal();
 
   float minx() const;
