@@ -1,11 +1,8 @@
 
 group("sandbox") {
   deps = [
-#    "//sandbox/base:base_test",
     "//sandbox/wxwidget:wxwidget_samples",
-#    "//sandbox/azer:azer_sbox",
-#    "//sandbox/skia:skia_sbox",
+    "//sandbox/skia:skia_sbox",
     "//sandbox/ui:gfx_sbox",
-#    "//sandbox/rastertek:rastertek_d3d11",
   ]
 }
