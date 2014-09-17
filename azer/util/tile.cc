@@ -148,25 +148,21 @@ Tile::QuadTree::Splitable::SplitRes FrustrumSplit::Split(
   }
 }
 
-void Tile::QuadTree::Split(int minlevel, Splitable* splitable,
-                           std::vector<Tile::Pitch>* final) {
-  DCHECK_GE(minlevel, 0);
+void Tile::QuadTree::Split(Splitable* splitable, std::vector<Tile::Pitch>* final) {
   InitNode();
   int cur = 0;
   Node* node = nodes_.get();
   while (cur < tail_) {
-    if (node->level == minlevel) {
+    DCHECK_GE(node->level, 1);
+    int32 visible = splitable->Split(*node);
+    if (visible == Splitable::kSplit) {
+      DCHECK_GT(node->level, 1);
+      SplitPitch(node);
+    } else if (visible == Splitable::kKeep) {
       final->push_back(node->pitch);
     } else {
-      DCHECK_GT(node->level, minlevel);
-      int32 visible = splitable->Split(*node);
-      if (visible == Splitable::kSplit) {
-        SplitPitch(node);
-      } else if (visible == Splitable::kKeep) {
-        final->push_back(node->pitch);
-      } else {
-      }
     }
+
     cur++;
     node++;
   }

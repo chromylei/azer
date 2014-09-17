@@ -102,7 +102,7 @@ class Tile {
       virtual SplitRes Split(const Node& node) = 0;
     };
 
-    void Split(int minlevel, Splitable* splitable, std::vector<Tile::Pitch>* nodes);
+    void Split(Splitable* splitable, std::vector<Tile::Pitch>* nodes);
    private:
     void InitNode();
     void SplitPitch(Node* node);
