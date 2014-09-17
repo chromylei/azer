@@ -7,6 +7,8 @@
 
 namespace azer {
 
+class RenderSystem;
+
 class Texture {
  public:
   enum BindTarget {
@@ -92,6 +94,11 @@ class Texture {
 
   explicit Texture(const Options& opt) : options_(opt) {}
   virtual ~Texture() {}
+  
+  static Texture* CreateShaderTexture(const ::base::FilePath& path,
+                                      RenderSystem* rs);
+  static Texture* CreateShaderTexture(const ::base::FilePath::StringType& path,
+                                      RenderSystem* rs);
 
   const Options& option() const { return options_;}
 
@@ -118,7 +125,13 @@ class Texture {
   virtual bool InitFromData(const uint8* data, uint32 size) = 0;
  protected:
   Options options_;
+  DISALLOW_COPY_AND_ASSIGN(Texture);
 };
 
 typedef std::shared_ptr<Texture> TexturePtr;
+
+inline Texture* Texture::CreateShaderTexture(
+    const ::base::FilePath::StringType& path, RenderSystem* rs) {
+  return CreateShaderTexture(::base::FilePath(path), rs);
+}
 }  // namespace azer
