@@ -9,7 +9,7 @@ namespace azer {
 
 class RenderSystem;
 
-class Texture {
+class AZER_EXPORT Texture {
  public:
   enum BindTarget {
     kUnknown        = 0,
