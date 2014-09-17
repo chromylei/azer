@@ -27,22 +27,23 @@ bool SaveImage(azer::Image* image, const ::base::FilePath& path) {
   return ilimg.Save(path);
 }
 
-azer::ImagePtr LoadImageFromFile(const ::base::FilePath& path) {
+azer::Image* LoadImageFromFile(const ::base::FilePath& path) {
   detail::ilImageWrapper ilimg;
   if (!ilimg.Load(path)) {
-    return azer::ImagePtr();
+    return NULL;
   }
 
   int32 size = ilimg.GetDataSize();
-  azer::ImagePtr ptr(new azer::Image(ilimg.width(), ilimg.height(), azer::kRGBAn8));
+  std::unique_ptr<azer::Image> ptr(new azer::Image(ilimg.width(),
+                                                   ilimg.height(), azer::kRGBAn8));
   ilimg.CopyToImage(ptr.get());
-  return ptr;
+  return ptr.release();
 }
 
 Texture* CreateShaderTexture(const ::base::FilePath& path, azer::RenderSystem* rs) {
   Texture::Options texopt;
   texopt.target = Texture::kShaderResource;
-  ImagePtr imgptr(LoadImageFromFile(path));
+  std::unique_ptr<Image> imgptr(LoadImageFromFile(path));
   if (imgptr.get()) {
     return rs->CreateTexture(texopt, imgptr.get());
   } else {

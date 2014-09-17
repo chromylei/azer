@@ -10,7 +10,7 @@
 
 namespace azer {
 
-class Image {
+class AZER_EXPORT Image {
  public:
   Image(int width, int height, DataFormat format = kRGBAn8);
 
@@ -24,6 +24,13 @@ class Image {
   int32 data_size() const;
   int32 unit_size() const { return sizeof_dataformat(format_);}
   DataFormat format() const { return format_;}
+
+  
+  static Image* Load(const ::base::FilePath& path);
+  static Image* Load(const ::base::FilePath::StringType& path);
+
+  bool Save(const ::base::FilePath& path);
+  bool Save(const ::base::FilePath::StringType& path);
  private:
   int32 sizeof_dataformat(DataFormat format) const;
   std::unique_ptr<uint8> data_;
@@ -91,5 +98,13 @@ inline uint32 Image::pixel(int x, int y) {
 inline void Image::set_pixel(int x, int y, uint32 v) {
   uint8* ptr = data_.get() + (y * width() + x) * sizeof_dataformat(format());
   *(uint32*)ptr = v;
+}
+
+inline bool Image::Save(const ::base::FilePath::StringType& path) {
+  return Save(::base::FilePath(path));
+}
+
+inline Image* Image::Load(const ::base::FilePath::StringType& path) {
+  return Load(::base::FilePath(path));
 }
 }  // namespace azer

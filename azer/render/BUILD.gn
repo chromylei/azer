@@ -20,6 +20,8 @@ shared_library("render") {
     "../base/string.cc",
     "../base/string.h",
     "../base/tree_node.h",
+    "../base/image.cc",
+    "../base/image.h",
     "../resources/content.h",
     "../resources/file_system.cc",
     "../resources/file_system.h",

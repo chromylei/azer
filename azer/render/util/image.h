@@ -10,9 +10,9 @@ namespace azer {
 AZER_EXPORT Vector4 SampleImage(float u, float v, Image* image);
 
 // load image from file
-AZER_EXPORT ImagePtr LoadImageFromFile(const ::base::FilePath& path);
+AZER_EXPORT Image* LoadImageFromFile(const ::base::FilePath& path);
 
-inline ImagePtr LoadImageFromFile(const ::base::FilePath::StringType& path) {
+inline Image* LoadImageFromFile(const ::base::FilePath::StringType& path) {
   return LoadImageFromFile(::base::FilePath(path));
 }
 
