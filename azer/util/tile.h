@@ -80,14 +80,14 @@ class Tile {
       int level;
       bool splitted;
       Node(): level(-1), splitted(false) {}
-      int midx() const { return (1 << level) + pitch.left;}
-      int midy() const { return (1 << level) + pitch.top;}
+      int midx() const { return (1 << (level - 1)) + pitch.left;}
+      int midy() const { return (1 << (level - 1)) + pitch.top;}
     };
 
     explicit QuadTree(int level)
         : tail_(-1)
         , kLevel(level)
-        , kGridLine((1 << (level + 1)) + 1) {
+        , kGridLine((1 << level) + 1) {
       int max_cell = (int)std::pow(4.0, level) / 3;
       nodes_.reset(new Node[max_cell]);
     }

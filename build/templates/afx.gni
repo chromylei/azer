@@ -23,7 +23,7 @@ template("afx") {
   # afx_gen_dir = rebase_path(target_gen_dir, root_build_dir, ".")
   afx_gen_dir = rebase_path(target_gen_dir, ".", "")
   afx_file_path = rebase_path("$source", ".", "")
-  azer_path = rebase_path("$root_build_dir/../../", ".", "")
+  azer_path = rebase_path("$root_build_dir/../../azer/afx", ".", "")
   depfile = source
   
   custom(target_name+"_afx_cppcode") {
