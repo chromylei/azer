@@ -25,7 +25,7 @@ bool D3D11Texture2D::Init(const D3D11_SUBRESOURCE_DATA* data) {
   ZeroMemory(&tex_desc_, sizeof(DXGI_MODE_DESC));
   tex_desc_.Width     = options_.width;
   tex_desc_.Height    = options_.height;
-  tex_desc_.MipLevels = options_.sampler.mip_level;
+  tex_desc_.MipLevels = 1; // options_.sampler.mip_level;
   tex_desc_.ArraySize = 1;
   tex_desc_.Format    = TranslateFormat(options_.format);
   tex_desc_.SampleDesc.Count   = 1;
@@ -83,6 +83,14 @@ bool D3D11Texture2D::LoadFromFile(const base::FilePath& path) {
 
   texture_->GetDesc(&tex_desc_);
   return InitResourceView();
+}
+
+void D3D11Texture2D::GenerateMips(int level) {
+  DCHECK(view_ != NULL);
+  ID3D11Device* d3d_device = render_system_->GetDevice();
+  D3D11Renderer* renderer = (D3D11Renderer*)(render_system_->GetDefaultRenderer());
+  ID3D11DeviceContext* d3d_context = renderer->GetContext();
+  d3d_context->GenerateMips(view_);
 }
 
 bool D3D11Texture2D::InitResourceView() {

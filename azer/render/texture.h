@@ -101,6 +101,7 @@ class AZER_EXPORT Texture {
   const Options& option() const { return options_;}
 
   virtual bool SetSamplerState(const SamplerState& sampler_state) = 0;
+  virtual void GenerateMips(int level) = 0; 
 
   /**
    * Note: map 返回 MapData 结构体，返回的数据当中 width 和 depth

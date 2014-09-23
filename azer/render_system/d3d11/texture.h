@@ -23,6 +23,9 @@ class D3D11Texture2D : public Texture {
   bool Init(const D3D11_SUBRESOURCE_DATA* data);
   void UseForStage(RenderPipelineStage stage, int index, D3D11Renderer* renderer);
 
+  virtual void GenerateMips(int level) OVERRIDE;
+  virtual bool SetSamplerState(const SamplerState& sampler_state) OVERRIDE;
+
   virtual MapData map(MapType type) OVERRIDE;
   virtual void unmap() OVERRIDE;
   virtual bool InitFromData(const uint8* data, uint32 size) OVERRIDE;
@@ -47,7 +50,6 @@ class D3D11Texture2D : public Texture {
   }
 
   bool InitResourceView();
-  virtual bool SetSamplerState(const SamplerState& sampler_state);
   void InitTexture2DDesc();
   void InitTextureCubeMapDesc();
 
