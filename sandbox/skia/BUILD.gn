@@ -9,10 +9,10 @@ group("skia_sbox") {
 
 executable("skiasbox_helloworld") {
   sources = ["helloworld.cc"]
-  deps = ["//third_party/skia:skia"]
+  deps = ["//third_party/skia/gn:skia"]
 }
 
 executable("skia_sbox_png") {
   sources = ["png.cc"]
-  deps = ["//third_party/skia:skia"]
+  deps = ["//third_party/skia/gn:skia"]
 }
