@@ -270,4 +270,38 @@ inline D3D11_COMPARISON_FUNC TranslateCompareFunc(CompareFunc::Type type) {
     default: CHECK(false); return (D3D11_COMPARISON_FUNC)0;
   }
 }
+
+inline D3D11_FILTER TranslateSamplerState(const Texture::SamplerState& state) {
+  if (state.mag_filter == Texture::kPoint && state.min_filter == Texture::kPoint
+      && state.mip_filter == Texture::kPoint) {
+    return D3D11_FILTER_MIN_MAG_MIP_POINT;
+  } else if (state.mag_filter == Texture::kLinear
+             && state.min_filter == Texture::kLinear
+             && state.mip_filter == Texture::kLinear) {
+    return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+  } else if (state.mag_filter == Texture::kPoint
+             && state.min_filter == Texture::kLinear
+             && state.mip_filter == Texture::kPoint) {
+    return D3D11_FILTER_MIN_POINT_MAG_LINEAR_MIP_POINT;
+  } else if (state.mag_filter == Texture::kPoint
+             && state.min_filter == Texture::kLinear
+             && state.mip_filter == Texture::kLinear) {
+    return D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
+  } else if (state.mag_filter == Texture::kLinear
+             && state.min_filter == Texture::kPoint
+             && state.mip_filter == Texture::kPoint) {
+    return D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT;
+  } else if (state.mag_filter == Texture::kLinear
+             && state.min_filter == Texture::kPoint
+             && state.mip_filter == Texture::kLinear) {
+    return D3D11_FILTER_MIN_LINEAR_MAG_POINT_MIP_LINEAR;
+  } else if (state.mag_filter == Texture::kLinear
+             && state.min_filter == Texture::kLinear
+             && state.mip_filter == Texture::kPoint) {
+    return D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT;
+  } else {
+    NOTREACHED();
+    return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+  }
+}
 }  // namespace azer

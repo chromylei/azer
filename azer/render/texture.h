@@ -49,8 +49,7 @@ class AZER_EXPORT Texture {
     Texture::WrapMode wrap_w;
     Texture::FilterMode mag_filter;
     Texture::FilterMode min_filter;
-    Texture::FilterMode mipmin_filter;
-    Texture::FilterMode mipmag_filter;
+    Texture::FilterMode mip_filter;
     CompareFunc::Type compare_func;
     Vector4 border_color;
     int mip_level;
@@ -62,8 +61,7 @@ class AZER_EXPORT Texture {
         , wrap_w(Texture::kWrap)
         , mag_filter(Texture::kPoint)
         , min_filter(Texture::kPoint)
-        , mipmin_filter(Texture::kPoint)
-        , mipmag_filter(Texture::kPoint)
+        , mip_filter(Texture::kPoint)
         , compare_func(CompareFunc::kNever)
         , border_color(0.0f, 0.0f, 0.0f, 0.0f)
         , mip_level(1)
@@ -102,12 +100,7 @@ class AZER_EXPORT Texture {
 
   const Options& option() const { return options_;}
 
-  /**
-   * NOTE: 此函数的设置将在下一次调用 UseForStage 或者 RenderSystem::Use 时生效
-   */ 
-  void SetSamplerState(const SamplerState& sampler_state) {
-    options_.sampler = sampler_state;
-  }
+  virtual bool SetSamplerState(const SamplerState& sampler_state) = 0;
 
   /**
    * Note: map 返回 MapData 结构体，返回的数据当中 width 和 depth

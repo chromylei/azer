@@ -124,7 +124,7 @@ bool D3D11Texture2D::SetSamplerState(const SamplerState& sampler_state) {
   }
   D3D11_SAMPLER_DESC sampler_desc;
   ZeroMemory(&sampler_desc, sizeof(sampler_desc));
-  sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+  sampler_desc.Filter = TranslateSamplerState(sampler_state);
   sampler_desc.AddressU = TranslateTexWrapMode(options_.sampler.wrap_u);
   sampler_desc.AddressV = TranslateTexWrapMode(options_.sampler.wrap_v);
   sampler_desc.AddressW = TranslateTexWrapMode(options_.sampler.wrap_w);

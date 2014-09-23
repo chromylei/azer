@@ -47,7 +47,7 @@ class D3D11Texture2D : public Texture {
   }
 
   bool InitResourceView();
-  bool SetSamplerState(const SamplerState& sampler_state);
+  virtual bool SetSamplerState(const SamplerState& sampler_state);
   void InitTexture2DDesc();
   void InitTextureCubeMapDesc();
 
