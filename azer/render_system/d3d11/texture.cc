@@ -22,14 +22,14 @@ bool D3D11Texture2D::Init(const D3D11_SUBRESOURCE_DATA* data) {
   DCHECK(NULL == texture_);
   ID3D11Device* d3d_device = render_system_->GetDevice();
 
-  ZeroMemory(&tex_desc_, sizeof(DXGI_MODE_DESC));
+  ZeroMemory(&tex_desc_, sizeof(D3D11_TEXTURE2D_DESC));
   tex_desc_.Width     = options_.width;
   tex_desc_.Height    = options_.height;
-  tex_desc_.MipLevels = 1; // options_.sampler.mip_level;
+  tex_desc_.MipLevels = options_.sampler.mip_level;
   tex_desc_.ArraySize = 1;
   tex_desc_.Format    = TranslateFormat(options_.format);
-  tex_desc_.SampleDesc.Count   = 1;
-  tex_desc_.SampleDesc.Quality = 0;
+  tex_desc_.SampleDesc.Count   = options_.sampler.sample_level;
+  tex_desc_.SampleDesc.Quality = options_.sampler.sample_qualifiy;
   tex_desc_.Usage          = TranslateUsage(options_.usage);
   tex_desc_.BindFlags      = TranslateBindTarget(options_.target);
   tex_desc_.CPUAccessFlags = TranslateCPUAccess(options_.cpu_access);
@@ -90,6 +90,7 @@ void D3D11Texture2D::GenerateMips(int level) {
   ID3D11Device* d3d_device = render_system_->GetDevice();
   D3D11Renderer* renderer = (D3D11Renderer*)(render_system_->GetDefaultRenderer());
   ID3D11DeviceContext* d3d_context = renderer->GetContext();
+  // D3DX11FilterTexture(d3d_context, (ID3D11Resource*)view_, 0, level);
   d3d_context->GenerateMips(view_);
 }
 

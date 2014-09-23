@@ -54,6 +54,8 @@ class AZER_EXPORT Texture {
     Vector4 border_color;
     int mip_level;
     int max_anisotropy;
+    int sample_level;
+    int sample_qualifiy;
 
     SamplerState()
         : wrap_u(Texture::kWrap)
@@ -65,7 +67,9 @@ class AZER_EXPORT Texture {
         , compare_func(CompareFunc::kNever)
         , border_color(0.0f, 0.0f, 0.0f, 0.0f)
         , mip_level(1)
-        , max_anisotropy(1) {
+        , max_anisotropy(1)
+        , sample_level(1)
+        , sample_qualifiy(0) {
     }
   };
 
@@ -93,10 +97,16 @@ class AZER_EXPORT Texture {
   explicit Texture(const Options& opt) : options_(opt) {}
   virtual ~Texture() {}
   
-  static Texture* CreateShaderTexture(const ::base::FilePath& path,
+  static Texture* LoadShaderTexture(const ::base::FilePath& path,
                                       RenderSystem* rs);
-  static Texture* CreateShaderTexture(const ::base::FilePath::StringType& path,
+  static Texture* LoadShaderTexture(const ::base::FilePath::StringType& path,
                                       RenderSystem* rs);
+  static Texture* LoadTexture(const Texture::Options& opt,
+                              const ::base::FilePath& path,
+                              RenderSystem* rs);
+  static Texture* LoadTexture(const Texture::Options& opt,
+                              const ::base::FilePath::StringType& path,
+                              RenderSystem* rs);
 
   const Options& option() const { return options_;}
 
@@ -124,8 +134,14 @@ class AZER_EXPORT Texture {
 
 typedef std::shared_ptr<Texture> TexturePtr;
 
-inline Texture* Texture::CreateShaderTexture(
+inline Texture* Texture::LoadShaderTexture(
     const ::base::FilePath::StringType& path, RenderSystem* rs) {
-  return CreateShaderTexture(::base::FilePath(path), rs);
+  return LoadShaderTexture(::base::FilePath(path), rs);
+}
+
+inline Texture* Texture::LoadTexture(const Texture::Options& opt,
+                                     const ::base::FilePath::StringType& path,
+                                     RenderSystem* rs) {
+  return LoadTexture(opt, ::base::FilePath(path), rs);
 }
 }  // namespace azer
