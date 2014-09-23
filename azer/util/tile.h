@@ -40,6 +40,7 @@ class Tile {
   void Init();
   const std::vector<azer::Vector3>& vertices() { return vertices_;}
   const std::vector<azer::Vector3>& normal() { return normal_;}
+  const std::vector<azer::Vector2>& texcoord() { return texcoord_;}
   const std::vector<int32>& indices() { return indices_;}
 
   int32* InitPitchIndices(int level, const Tile::Pitch& pitch, int32* indices);
@@ -51,12 +52,20 @@ class Tile {
   void SetHeight(int x, int z, float height);
   azer::Vector3& vertex(int x, int z);
   const azer::Vector3& vertex(int x, int z) const;
+  const azer::Vector2& texcoord(int x, int z) const;
 
   int GetGridLineNum() const { return kGridLine;}
   int GetVertexNum() const { return vertices_.size();}
   int GetIndicesNum() const { return indices_.size();}
   float cell_width() const { return kCellWidth;}
   void CalcNormal();
+  /**
+   * 计算 TBN 空间（主要用户 BUMPMAP)
+   * 参数 repeat: 用作计算 texcoord, 默认情况下，每一个单元格的坐标是 1.0f
+   * 通过 repeat 参数可以对 texcoord 进行缩放
+   */
+  void CalcTBN(float repeat, std::vector<azer::Vector3>* tangent,
+               std::vector<azer::Vector3>* binormal);
 
   float minx() const;
   float maxx() const;
@@ -117,6 +126,7 @@ class Tile {
   void InitIndices();
   std::vector<azer::Vector3> vertices_;
   std::vector<azer::Vector3> normal_;
+  std::vector<azer::Vector2> texcoord_;
   std::vector<int32> indices_;
   const int kGridLine;
   const int kLevel_;
