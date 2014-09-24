@@ -61,11 +61,14 @@ bool CompareCode(const ::base::FilePath& path, const std::string& content) {
   std::string str1, str2;
   ::base::ReplaceChars(content1, "\r\n", "", &str1);
   ::base::ReplaceChars(content, "\r\n", "", &str2);
-  if (str1 == str2) {
+  std::string s1, s2;
+  TrimWhitespace(str1, TRIM_ALL, &s1);
+  TrimWhitespace(str2, TRIM_ALL, &s2);
+  if (s1 == s2) {
     return true;
   } else {
-    LOG(ERROR) << "EXPECT:\n" << str1;
-    LOG(ERROR) << "RESULT:\n" << str2;
+    LOG(ERROR) << "EXPECT(length: " << s1.length() << ")\n" << s1;
+    LOG(ERROR) << "RESULT(length: " << s2.length() << ")\n" << s2;
     return false;
   }  
 }
