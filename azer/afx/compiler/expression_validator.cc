@@ -428,9 +428,8 @@ void ExpressionValidator::CalcBinaryOperType(BinaryOpNode* node) {
     case kOpMember: {
       DCHECK(oper2->IsFieldNode());
       FieldNode* field = oper2->ToFieldNode();
-      if (oper1->IsFuncCallNode()) {
-      } else if (oper1->IsBinaryOpNode()) {
-        TypePtr ptr = oper1->ToBinaryOpNode()->GetResultType();
+      if (oper1->IsExpressionNode()) {
+        TypePtr ptr = oper1->ToExpressionNode()->GetResultType();
         DCHECK(ptr.get() != NULL);
         if (ptr->IsVector()) {
           if (ValidSwizzleExpression(ptr, field)) {
@@ -448,12 +447,12 @@ void ExpressionValidator::CalcBinaryOperType(BinaryOpNode* node) {
         DCHECK(symtype->GetType().get() != NULL);
         if (symtype->GetStructDecl()) {
           StructDeclNode* decl = symtype->GetStructDecl();
-		  DCHECK(decl != NULL);
-		  FieldNode* decl_field = decl->GetField(field->fieldname());
+          DCHECK(decl != NULL);
+          FieldNode* decl_field = decl->GetField(field->fieldname());
           if (decl_field == NULL) {
             std::stringstream ss;
             ss << "struct \"" << symtype->GetStructDecl()->struct_name() << "\""
-               << " has no field named \"" << field->fieldname() << "\"";
+              << " has no field named \"" << field->fieldname() << "\"";
             ReportError(ss.str(), node); 
           } else {
             v = Value(decl_field->GetType());

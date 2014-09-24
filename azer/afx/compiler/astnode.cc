@@ -288,7 +288,7 @@ void DeclarationNode::SetTypedNode(ASTNode* node) {
 
 // class FuncCallNode
 FuncCallNode::FuncCallNode(const std::string& source, const SourceLoc& loc)
-    : ASTNode(source, loc, kFuncCallNode)
+    : ExpressionNode(source, loc, kFuncCallNode)
     , funcdef_node_(NULL) {
 }
 
@@ -339,6 +339,12 @@ void FuncCallNode::SetFuncDefNode(ASTNode* funcnode) {
   DCHECK_EQ(funcnode->type(), kFuncDefNode);
   DCHECK(funcdef_node_ == NULL);
   funcdef_node_ = funcnode->ToFuncDefNode();
+
+  FuncProtoNode* proto = funcdef_node_->GetProtoNode();
+  DCHECK(proto != NULL);
+  TypedNode* tnode = proto->rettype();
+  DCHECK(tnode != NULL);
+  SetResultType(tnode->GetType());
 }
 
 void FuncCallTypeInitNode::SetType(TypePtr type) {

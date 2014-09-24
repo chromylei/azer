@@ -29,6 +29,26 @@ TEST(AfxParser, Expression) {
   DUMP_AFXCOMPILE_ERROR(context);
 }
 
+TEST(AfxParser, FuncExpression) {
+  const std::string str =
+      "vec4 clamp(vec4 v, float v1, float v2) { return v;}"
+      "void psmain() {\n"
+      "  vec4 r1 = clamp(vec4(0.1, 0.1, 0.1, 1.0), 0.0f, 1.0f);"
+      "  vec3 r2 = clamp(vec4(0.1, 0.1, 0.1, 1.0), 0.0f, 1.0f).xyz;"
+      "}";
+      ;
+  ASTNodeFactory factory;
+  ParseContext::Options opt;
+  // opt.dump_parser = true;
+  // opt.dump_tokenizer = true;
+  // opt.syntax_valid = false;
+  ParseContext context("", "", str, &factory, opt);
+  Parser parser;
+  EXPECT_TRUE(parser.Parse(&context));
+  // DumpASTree(&context, std::cout);
+  DUMP_AFXCOMPILE_ERROR(context);
+}
+
 TEST(AfxParser, ExpressionValue) {
   const std::string str =
       "void psmain() {\n"

@@ -221,6 +221,7 @@ class ExpressionNode : public ASTNode {
  public:
   ExpressionNode(const std::string& source, const SourceLoc& loc, ASTNodeType type);
   virtual bool IsExpressionNode() OVERRIDE { return true;}
+  virtual ExpressionNode* ToExpressionNode() { return this;}
 
   void SetResultType(TypePtr ptr);
   TypePtr& GetResultType();
@@ -375,7 +376,7 @@ class ForLoopNode : public ASTNode {
   DISALLOW_COPY_AND_ASSIGN(ForLoopNode);
 };
 
-class FuncCallNode : public ASTNode {
+class FuncCallNode : public ExpressionNode {
  public:
   FuncCallNode(const std::string& source, const SourceLoc& loc);
   virtual FuncCallNode* ToFuncCallNode() OVERRIDE { return this;}
@@ -393,7 +394,7 @@ class FuncCallNode : public ASTNode {
   bool IsBuiltIn();
  protected:
   FuncCallNode(const std::string& source, const SourceLoc& loc, ASTNodeType type)
-      : ASTNode(source, loc, type), funcdef_node_(NULL) {}
+      : ExpressionNode(source, loc, type), funcdef_node_(NULL) {}
  private:
   FuncDefNode* funcdef_node_;
   std::vector<ASTNode*> params_;
