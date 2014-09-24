@@ -20,7 +20,6 @@ const char* StagePrefix(RenderPipelineStage stage);
 std::string GpuTableDescVarName(RenderPipelineStage stage);
 const char* GpuConstantTypeFromUniform(const TypePtr& typeptr);
 std::string GetTexVarName(ASTNode* node, RenderPipelineStage stage);
-std::string SelfDefStructureName(StructDeclNode* node);
 bool IsSelfDefinedStruct(const TypePtr& typeptr);
 std::string GetSemanticName(const std::string& name);
 int GetSemanticIndex(FieldNode* field);
@@ -145,7 +144,7 @@ std::string CppCodeGen::GenStageGpuTableDesc(RenderPipelineStage stage,
       ss << "    azer::GpuConstantsTable::Desc(\"" << symbol->symbolname()
          << "\", offsetof(" << StagePrefix(stage) << "_cbuffer, "
          << symbol->symbolname() << "),\n"
-         << "         sizeof(" << SelfDefStructureName(decl) << "), "
+         << "         sizeof(" << GetStructTypeName(decl) << "), "
          << (type->IsArray() ? type->GetDim(0) : 1) << "),\n";
     }
   };
@@ -325,7 +324,7 @@ std::string CppCodeGen::GenStageUniformStructure(RenderPipelineStage stage,
   for (auto iter = decl_nodes.begin(); iter != decl_nodes.end(); ++iter) {
     DCHECK((*iter)->IsStructDeclNode());
     StructDeclNode* decl = (*iter);
-    ss << "  struct " << SelfDefStructureName(*iter) << "{\n";
+    ss << "  struct " << GetStructTypeName(*iter) << "{\n";
     for (auto field_iter = decl->fields().begin();
          field_iter != decl->fields().end(); ++field_iter) {
       FieldNode* field = (*field_iter);
@@ -685,14 +684,8 @@ std::string UniformTypeName(ASTNode* node) {
     case kTexture2D: return "azer::Texture";
     case kTexture3D: return "azer::Texture";
     case kTextureCube: return "azer::Texture";
-    case kStructure: {
-      
-      std::string output_name = GetStructTypeName(node);
-      if (output_name.empty()) {
-        ::base::ReplaceChars(type->name(), "::", "__", &output_name);
-      }
-      return output_name;
-    }
+    case kStructure:
+      return GetStructTypeName(node);
     case kChar:
     case kString:
     case kDouble:
@@ -703,8 +696,9 @@ std::string UniformTypeName(ASTNode* node) {
 }
 
 std::string GetStructTypeName(ASTNode* node) {
+  StructDeclNode* decl = NULL;
   if (node->IsStructDeclNode()) {
-    StructDeclNode* decl = node->ToStructDeclNode();
+    decl = node->ToStructDeclNode();
     if (IsExternCppStruct(decl)) {
       return decl->attributes()->GetAttrValue("cppstruct");
     }
@@ -712,14 +706,22 @@ std::string GetStructTypeName(ASTNode* node) {
     DeclarationNode* declare = node->ToDeclarationNode();
     TypedNode* tnode = declare->GetTypedNode();
     DCHECK(tnode != NULL && tnode->GetStructDecl());
-    StructDeclNode* decl = tnode->GetStructDecl()->ToStructDeclNode();
+    decl = tnode->GetStructDecl()->ToStructDeclNode();
     if (IsExternCppStruct(decl)) {
       return decl->attributes()->GetAttrValue("cppstruct");
     }
+  } else {
+    NOTREACHED();
   }
-  return "";
+
+  std::stringstream ss;
+  if (!decl->GetContext()->package().empty()) {
+    ss << decl->GetContext()->package() << "__";
+  }
+
+  ss << decl->struct_name();
+  return ss.str();
 }
-  
 
 inline std::string GpuTableDescVarName(RenderPipelineStage stage) {
   std::string ret = std::string(StagePrefix(stage)) + "_table_desc";
@@ -785,16 +787,6 @@ const char* GpuConstantTypeFromUniform(const TypePtr& typeptr) {
 std::string GetTexVarName(ASTNode* node, RenderPipelineStage stage) {
   std::stringstream ss;
   ss << StagePrefix(stage) << "_" << GenReferredTextureVarName(node) << "_";
-  return ss.str();
-}
-
-std::string SelfDefStructureName(StructDeclNode* node) {
-  std::stringstream ss;
-  if (!node->GetContext()->package().empty()) {
-    ss << node->GetContext()->package() << "__";
-  }
-
-  ss << node->struct_name();
   return ss.str();
 }
 
