@@ -17,14 +17,16 @@ namespace {
 const char* StageName(RenderPipelineStage stage);
 const char* StagePrefix(RenderPipelineStage stage);
 std::string GpuTableDescVarName(RenderPipelineStage stage);
-std::string UniformType(const TypePtr& type);
-std::string UniformTypeIndex(const TypePtr& type);
 const char* GpuConstantTypeFromUniform(const TypePtr& typeptr);
 std::string GetTexVarName(ASTNode* node, RenderPipelineStage stage);
 std::string SelfDefStructureName(StructDeclNode* node);
 bool IsSelfDefinedStruct(const TypePtr& typeptr);
 std::string GetSemanticName(const std::string& name);
 int GetSemanticIndex(FieldNode* field);
+
+bool IsCommonStruct(StructDeclNode* node);
+std::string UniformTypeName(ASTNode* node);
+std::string UniformTypeIndex(const TypePtr& type);
 }  // namespace
 
 CppCodeGen::CppCodeGen() {
@@ -78,14 +80,14 @@ std::string CppCodeGen::GenStageUniforms(RenderPipelineStage stage,
     }
 
     DCHECK(!decl->GetType()->IsTexture());
-    ss << "  void " << funcname << "(const " << UniformType(decl->GetType());
+    ss << "  void " << funcname << "(const " << UniformTypeName(decl);
     if (typeptr->IsArray()) {
       ss << "* value, int num) {\n"
          << "    azer::GpuConstantsTable* tb = gpu_table_[(int)"
          << StageName(stage) << "].get();\n"
          << "    DCHECK(tb != NULL);\n"
          << "    tb->SetValue(" << index << ", value, "
-         << "sizeof(" << UniformType(decl->GetType()) << ") * num);\n"
+         << "sizeof(" << UniformTypeName(decl) << ") * num);\n"
          << "  }\n";
     } else {
       ss << "& value) {\n"
@@ -93,7 +95,7 @@ std::string CppCodeGen::GenStageUniforms(RenderPipelineStage stage,
          << StageName(stage) << "].get();\n"
          << "    DCHECK(tb != NULL);\n"
          << "    tb->SetValue(" << index << ", &value, "
-         << "sizeof(" << UniformType(decl->GetType()) << "));\n"
+         << "sizeof(" << UniformTypeName(decl) << "));\n"
          << "  }\n";
     }
   }
@@ -208,6 +210,11 @@ std::string CppCodeGen::GenVertexStruct(const TechniqueParser::Technique& tech) 
   DCHECK(typed != NULL && typed->GetStructDecl() != NULL);
   StructDeclNode* decl = typed->GetStructDecl();
 
+  // if vertex is extend, then return directly
+  if (IsCommonStruct(decl)) {
+    return "";
+  }
+
   std::stringstream ss;
   ss << "\n"
      << "  /**\n"
@@ -218,7 +225,7 @@ std::string CppCodeGen::GenVertexStruct(const TechniqueParser::Technique& tech) 
   for (auto iter = decl->fields().begin(); iter != decl->fields().end(); ++iter) {
     DCHECK((*iter)->IsFieldNode());
     FieldNode* struct_field = (*iter)->ToFieldNode();
-    ss << "    " << UniformType(struct_field->GetType()) << " "
+    ss << "    " << UniformTypeName(struct_field) << " "
        << struct_field->fieldname() << ";\n";
   }
   ss << "    Vertex(){}\n"
@@ -227,7 +234,7 @@ std::string CppCodeGen::GenVertexStruct(const TechniqueParser::Technique& tech) 
   for (auto iter = decl->fields().begin(); iter != decl->fields().end();
        ++iter, ++cnt) {
     if (iter != decl->fields().begin()) ss << ", ";
-    ss << "const " << UniformType((*iter)->GetType()) << " p" << cnt;
+    ss << "const " << UniformTypeName((*iter)) << " p" << cnt;
   }
   ss << ")\n";
   cnt = 0;
@@ -303,7 +310,7 @@ std::string CppCodeGen::GenStageUniformStructure(RenderPipelineStage stage,
   for (auto iter = unideps.begin(); iter != unideps.end(); ++iter) {
     DCHECK((*iter)->IsStructDeclNode());
     StructDeclNode* decl = (*iter)->ToStructDeclNode();
-    if (decl->GetContext()->package() != "afx") {
+    if (IsCommonStruct(decl)) {
       decl_nodes.push_back(decl);
     }
   }
@@ -316,7 +323,7 @@ std::string CppCodeGen::GenStageUniformStructure(RenderPipelineStage stage,
     for (auto field_iter = decl->fields().begin();
          field_iter != decl->fields().end(); ++field_iter) {
       FieldNode* field = (*field_iter);
-      ss << "    " << UniformType(field->GetType()) << " "
+      ss << "    " << UniformTypeName(field) << " "
          << field->fieldname() << ";\n";
     }
     ss << "  };\n";
@@ -331,7 +338,7 @@ std::string CppCodeGen::GenStageExchangeBuffer(RenderPipelineStage s,
   for (auto iter = uniforms.begin(); iter != uniforms.end(); ++iter) {
     DCHECK((*iter)->IsDeclarationNode());
     DeclarationNode* decl = (*iter)->ToDeclarationNode();
-    ss << "    " << UniformType(decl->GetType()) << " ";
+    ss << "    " << UniformTypeName(decl) << " ";
     ASTNode* cur = decl->first_child();
     if (cur->IsAttributesNode()) {cur = cur->next_sibling();}
     while (cur) {
@@ -604,7 +611,8 @@ std::string UniformTypeIndex(const TypePtr& type) {
   }
 }
 
-std::string UniformType(const TypePtr& type) {
+std::string UniformTypeName(ASTNode* node) {
+  TypePtr& type = GetNodeType(node);
   switch(type->type()) {
     case kShort: return "short";
     case kInt32: return "int32";
@@ -765,6 +773,11 @@ int GetSemanticIndex(FieldNode* field) {
       return index;
     }
   }
+}
+
+bool IsCommonStruct(StructDeclNode* decl) {
+  // check if the struct is declared in another cpp header
+  return decl->attributes() && decl->attributes()->HasAttr("cppstruct");
 }
 }  // namespace
 }  // namespace afx

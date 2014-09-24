@@ -31,6 +31,8 @@ class CppCodeGen {
   void GenHeadCode(const TechniqueParser::Technique& tech);
   void GenCppCode(const TechniqueParser::Technique& tech);
 
+  void GenStructDepIncludeCode(const TechniqueParser::Technique& tech);
+
   std::string GenSetMaterial(const TechniqueParser::Technique& tech);
   std::string GenInit(const TechniqueParser::Technique& tech);
   std::string GenGpuTableInit(const TechniqueParser::Technique& tech);

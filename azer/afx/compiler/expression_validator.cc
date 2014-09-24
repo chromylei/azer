@@ -120,6 +120,13 @@ TypePtr GetNodeType(ASTNode* node) {
     return node->ToFieldNode()->GetType();
   } else if (node->IsParamNode()) {
     return node->ToParamNode()->GetType();
+  } else if (node->IsStructDeclNode()) {
+    StructDeclNode* decl = node->ToStructDeclNode();
+    TypePtr type(new Type(kStructure));
+    type->SetName(decl->struct_name());
+    return type;
+  } else if (node->IsDeclarationNode()) {
+    return node->ToDeclarationNode()->GetType();
   } else {
     NOTREACHED();
     return NULL;
