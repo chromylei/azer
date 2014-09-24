@@ -5,6 +5,7 @@
 #include "base/basictypes.h"
 #include "base/logging.h"
 #include "base/files/file_path.h"
+#include "azer/math/math.h"
 #include "azer/base/render_export.h"
 #include "azer/render/render_system_enum.h"
 
@@ -19,12 +20,15 @@ class AZER_EXPORT Image {
   uint8* data();
   const uint8* data() const;
 
-  uint32 pixel(int x, int y);
+  uint32 pixel(int x, int y) const;
   void set_pixel(int x, int y, uint32 v);
   int32 data_size() const;
   int32 unit_size() const { return sizeof_dataformat(format_);}
   DataFormat format() const { return format_;}
 
+  // sample functions
+  // tu and tv [0, 1)
+  Vector4 BoxSample(float tu, float tv) const;
   
   static Image* Load(const ::base::FilePath& path);
   static Image* Load(const ::base::FilePath::StringType& path);
@@ -89,7 +93,7 @@ inline int32 Image::sizeof_dataformat(DataFormat format) const {
   }
 }
 
-inline uint32 Image::pixel(int x, int y) {
+inline uint32 Image::pixel(int x, int y) const {
   DCHECK(data_.get() != NULL);
   uint8* ptr = data_.get() + (y * width() + x) * sizeof_dataformat(format());
   return *(uint32*)ptr;
