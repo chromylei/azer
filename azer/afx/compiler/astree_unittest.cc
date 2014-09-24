@@ -17,7 +17,7 @@ TEST(ASTree, Expression1) {
   opt.dump_parser = false;
   opt.dump_tokenizer = false;
   azer::afx::ASTNodeFactory factory;
-  azer::afx::ParseContext context("", "", str, &factory, opt);
+  azer::afx::ParseContext context(AFXL(""), "", str, &factory, opt);
   azer::afx::Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
   DumpASTree(&context, std::cout);
@@ -45,7 +45,7 @@ TEST(ASTree, StructureDecl) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   azer::afx::ASTNodeFactory factory;
-  azer::afx::ParseContext context("", "", str, &factory, opt);
+  azer::afx::ParseContext context(AFXL(""), "", str, &factory, opt);
   azer::afx::Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
   std::string dump;
@@ -79,7 +79,7 @@ TEST(ASTree, FunctionDefinition) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   azer::afx::ASTNodeFactory factory;
-  azer::afx::ParseContext context("", "", str, &factory, opt);
+  azer::afx::ParseContext context(AFXL(""), "", str, &factory, opt);
   azer::afx::Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -162,7 +162,7 @@ TEST(ASTree, IfElse) {
   // opt.dump_parser = false;
   // opt.dump_tokenizer = false;
   azer::afx::ASTNodeFactory factory;
-  azer::afx::ParseContext context("", "", str, &factory, opt);
+  azer::afx::ParseContext context(AFXL(""), "", str, &factory, opt);
   azer::afx::Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   dump_error(&context, std::cout);
@@ -239,7 +239,7 @@ TEST(ASTree, IfElse2) {
   opt.dump_parser = false;
   opt.dump_tokenizer = false;
   azer::afx::ASTNodeFactory factory;
-  azer::afx::ParseContext context("", "", str, &factory, opt);
+  azer::afx::ParseContext context(AFXL(""), "", str, &factory, opt);
   azer::afx::Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -291,7 +291,7 @@ TEST(ASTree, ForLoop) {
   opt.dump_parser = false;
   opt.dump_tokenizer = false;
   azer::afx::ASTNodeFactory factory;
-  azer::afx::ParseContext context("", "", str, &factory, opt);
+  azer::afx::ParseContext context(AFXL(""), "", str, &factory, opt);
   azer::afx::Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -356,7 +356,7 @@ TEST(ASTree, WhileLoop) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = false;
   azer::afx::ASTNodeFactory factory;
-  azer::afx::ParseContext context("", "", str, &factory, opt);
+  azer::afx::ParseContext context(AFXL(""), "", str, &factory, opt);
   azer::afx::Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -412,7 +412,7 @@ TEST(ASTree, DoWhileLoop) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   azer::afx::ASTNodeFactory factory;
-  azer::afx::ParseContext context("", "", str, &factory, opt);
+  azer::afx::ParseContext context(AFXL(""), "", str, &factory, opt);
   azer::afx::Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -475,7 +475,7 @@ TEST(ASTree, SwitchCase) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   azer::afx::ASTNodeFactory factory;
-  azer::afx::ParseContext context("", "", str, &factory, opt);
+  azer::afx::ParseContext context(AFXL(""), "", str, &factory, opt);
   azer::afx::Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 

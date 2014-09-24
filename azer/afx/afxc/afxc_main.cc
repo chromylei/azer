@@ -21,8 +21,8 @@ void PrintHelp();
 
 bool FLAGS_hlslang = false;
 bool FLAGS_glslang = false;
-std::string FLAGS_afxpath;
-std::string FLAGS_includes;
+base::FilePath::StringType FLAGS_afxpath;
+base::FilePath::StringType FLAGS_includes;
 std::string FLAGS_output_dir;
 std::string FLAGS_cpp_filename;
 
@@ -38,12 +38,12 @@ int main(int argc, char* argv[]) {
     return -1;
   }
 
-  std::vector<std::string> inc;
-  ::base::SplitString(FLAGS_includes, ',', &inc);
+  std::vector<::base::FilePath::StringType> inc;
+  ::base::SplitString(FLAGS_includes, FILE_PATH_LITERAL(','), &inc);
   azer::afx::AfxLinker::Options opt;
   opt.parse_astree = false;
   azer::afx::AfxParser afx_parser(inc, opt);
-  afx_parser.Parse(FLAGS_afxpath);
+  afx_parser.Parse(::base::FilePath(FLAGS_afxpath));
   if (!afx_parser.success()) {
     std::cerr << "Failed to compile afxfile: \""
               << FLAGS_afxpath << "\"" << std::endl;
@@ -138,9 +138,9 @@ int ParseArgs() {
     return -1;
   }
 
-  FLAGS_afxpath = cmd->GetSwitchValueASCII("afx");
+  FLAGS_afxpath = cmd->GetSwitchValueNative("afx");
   FLAGS_output_dir = cmd->GetSwitchValueASCII("output_dir");
-  FLAGS_includes = cmd->GetSwitchValueASCII("includes");
+  FLAGS_includes = cmd->GetSwitchValueNative("includes");
   FLAGS_hlslang = cmd->HasSwitch("hlslang");
   FLAGS_glslang = cmd->HasSwitch("glslang");
   FLAGS_cpp_filename = cmd->GetSwitchValueASCII("cpp_filename");

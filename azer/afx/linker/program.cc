@@ -21,7 +21,7 @@ bool Program::Preprocess(PreprocessorParser::Delegate* delegate)  {
   // parse code
   const std::string& code = preprocessor_->GetCode();
   context_.reset(new ParseContext(path_, preprocessor_->package(),
-                                            code, &factory_));
+                                  code, &factory_));
   return true;
 }
 

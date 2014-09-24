@@ -4,6 +4,7 @@
 
 #include "azer/afx/compiler/builtin.h"
 #include "azer/afx/compiler/errno.h"
+#include "azer/afx/compiler/afxl.h"
 #include "base/logging.h"
 #include "base/strings/string_util.h"
 #include "base/lazy_instance.h"
@@ -11,11 +12,30 @@
 
 extern int yyparse(void*);
 
+using ::base::FilePath;
+
 namespace azer {
 namespace afx {
 // class ParseContext
 
-ParseContext::ParseContext(const std::string& path, const std::string& package,
+ParseContext::ParseContext(const FilePath& path, const std::string& package,
+                           const std::string& source, ASTNodeFactory* factory,
+                           Options opt)
+    : filepath_(path)
+    , package_(package)
+    , lineno_(0)
+    , source_(source)
+    , factory_(factory)
+    , root_(NULL)
+    , errno_(kNoError)
+    , options_(opt) {
+  if (package != "__builtin__") {
+    BuiltinContext::get();
+  }
+}
+
+ParseContext::ParseContext(const FilePath::StringType& path,
+                           const std::string& package,
                            const std::string& source, ASTNodeFactory* factory,
                            Options opt)
     : filepath_(path)
@@ -58,13 +78,13 @@ void ParseContext::ReportError(const SourceLoc& loc, const std::string& error,
                                CompileErrno err) {
   errno_ = err;
   std::stringstream ss;
-  ss << filepath_ << " line " << loc.lineno << ": " << error;
+  ss << filepath_.value() << " line " << loc.lineno << ": " << error;
   error_text_.push_back(ss.str());
 }
 
 void ParseContext::ReportError(const std::string& error, const char* cur) {
   std::stringstream ss;
-  ss << filepath_ << " line " << lineno() << ": " << error
+  ss << filepath_.value() << " line " << lineno() << ": " << error
      << " near \"" << cur << "\"";
   error_text_.push_back(ss.str());
   errno_ = kSyntaxError;
@@ -72,7 +92,7 @@ void ParseContext::ReportError(const std::string& error, const char* cur) {
 
 void ParseContext::ReportError(const SourceLoc& loc, const std::string& error) {
   std::stringstream ss;
-  ss << filepath_ << " line " << loc.lineno << ": " << error;
+  ss << filepath_.value() << " line " << loc.lineno << ": " << error;
   error_text_.push_back(ss.str());
   errno_ = kUnknownErr;
 }

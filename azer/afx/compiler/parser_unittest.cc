@@ -22,7 +22,7 @@ TEST(AfxParser, Expression) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   // opt.syntax_valid = false;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   // DumpASTree(&context, std::cout);
@@ -42,7 +42,7 @@ TEST(AfxParser, FuncExpression) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   // opt.syntax_valid = false;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   // DumpASTree(&context, std::cout);
@@ -61,7 +61,7 @@ TEST(AfxParser, ExpressionValue) {
       "}"
       ;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory);
+  ParseContext context(AFXL(""), "", str, &factory);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   // DumpASTree(&context, std::cout);
@@ -82,8 +82,8 @@ TEST(AfxParser, ExternalSymbol) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext lightctx("", "Light", light_str, &factory, opt);
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext lightctx(AFXL(""), "Light", light_str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&lightctx));
 
@@ -111,7 +111,7 @@ TEST(AfxParser, VariableDeclaration) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   DUMP_AFXCOMPILE_ERROR(context);
@@ -138,7 +138,7 @@ TEST(AfxParser, OperatorValidator) {
   // opt.dump_tokenizer = true;
   for (size_t i = 0; i < arraysize(expr_case); ++i) {
     ASTNodeFactory factory;
-    ParseContext context("", "", expr_case[i], &factory, opt);
+    ParseContext context(AFXL(""), "", expr_case[i], &factory, opt);
     Parser parser;
     EXPECT_TRUE(parser.Parse(&context)) << "failed at case: " << i;
     DUMP_AFXCOMPILE_ERROR(context);
@@ -161,7 +161,7 @@ TEST(AfxParser, ArrayVariableDeclaration) {
   // opt.dump_tokenizer = true;
   // opt.syntax_valid = false;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   // DumpASTree(&context, std::cout);
@@ -174,7 +174,7 @@ TEST(AfxParser, AttributeDeclaration) {
       ;
 
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory);
+  ParseContext context(AFXL(""), "", str, &factory);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -188,7 +188,7 @@ TEST(AfxParser, AttributeFunction) {
       ;
 
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory);
+  ParseContext context(AFXL(""), "", str, &factory);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -216,7 +216,7 @@ TEST(AfxParser, StructureDeclaration) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   dump_error(&context, std::cout);
@@ -235,7 +235,7 @@ TEST(AfxParser, AttributeStructureDecl) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   DUMP_AFXCOMPILE_ERROR(context);
@@ -263,7 +263,7 @@ TEST(AfxParser, StructureMember) {
   // opt.dump_tokenizer = true;
   opt.syntax_valid = false;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   // DumpASTree(&context, std::cout);
@@ -279,7 +279,7 @@ TEST(AfxParser, AnomoymousStructSymbol) {
       "} object2;\n"
       ;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory);
+  ParseContext context(AFXL(""), "", str, &factory);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -299,7 +299,7 @@ TEST(AfxParser, FunctionDeclaration) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -316,7 +316,7 @@ TEST(AfxParser, Texture) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -331,7 +331,7 @@ TEST(AfxParser, TextureAsParam) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -346,7 +346,7 @@ TEST(AfxParser, FunctionDefiniation) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -368,7 +368,7 @@ TEST(AfxParser, FuncCall) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   dump_error(&context, std::cout);
@@ -387,7 +387,7 @@ TEST(AfxParser, SwitchCase) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -406,7 +406,7 @@ TEST(AfxParser, While) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -426,7 +426,7 @@ TEST(AfxParser, DoWhile) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -447,7 +447,7 @@ TEST(AfxParser, ForStatement) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -464,7 +464,7 @@ TEST(AfxParser, Technique) {
   // nopt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -478,7 +478,7 @@ TEST(AfxParser, ArrayInit) {
       "  int b2[size * 10 + 1 - 5 * 8 / 2];\n"
       "}\n";
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory);
+  ParseContext context(AFXL(""), "", str, &factory);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 }
@@ -492,7 +492,7 @@ TEST(AfxParser, BuiltIn) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   dump_error(&context, std::cout);
@@ -514,7 +514,7 @@ TEST(AfxParser, Swizzle) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   dump_error(&context, std::cout);
@@ -540,7 +540,7 @@ TEST(AfxParser, Assign) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   dump_error(&context, std::cout);
@@ -564,7 +564,7 @@ TEST(AfxParser, Material) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   DUMP_AFXCOMPILE_ERROR(context);
@@ -589,7 +589,7 @@ TEST(AfxParser, Sampler) {
   // opt.dump_tokenizer = true;
   opt.syntax_valid = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   // DumpASTree(&context, std::cout);
@@ -629,7 +629,7 @@ TEST(AfxParser, Simple1) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   dump_error(&context, std::cout);

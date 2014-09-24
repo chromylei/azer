@@ -4,6 +4,7 @@
 #include "azer/afx/compiler/loc.h"
 #include "azer/afx/compiler/debug.h"
 #include "azer/afx/preprocessor/parser.h"
+#include "base/strings/utf_string_conversions.h"
 #include "base/logging.h"
 
 #ifdef _WIN32
@@ -102,8 +103,13 @@ package_statement: _package_ PRE_STRING {
 ;
 
 include_statement: _include_  PRE_STRING {
+  using ::base::FilePath;
   PRE_PARSER_TRACE << "include " << *$2.string << std::endl;
-  parseContext->AddIncludes(*$2.string);
+#ifdef OS_WIN
+  parseContext->AddIncludes(FilePath(::base::UTF8ToWide(*$2.string)));
+#else
+  parseContext->AddIncludes(FilePath(*$2.string));
+#endif
   delete $2.string;
  }
 ;

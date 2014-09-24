@@ -1,4 +1,5 @@
 #include "azer/afx/compiler/astdump.h"
+#include "azer/afx/compiler/testutil.h"
 #include "azer/afx/linker/technique_parser.h"
 #include "azer/afx/linker/linker.h"
 #include "azer/afx/linker/testutil.h"
@@ -10,11 +11,12 @@ using azer::afx::ParseContext;
 using azer::afx::AfxLinker;
 using azer::afx::ASTreeDumper;
 using azer::afx::FileLoader;
+using ::base::FilePath;
 
-const std::string kTestdataDir = "azer/afx/testdata";
+const FilePath::StringType kTestdataDir = AFXL("azer/afx/testdata");
 
 TEST(TechniqueParseTest, VertexShader) {
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
@@ -23,7 +25,7 @@ TEST(TechniqueParseTest, VertexShader) {
   std::string content;
   ASSERT_TRUE(::base::ReadFileToString(
       base::FilePath(AZER_LITERAL("azer/afx/testdata/diffuse.afx")), &content));
-  EXPECT_TRUE(linker.Load(content, "diffuse.afx"));
+  EXPECT_TRUE(linker.Load(content, AFXL("diffuse.afx")));
   DumpLinkError(&linker);
   // Dump(&linker);
 
@@ -47,7 +49,7 @@ TEST(TechniqueParseTest, VertexShader) {
 }
 
 TEST(TechniqueParseTest, PiexelShader) {
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
@@ -57,7 +59,7 @@ TEST(TechniqueParseTest, PiexelShader) {
   std::string content;
   ASSERT_TRUE(::base::ReadFileToString(
       base::FilePath(AZER_LITERAL("azer/afx/testdata/effect.afx")), &content));
-  EXPECT_TRUE(linker.Load(content, "effect.afx"));
+  EXPECT_TRUE(linker.Load(content, AFXL("effect.afx")));
   DumpLinkError(&linker);
   // Dump(&linker);
 

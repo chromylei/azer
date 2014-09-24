@@ -16,8 +16,9 @@ using azer::afx::ASTreeDumper;
 using azer::afx::FileLoader;
 using azer::afx::ParseContext;
 using azer::afx::TechniqueParser;
+using ::base::FilePath;
 
-const std::string kTestdataDir = "azer/afx/testdata";
+const ::base::FilePath::StringType kTestdataDir = AFXL("azer/afx/testdata");
 
 namespace {
 }  // namespace
@@ -27,7 +28,7 @@ TEST(AfxCppCodeGen, Sample) {
 }
 
 TEST(AfxCppCodeGen, Material) {
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
@@ -36,7 +37,7 @@ TEST(AfxCppCodeGen, Material) {
   std::string content;
   ASSERT_TRUE(::base::ReadFileToString(
       ::base::FilePath(AZER_LITERAL("azer/afx/testdata/mtrl.afx")), &content));
-  EXPECT_TRUE(linker.Load(content, "azer/afx/testdata/mtrl.afx"));
+  EXPECT_TRUE(linker.Load(content, AFXL("azer/afx/testdata/mtrl.afx")));
 
   LOG_IF(ERROR, !linker.success()) << linker.GetErrorText();
   // Dump(&linker);
@@ -62,7 +63,7 @@ TEST(AfxCppCodeGen, Material) {
 
 
 TEST(AfxCppCodeGen, UniformArray) {
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
@@ -71,7 +72,7 @@ TEST(AfxCppCodeGen, UniformArray) {
   std::string content;
   ASSERT_TRUE(::base::ReadFileToString(
       ::base::FilePath(AZER_LITERAL("azer/afx/testdata/bone.afx")), &content));
-  EXPECT_TRUE(linker.Load(content, "azer/afx/testdata/bone.afx"));
+  EXPECT_TRUE(linker.Load(content, AFXL("azer/afx/testdata/bone.afx")));
 
   LOG_IF(ERROR, !linker.success()) << linker.GetErrorText();
   // Dump(&linker);
@@ -97,16 +98,15 @@ TEST(AfxCppCodeGen, UniformArray) {
 
 TEST(AfxCppCodeGen, PointLight) {
   const std::string effect_name = "ptlight";
-  const std::string afx_path = "azer/afx/testdata/point_light.afx";
-  std::vector<std::string> inc;
+  const FilePath::StringType afx_path = AFXL("azer/afx/testdata/point_light.afx");
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
   azer::afx::FileLoader loader(inc);
   AfxLinker linker(&loader, opt);
   std::string content;
-  ASSERT_TRUE(::base::ReadFileToString(
-      ::base::FilePath(::base::UTF8ToWide(afx_path)), &content));
+  ASSERT_TRUE(::base::ReadFileToString(::base::FilePath(afx_path), &content));
   EXPECT_TRUE(linker.Load(content, afx_path));
 
   LOG_IF(ERROR, !linker.success()) << linker.GetErrorText();
@@ -133,16 +133,15 @@ TEST(AfxCppCodeGen, PointLight) {
 
 TEST(AfxCppCodeGen, TextureAdParam) {
   const std::string effect_name = "shadowmap";
-  const std::string afx_path = "azer/afx/testdata/shadowmap.afx";
-  std::vector<std::string> inc;
+  const FilePath::StringType afx_path = AFXL("azer/afx/testdata/shadowmap.afx");
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
   azer::afx::FileLoader loader(inc);
   AfxLinker linker(&loader, opt);
   std::string content;
-  ASSERT_TRUE(::base::ReadFileToString(
-      ::base::FilePath(::base::UTF8ToWide(afx_path)), &content));
+  ASSERT_TRUE(::base::ReadFileToString(::base::FilePath(afx_path), &content));
   EXPECT_TRUE(linker.Load(content, afx_path));
 
   LOG_IF(ERROR, !linker.success()) << linker.GetErrorText();

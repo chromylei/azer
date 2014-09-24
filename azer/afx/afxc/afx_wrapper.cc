@@ -12,8 +12,8 @@
 
 using azer::afx::TechniqueParser;
 
-AfxWrapper::AfxWrapper(const std::string& includes) {
-  ::base::SplitString(includes, ',', &includes_);
+AfxWrapper::AfxWrapper(const ::base::FilePath::StringType& includes) {
+  ::base::SplitString(includes, FILE_PATH_LITERAL(','), &includes_);
 }
 
 bool AfxWrapper::Parse(const ::base::FilePath& path, std::ostream& os,

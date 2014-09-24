@@ -4,6 +4,7 @@
 #include "azer/afx/compiler/debug.h"
 #include "azer/afx/compiler/astnode.h"
 #include "azer/afx/compiler/syntax_validator.h"
+#include "base/files/file_path.h"
 
 namespace azer {
 namespace afx {
@@ -21,7 +22,11 @@ class ParseContext: public TreeNode<ParseContext> {
     }
   };
     
-  ParseContext(const std::string& filepath, const std::string& package,
+  ParseContext(const ::base::FilePath& filepath, const std::string& package,
+               const std::string& source, ASTNodeFactory* factory,
+               Options opt = Options());
+  ParseContext(const ::base::FilePath::StringType& filepath,
+               const std::string& package,
                const std::string& source, ASTNodeFactory* factory,
                Options opt = Options());
   ~ParseContext();
@@ -35,7 +40,7 @@ class ParseContext: public TreeNode<ParseContext> {
   int lineno() const { return lineno_;}
   void lineno_plus() { ++lineno_;}
   const std::string& package() const { return package_;}
-  const std::string& path() const { return filepath_;}
+  const ::base::FilePath& path() const { return filepath_;}
 
   bool success() const { return errno_ == kNoError;}
   CompileErrno GetErrno() { return errno_;}
@@ -110,7 +115,7 @@ class ParseContext: public TreeNode<ParseContext> {
  private:
   SymbolType LookupSymbolTypeLocal(const std::string& symbol);
 
-  std::string filepath_;
+  ::base::FilePath filepath_;
   std::string package_;
   int lineno_;
   bool success_;

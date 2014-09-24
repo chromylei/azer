@@ -12,7 +12,7 @@ namespace afx {
 
 class Program : public TreeNode<Program> {
  public:
-  Program(Program* parent, const std::string& path, const std::string& code)
+  Program(Program* parent, const ::base::FilePath& path, const std::string& code)
       : path_(path)
       , code_(code) {
     if (parent) {parent->AddChild(this);}
@@ -24,10 +24,10 @@ class Program : public TreeNode<Program> {
   bool ParseASTree(Program* parent);
   bool Preprocess(PreprocessorParser::Delegate* delegate);
   std::string GenCode();
-  const std::string& path() const { return path_;}
+  const ::base::FilePath::StringType& path() const { return path_.value();}
   ParseContext* GetContext() { return context_.get();}
  private:
-  std::string path_;
+  ::base::FilePath path_;
   std::string code_;
   ASTNodeFactory factory_;
   std::unique_ptr<PreprocessorParser> preprocessor_;

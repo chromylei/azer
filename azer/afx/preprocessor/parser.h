@@ -21,6 +21,7 @@
 #include "azer/afx/compiler/type.h"
 #include "azer/afx/compiler/loc.h"
 #include "azer/afx/preprocessor/tokenizer.h"
+#include "base/files/file_path.h"
 
 namespace azer {
 namespace afx {
@@ -29,7 +30,8 @@ class PreprocessorParser : public PreprocessorTokenizer::Delegate {
  public:
   class Delegate {
    public:
-    virtual void OnAddInclude(PreprocessorParser* parser, const std::string& path) = 0;
+    virtual void OnAddInclude(PreprocessorParser* parser,
+                              const ::base::FilePath& path) = 0;
   };
 
   explicit PreprocessorParser(Delegate* delegate, bool trace)
@@ -63,7 +65,7 @@ class PreprocessorParser : public PreprocessorTokenizer::Delegate {
   };
 
   // extern interface
-  typedef std::vector<std::string> IncludedVec;
+  typedef std::vector< ::base::FilePath::StringType> IncludedVec;
   const IncludedVec& includes() const { return includes_;}
   const std::string& package() const { return package_;}
 
@@ -82,7 +84,7 @@ class PreprocessorParser : public PreprocessorTokenizer::Delegate {
   bool GetDefindValue(const std::string& key, std::string* str) const;
 
   // add include and parse the include
-  void AddIncludes(const std::string& str);
+  void AddIncludes(const ::base::FilePath& str);
   // set packagename
   void SetPackageName(const std::string& package);
   void AppendCode(const std::string& code) {code_.append(code);}

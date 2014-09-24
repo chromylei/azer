@@ -37,7 +37,6 @@ inline std::ostream& operator << (std::ostream& os, const std::wstring& str) {
 template<class T>
 void ConvertPath(const char *path, T*);
 
-
 template<>
 inline void ConvertPath<std::string>(const char *path, std::string* str) {
   *str = path;

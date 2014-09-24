@@ -1,4 +1,6 @@
 #include "azer/afx/preprocessor/parser.h"
+#include "azer/afx/compiler/afxl.h"
+
 #include "preprocessor_tab.h"
 #include "gtest/gtest.h"
 
@@ -31,9 +33,9 @@ TEST(PreprocessorParser, Include) {
   PreprocessorParser parser(NULL, false);;
   ASSERT_TRUE(parser.Parse(code));
   ASSERT_EQ(parser.includes().size(), 3u);
-  ASSERT_EQ(parser.includes()[0], "afx//base.afxi");
-  ASSERT_EQ(parser.includes()[1], "afx//light.afxi");
-  ASSERT_EQ(parser.includes()[2], "afx//material.afxi");
+  ASSERT_EQ(parser.includes()[0], AFXL("afx//base.afxi"));
+  ASSERT_EQ(parser.includes()[1], AFXL("afx//light.afxi"));
+  ASSERT_EQ(parser.includes()[2], AFXL("afx//material.afxi"));
   ASSERT_TRUE(parser.package().empty());
 }
 

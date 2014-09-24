@@ -12,23 +12,24 @@ namespace azer {
 namespace afx {
 class FileLoader {
  public:
-  FileLoader(const std::vector<std::string>& includedir)
+  FileLoader(const std::vector< ::base::FilePath::StringType>& includedir)
       : include_dirs_(includedir) {
   }
 
-  virtual bool Load(const std::string& file, std::string* content,
+  virtual bool Load(const ::base::FilePath& file, std::string* content,
                     ::base::FilePath* real);
  protected:
   virtual bool LoadFileToString(const ::base::FilePath& path, std::string* content);
  private:
-  const std::vector<std::string>& include_dirs_;
+  const std::vector< ::base::FilePath::StringType>& include_dirs_;
 
   DISALLOW_COPY_AND_ASSIGN(FileLoader);
 };
 
 class MemoryFileLoader : public FileLoader {
  public:
-  MemoryFileLoader(const std::vector<std::string>& inc) : FileLoader(inc) {}
+  MemoryFileLoader(const std::vector< ::base::FilePath::StringType>& inc)
+      : FileLoader(inc) {}
 
   void AddFile(const azer::StringType& path, const std::string& content) {
     ::base::FilePath fullpath(path);

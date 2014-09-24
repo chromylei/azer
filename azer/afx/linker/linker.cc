@@ -1,6 +1,11 @@
 #include "azer/afx/linker/linker.h"
+
+#include "azer/afx/compiler/afxl.h"
 #include "azer/base/string.h"
 #include "base/strings/utf_string_conversions.h"
+#include "base/files/file_path.h"
+
+using ::base::FilePath;
 
 namespace azer {
 namespace afx {
@@ -12,12 +17,12 @@ AfxLinker::~AfxLinker() {
   program_vec_.clear();
 }
 
-void AfxLinker::OnAddInclude(PreprocessorParser* parser, const std::string& path) {
+void AfxLinker::OnAddInclude(PreprocessorParser* parser, const FilePath& path) {
   std::string code;
   ::base::FilePath finalpath;
   if (!LoadFile(path, &code, &finalpath)) {
     std::stringstream ss;
-    ss << "Failed to load file: \"" << path << "\"";
+    ss << "Failed to load file: \"" << path.value() << "\"";
     ReportError(ss.str());
     return;
   }
@@ -26,7 +31,7 @@ void AfxLinker::OnAddInclude(PreprocessorParser* parser, const std::string& path
   Program* newprog = new Program(parent, path, code);
   if (!newprog->Preprocess(this)) {
     std::stringstream ss;
-    ss << "Failed to parse file: \"" << path << "\"";
+    ss << "Failed to parse file: \"" << path.value() << "\"";
     ReportError(ss.str());
   }
 }
@@ -64,7 +69,7 @@ std::string AfxLinker::GetCompileError() const {
   return ss.str();
 }
 
-bool AfxLinker::Load(const std::string& content, const std::string& path) {
+bool AfxLinker::Load(const std::string& content, const ::base::FilePath& path) {
   root_.reset(new Program(NULL, path, content));
   if (!root_->Preprocess(this)) {
     failed_ = true;
@@ -102,7 +107,7 @@ bool AfxLinker::ParseASTreeRecursive(Program* program, Program* parent) {
   return !failed_;
 }
 
-bool AfxLinker::LoadFile(const std::string& file, std::string* content,
+bool AfxLinker::LoadFile(const ::base::FilePath& file, std::string* content,
                          ::base::FilePath* finalpath) {
   DCHECK(NULL != loader_);
   return loader_->Load(file, content, finalpath);

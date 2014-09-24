@@ -5,18 +5,17 @@
 
 namespace azer {
 namespace afx {
-bool AfxParser::Parse(const std::string& path) {
+bool AfxParser::Parse(const ::base::FilePath& path) {
   std::string content;
   DCHECK(initializer_ == false);
-  ::base::FilePath filepath(::base::UTF8ToWide(path));
-  if (!::base::ReadFileToString(filepath, &content)) {
+  if (!::base::ReadFileToString(path, &content)) {
     return false;
   }
 
   return Parse(content, path);
 }
 
-bool AfxParser::Parse(const std::string& content, const std::string& path) {
+bool AfxParser::Parse(const std::string& content, const ::base::FilePath& path) {
   initializer_ = true;
   if (!linker_.Load(content, path)) {
     return false;

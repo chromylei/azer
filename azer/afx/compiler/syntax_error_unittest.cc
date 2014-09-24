@@ -15,7 +15,7 @@ TEST(SyntaxError, DeclaredSymbol) {
     "  mat4 a;\n"
     "}\n";
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory);
+  ParseContext context(AFXL(""), "", str, &factory);
   Parser parser;
   EXPECT_FALSE(parser.Parse(&context));
   // dump_error(&context, std::cout);
@@ -31,7 +31,7 @@ TEST(SyntaxError, ArrayInitWithVariable) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_FALSE(parser.Parse(&context));
   // dump_error(&context, std::cout);
@@ -48,7 +48,7 @@ TEST(SyntaxError, ArrayWithoutDim) {
     // opt.dump_parser = true;
     // opt.dump_tokenizer = true;
     ASTNodeFactory factory;
-    ParseContext context("", "", cases[i], &factory, opt);
+    ParseContext context(AFXL(""), "", cases[i], &factory, opt);
     Parser parser;
     EXPECT_FALSE(parser.Parse(&context));
     EXPECT_EQ(context.GetErrno(), azer::afx::kArrayDimNotSpecified);
@@ -73,7 +73,7 @@ TEST(SyntaxError, ArrayNotConstent) {
     // opt.dump_parser = true;
     // opt.dump_tokenizer = true;
     ASTNodeFactory factory;
-    ParseContext context("", "", cases[i], &factory, opt);
+    ParseContext context(AFXL(""), "", cases[i], &factory, opt);
     Parser parser;
     EXPECT_FALSE(parser.Parse(&context));
     EXPECT_EQ(context.GetErrno(), error_num[i]);
@@ -88,7 +88,7 @@ TEST(SyntaxError, MultiUniformVariable) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_FALSE(parser.Parse(&context));
   EXPECT_EQ(context.GetErrno(), azer::afx::kMultiUniformDeclInStatement);
@@ -116,7 +116,7 @@ TEST(SyntaxError, StructDeclMultiTimes) {
     // opt.dump_parser = true;
     // opt.dump_tokenizer = true;
     ASTNodeFactory factory;
-    ParseContext context("", "", cases[i], &factory, opt);
+    ParseContext context(AFXL(""), "", cases[i], &factory, opt);
     Parser parser;
     EXPECT_FALSE(parser.Parse(&context));
     EXPECT_EQ(context.GetErrno(), azer::afx::kSyntaxError);
@@ -136,7 +136,7 @@ TEST(SyntaxError, FuncDefMultiTimes) {
     // opt.dump_parser = true;
     // opt.dump_tokenizer = true;
     ASTNodeFactory factory;
-    ParseContext context("", "", cases[i], &factory, opt);
+    ParseContext context(AFXL(""), "", cases[i], &factory, opt);
     Parser parser;
     EXPECT_FALSE(parser.Parse(&context));
     EXPECT_EQ(context.GetErrno(), azer::afx::kFuncDefined);
@@ -162,7 +162,7 @@ TEST(SyntaxError, TextureMustBeUniform) {
     // opt.dump_parser = true;
     // opt.dump_tokenizer = true;
     ASTNodeFactory factory;
-    ParseContext context("", "", cases[i], &factory, opt);
+    ParseContext context(AFXL(""), "", cases[i], &factory, opt);
     Parser parser;
     EXPECT_FALSE(parser.Parse(&context));
     EXPECT_EQ(context.GetErrno(), azer::afx::kTextureMustbeUniformed);
@@ -185,7 +185,7 @@ TEST(SyntaxError, FuncParamNotMatch) {
     // opt.dump_parser = true;
     // opt.dump_tokenizer = true;
     ASTNodeFactory factory;
-    ParseContext context("", "", cases[i], &factory, opt);
+    ParseContext context(AFXL(""), "", cases[i], &factory, opt);
     Parser parser;
     EXPECT_FALSE(parser.Parse(&context));
     EXPECT_EQ(context.GetErrno(), azer::afx::kFuncDefined);

@@ -18,15 +18,16 @@ namespace azer {
 namespace afx {
 class AfxParser {
  public:
-  AfxParser(const std::vector<std::string>& incpath,
+  AfxParser(const std::vector< ::base::FilePath::StringType>& incpath,
             const AfxLinker::Options& link_opt)
       : initializer_(false)
       , loader_(incpath)
       , linker_(&loader_, link_opt) {
   }
 
-  bool Parse(const std::string& path);
-  bool Parse(const std::string& content, const std::string& path);
+  bool Parse(const ::base::FilePath& path);
+  bool Parse(const ::base::FilePath::StringType& path);
+  bool Parse(const std::string& content, const ::base::FilePath& path);
   TechniqueParser::Technique* GetTechnique(const std::string& name);
   TechniqueParser* GetTechniques() { return &tparser_;}
 
@@ -53,5 +54,10 @@ class AfxParser {
   TechniqueParser tparser_;
   DISALLOW_COPY_AND_ASSIGN(AfxParser);
 };
+
+inline bool AfxParser::Parse(const ::base::FilePath::StringType& path) {
+  return Parse(::base::FilePath(path));
+}
+
 }  // namespace afx
 }  // namespace azer

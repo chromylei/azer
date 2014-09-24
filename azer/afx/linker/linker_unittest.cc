@@ -3,6 +3,7 @@
 
 #include "azer/afx/linker/linker.h"
 #include "azer/afx/linker/testutil.h"
+#include "azer/afx/compiler/testutil.h"
 #include "azer/afx/util/file_loader.h"
 #include "azer/base/string.h"
 #include "base/files/file_path.h"
@@ -11,6 +12,7 @@
 
 using azer::afx::AfxLinker;
 using azer::afx::FileLoader;
+using ::base::FilePath;
 
 const std::string light_source = ""
     "#package Light;                \n"
@@ -53,25 +55,25 @@ const std::string effect_source = ""
     ;
 
 TEST(AfxLinkerTest, base) {
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   AfxLinker::Options opt;
   opt.parse_astree = false;
   azer::afx::MemoryFileLoader loader(inc);
   AfxLinker linker(&loader, opt);
   loader.AddFile(AZER_LITERAL("effect.afx"), effect_source);
   loader.AddFile(AZER_LITERAL("azer//afx//light.afxi"), light_source);
-  EXPECT_TRUE(linker.Load(effect_source, "effect.afx"));
+  EXPECT_TRUE(linker.Load(effect_source, AFXL("effect.afx")));
   DumpLinkError(&linker);
 }
 
 TEST(AfxLinkerTest, LoadFailed) {
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   AfxLinker::Options opt;
   opt.parse_astree = false;
   azer::afx::MemoryFileLoader loader(inc);
   AfxLinker linker(&loader, opt);
   loader.AddFile(AZER_LITERAL("effect.afx"), effect_source);
-  ASSERT_FALSE(linker.Load(effect_source, "effect.afx"));
+  ASSERT_FALSE(linker.Load(effect_source, AFXL("effect.afx")));
 }
 
 TEST(AfxLinkerTest, DependencyTree) {

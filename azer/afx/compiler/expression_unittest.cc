@@ -19,7 +19,7 @@ TEST(Expression, Correct_Mul) {
       " return m2;               \n"
       "}\n";
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory);
+  ParseContext context(AFXL(""), "", str, &factory);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   dump_error(&context, std::cout);
@@ -47,7 +47,7 @@ TEST(ExpressionError, Mul) {
 
   for (size_t i = 0; i < arraysize(cases); ++i) {
     ASTNodeFactory factory;
-    ParseContext context("", "", cases[i], &factory);
+    ParseContext context(AFXL(""), "", cases[i], &factory);
     Parser parser;
     ASSERT_FALSE(parser.Parse(&context));
   }
@@ -69,7 +69,7 @@ TEST(ExpressionError, StructHasNoField) {
 
   for (size_t i = 0; i < arraysize(cases); ++i) {
     ASTNodeFactory factory;
-    ParseContext context("", "", cases[i], &factory);
+    ParseContext context(AFXL(""), "", cases[i], &factory);
     Parser parser;
     ASSERT_FALSE(parser.Parse(&context));
   }
@@ -90,7 +90,7 @@ TEST(ExpressionError, VectorSwizze) {
 
   for (size_t i = 0; i < arraysize(cases); ++i) {
     ASTNodeFactory factory;
-    ParseContext context("", "", cases[i], &factory);
+    ParseContext context(AFXL(""), "", cases[i], &factory);
     Parser parser;
     ASSERT_FALSE(parser.Parse(&context));
   }

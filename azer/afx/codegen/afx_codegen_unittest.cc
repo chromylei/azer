@@ -1,5 +1,7 @@
 #include "azer/afx/afx.h"
+#include "azer/afx/compiler/testutil.h"
 #include "base/file_util.h"
+#include "base/files/file_path.h"
 #include "gtest/gtest.h"
 
 using azer::afx::AfxLinker;
@@ -8,8 +10,9 @@ using azer::afx::ASTreeDumper;
 using azer::afx::FileLoader;
 using azer::afx::ParseContext;
 using azer::afx::TechniqueParser;
+using base::FilePath;
 
-const std::string kTestdataDir = "azer/afx/testdata";
+const FilePath::StringType kTestdataDir = AFXL("azer/afx/testdata");
 
 TEST(AfxCodegen, EffectVertex) {
   const std::string expect = ""
@@ -29,12 +32,12 @@ TEST(AfxCodegen, EffectVertex) {
       "o.normal = input.normal;"
       "o.texcoord = input.texcoord;"
       "return o;}";
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
   azer::afx::AfxParser parser(inc, opt);
-  ASSERT_TRUE(parser.Parse("azer/afx/testdata/diffuse.afx"));
+  ASSERT_TRUE(parser.Parse(AFXL("azer/afx/testdata/diffuse.afx")));
 
   LOG_IF(ERROR, !parser.success()) << parser.GetErrorText();
   ParseContext* context = parser.GetContext();
@@ -62,12 +65,12 @@ TEST(AfxCodegen, EffectPixel) {
       "cbuffer c_buffer { afx__SpotLight light1;};"
       "float4 psmain(VSOutput o):SV_TARGET {"
       "return normalize(light1.diffuse) * dot(float4(o.normal, 1), light1.direction);}";
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
   azer::afx::AfxParser parser(inc, opt);
-  ASSERT_TRUE(parser.Parse("azer/afx/testdata/effect.afx"));
+  ASSERT_TRUE(parser.Parse(AFXL("azer/afx/testdata/effect.afx")));
 
   LOG_IF(ERROR, !parser.success()) << parser.GetErrorText();
   ParseContext* context = parser.GetContext();
@@ -109,12 +112,12 @@ TEST(AfxCodegen, EffectPixelWithSampler) {
       "difftex.Sample(difftex__d3d_sampler, o.texcoord);}"
       ;
 
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
   azer::afx::AfxParser parser(inc, opt);
-  ASSERT_TRUE(parser.Parse("azer/afx/testdata/texeffect.afx"));
+  ASSERT_TRUE(parser.Parse(AFXL("azer/afx/testdata/texeffect.afx")));
 
   LOG_IF(ERROR, !parser.success()) << parser.GetErrorText();
   ParseContext* context = parser.GetContext();
@@ -160,12 +163,12 @@ TEST(AfxCodegen, TextureInStructure) {
       "mtrl__difftex[0].Sample(mtrl__difftex__d3d_sampler[0], o.texcoord);}"
       ;
 
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
   azer::afx::AfxParser parser(inc, opt);
-  ASSERT_TRUE(parser.Parse("azer/afx/testdata/mtrl.afx"));
+  ASSERT_TRUE(parser.Parse(AFXL("azer/afx/testdata/mtrl.afx")));
 
   LOG_IF(ERROR, !parser.success()) << parser.GetErrorText();
   ParseContext* context = parser.GetContext();
@@ -198,12 +201,12 @@ TEST(AfxCodegen, LineEffect) {
       "}"
       ;
 
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
   azer::afx::AfxParser parser(inc, opt);
-  EXPECT_TRUE(parser.Parse("azer/afx/testdata/line.afx"));
+  EXPECT_TRUE(parser.Parse(AFXL("azer/afx/testdata/line.afx")));
 
   LOG_IF(ERROR, !parser.success()) << parser.GetErrorText();
   ParseContext* context = parser.GetContext();
@@ -238,12 +241,12 @@ TEST(AfxCodegen, Shadowmap) {
       "else {return float4(1, 1, 1, 1);}}"
       ;
 
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   inc.push_back(kTestdataDir);
   AfxLinker::Options opt;
   opt.parse_astree = false;
   azer::afx::AfxParser parser(inc, opt);
-  EXPECT_TRUE(parser.Parse("azer/afx/testdata/shadowmap.afx"));
+  EXPECT_TRUE(parser.Parse(AFXL("azer/afx/testdata/shadowmap.afx")));
 
   LOG_IF(ERROR, !parser.success()) << parser.GetErrorText();
   ParseContext* context = parser.GetContext();

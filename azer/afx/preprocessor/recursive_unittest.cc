@@ -7,13 +7,14 @@
 
 using azer::afx::PreprocessorParser;
 using azer::afx::FileLoader;
+using ::base::FilePath;
 
 class ParseDelegate : public PreprocessorParser::Delegate {
  public:
   ParseDelegate(FileLoader* loader) : loader_(loader) {
   }
   
-  virtual void OnAddInclude(PreprocessorParser* parser, const std::string& path) {
+  virtual void OnAddInclude(PreprocessorParser* parser, const FilePath& path) {
     PreprocessorParser* newparser = new PreprocessorParser(parser, this, false);
     std::string code;
     ::base::FilePath finallypath;
@@ -34,7 +35,7 @@ TEST(RecursiveTest, Base) {
       "#define AFX_LIGHT 0x0001\n"
       ;
 
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   azer::afx::MemoryFileLoader loader(inc);
   loader.AddFile(AZER_LITERAL("effect.afx"), effect_source);
   loader.AddFile(AZER_LITERAL("azer//afx//light.afxi"), light_source);
@@ -56,7 +57,7 @@ TEST(RecursiveTest, Overlap) {
       "#define AFX_LIGHT 0x0001\n"
       ;
 
-  std::vector<std::string> inc;
+  std::vector<FilePath::StringType> inc;
   azer::afx::MemoryFileLoader loader(inc);
   loader.AddFile(AZER_LITERAL("effect.afx"), effect_source);
   loader.AddFile(AZER_LITERAL("azer//afx//light.afxi"), light_source);

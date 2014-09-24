@@ -7,19 +7,19 @@
 
 namespace azer {
 namespace afx {
-bool FileLoader::Load(const std::string& file, std::string* content,
+bool FileLoader::Load(const ::base::FilePath& file, std::string* content,
                       ::base::FilePath* finalpath) {
   for (auto iter = include_dirs_.begin(); iter != include_dirs_.end();
        ++iter) {
-    ::base::FilePath fullpath(::base::UTF8ToWide(*iter));
-    fullpath = fullpath.AppendASCII(file);
+    ::base::FilePath fullpath(*iter);
+    fullpath = fullpath.Append(file);
     if (LoadFileToString(fullpath, content)) {
       *finalpath = fullpath.NormalizePathSeparators();
       return true;
     }
   }
 
-  ::base::FilePath fullpath(::base::UTF8ToWide(file));
+  ::base::FilePath fullpath(file);
   if (LoadFileToString(fullpath, content)) {
     *finalpath = fullpath;
     return true;

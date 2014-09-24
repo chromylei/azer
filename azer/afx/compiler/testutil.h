@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include "azer/afx/compiler/context.h"
+#include "azer/afx/compiler/afxl.h"
+#include "base/files/file_path.h"
 
 inline void dump_error(azer::afx::ParseContext* context, std::ostream& os) {
   for (auto iter = context->GetErrorTextVec().begin();
@@ -24,4 +26,3 @@ inline std::string DumpASTree(azer::afx::ParseContext* context, std::ostream& os
   os << dump << std::endl;
   return dump;
 }
-

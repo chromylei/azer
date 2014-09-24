@@ -7,6 +7,8 @@
 #include "base/lazy_instance.h"
 #include "base/file_util.h"
 
+using ::base::FilePath;
+
 namespace azer {
 namespace afx {
 
@@ -68,7 +70,8 @@ BuiltinContext::~BuiltinContext() {
 void BuiltinContext::Init() {
   DCHECK(factory_ == NULL && context_ == NULL);
   factory_ = new ASTNodeFactory();
-  context_ = new ParseContext("builtin", "__builtin__", g_builtin_str, factory_);
+  context_ = new ParseContext(FilePath(FILE_PATH_LITERAL("builtin")), "__builtin__",
+                              g_builtin_str, factory_);
   Parser parser;
   CHECK(parser.Parse(context_)) << "Built-in compile failed";
 }

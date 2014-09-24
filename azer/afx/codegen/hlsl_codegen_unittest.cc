@@ -36,7 +36,7 @@ TEST(HLSLCodeGenerator, Expression) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -70,7 +70,7 @@ TEST(HLSLCodeGenerator, VariableDecl) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -98,7 +98,7 @@ TEST(HLSLCodeGenerator, ArrayMember) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -123,7 +123,7 @@ TEST(HLSLCodeGenerator, StructureDecl) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -152,7 +152,7 @@ TEST(HLSLCodeGenerator, FuncCall) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -181,7 +181,7 @@ TEST(HLSLCodeGenerator, IfElse) {
   opt.dump_parser = false;
   opt.dump_tokenizer = false;
   azer::afx::ASTNodeFactory factory;
-  azer::afx::ParseContext context("", "", str, &factory, opt);
+  azer::afx::ParseContext context(AFXL(""), "", str, &factory, opt);
   azer::afx::Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -209,7 +209,7 @@ TEST(HLSLCodeGenerator, While) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -236,7 +236,7 @@ TEST(HLSLCodeGenerator, DoWhile) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -272,7 +272,7 @@ TEST(HLSLCodeGenerator, ForStatement) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   ASSERT_TRUE(parser.Parse(&context));
 
@@ -298,7 +298,7 @@ TEST(HLSLCodeGenerator, Texture) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   DUMP_AFXCOMPILE_ERROR(context);
@@ -329,7 +329,7 @@ TEST(HLSLCodeGenerator, TextureAsParam) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   DUMP_AFXCOMPILE_ERROR(context);
@@ -367,7 +367,7 @@ TEST(HLSLCodeGenerator, Material) {
   // opt.dump_parser = true;
   // opt.dump_tokenizer = true;
   ASTNodeFactory factory;
-  ParseContext context("", "", str, &factory, opt);
+  ParseContext context(AFXL(""), "", str, &factory, opt);
   Parser parser;
   EXPECT_TRUE(parser.Parse(&context));
   DUMP_AFXCOMPILE_ERROR(context);

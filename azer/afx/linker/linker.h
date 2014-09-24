@@ -41,7 +41,8 @@ class AfxLinker : public PreprocessorParser::Delegate {
   ~AfxLinker();
 
   Program* root() { return root_.get();}
-  bool Load(const std::string& content, const std::string& path);
+  bool Load(const std::string& content, const ::base::FilePath& path);
+  bool Load(const std::string& content, const ::base::FilePath::StringType& path);
   bool success() const { return !failed_;}
   std::string GetCompileError() const;
   const std::string& GetErrorText() const { return error_text_;}
@@ -49,11 +50,11 @@ class AfxLinker : public PreprocessorParser::Delegate {
   /**
    * 此函数使用虚函数是为了简化单元测试流程
    */
-  bool LoadFile(const std::string& file, std::string* content,
+  bool LoadFile(const ::base::FilePath& file, std::string* content,
                 ::base::FilePath* finaly);
  private:
   virtual void OnAddInclude(PreprocessorParser* parser,
-                            const std::string& path) OVERRIDE;
+                            const ::base::FilePath& path) OVERRIDE;
   void ReportError(const std::string& error);
 
   bool ParseASTreeRecursive(Program* program, Program* parent);
@@ -71,5 +72,10 @@ class AfxLinker : public PreprocessorParser::Delegate {
   std::string error_text_;
   DISALLOW_COPY_AND_ASSIGN(AfxLinker);
 };
+
+inline bool AfxLinker::Load(const std::string& content,
+                            const ::base::FilePath::StringType& path) {
+  return AfxLinker::Load(content, base::FilePath(path));
+}
 }  // namespace afx
 }  // namespace azer

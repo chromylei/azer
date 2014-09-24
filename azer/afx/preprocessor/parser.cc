@@ -1,13 +1,17 @@
 #include "azer/afx/preprocessor/parser.h"
 
 #include <iostream>
+
+#include "azer/base/string.h"
 #include "base/logging.h"
 #include "base/strings/string_split.h"
 #include "base/strings/string_util.h"
+#include "base/files/file_path.h"
 #include "preprocessor_tab.h"
 
 
 extern int preprocessor_yyparse(void*);
+using ::base::FilePath;
 
 namespace azer {
 namespace afx {
@@ -92,16 +96,16 @@ std::ostream& PreprocessorParser::parser_stream() {
   else { null_stream_.clear(); return null_stream_;}
 }
 
-void PreprocessorParser::AddIncludes(const std::string& str) {
+void PreprocessorParser::AddIncludes(const ::base::FilePath& file) {
   for (auto iter = includes_.begin(); iter != includes_.end(); ++iter) {
-    if (*iter == str) return;
+    if (*iter == file.value()) return;
   }
-  std::string output;
-  ::base::TrimString(str, "\"", &output);
+  FilePath::StringType output;
+  ::base::TrimString(file.value(), FILE_PATH_LITERAL("\""), &output);
   includes_.push_back(output);
 
   if (delegate_) {
-    delegate_->OnAddInclude(this, output);
+    delegate_->OnAddInclude(this, FilePath(output));
   }
 }
 
