@@ -315,7 +315,8 @@ TEST(HLSLCodeGenerator, TextureAsParam) {
       "SamplerState tex1__d3d_sampler;\n"
       "float4 sample(Texture2D tex, SamplerState tex__d3d_sampler, float2 coord) {"
       "return tex.Sample(tex__d3d_sampler, coord);}"
-      "float4 psmain() {return sample(tex1, float2(1.00000f, 1.00000f));}"
+      "float4 psmain() {"
+      "return sample(tex1, tex1__d3d_sampler, float2(1.00000f, 1.00000f));}"
       ;
   const std::string str =
       "uniform Texture2D tex1;\n"
