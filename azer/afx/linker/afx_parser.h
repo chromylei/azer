@@ -28,6 +28,7 @@ class AfxParser {
   bool Parse(const std::string& path);
   bool Parse(const std::string& content, const std::string& path);
   TechniqueParser::Technique* GetTechnique(const std::string& name);
+  TechniqueParser* GetTechniques() { return &tparser_;}
 
   ParseContext* GetContext();
 

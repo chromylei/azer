@@ -14,7 +14,7 @@
 #include "azer/afx/codegen/hlsl_codegen.h"
 #include "azer/afx/codegen/cpp_codegen.h"
 #include "azer/afx/codegen/util.h"
-#include "azer/afx/linker/linker.h"
+#include "azer/afx/linker/afx_parser.h"
 
 int ParseArgs();
 void PrintHelp();
@@ -42,39 +42,26 @@ int main(int argc, char* argv[]) {
   ::base::SplitString(FLAGS_includes, ',', &inc);
   azer::afx::AfxLinker::Options opt;
   opt.parse_astree = false;
-  azer::afx::FileLoader loader(inc);
-  azer::afx::AfxLinker linker(&loader, opt);
-  std::string content;
-  if (!::base::ReadFileToString(::base::FilePath(::base::UTF8ToWide(FLAGS_afxpath)),
-                             &content)) {
-    LOG(ERROR) << "failed to read file: \"" << FLAGS_afxpath << "\"";
-	return -1;
-  }
-
-  if(!linker.Load(content, FLAGS_afxpath)) {
+  azer::afx::AfxParser afx_parser(inc, opt);
+  afx_parser.Parse(FLAGS_afxpath);
+  if (!afx_parser.success()) {
     std::cerr << "Failed to compile afxfile: \""
               << FLAGS_afxpath << "\"" << std::endl;
-    if (!linker.GetCompileError().empty()) {
-      std::cerr << "compiler error: \n" << linker.GetCompileError() << std::endl;
+    if (!afx_parser.GetCompileError().empty()) {
+      std::cerr << "compiler error: \n" << afx_parser.GetCompileError() << std::endl;
     }
-    if (!linker.GetErrorText().empty()) {
-      std::cerr << "link error: \n" << linker.GetErrorText() << std::endl;
+    if (!afx_parser.GetErrorText().empty()) {
+      std::cerr << "link error: \n" << afx_parser.GetErrorText() << std::endl;
     }
-    return -1;
-  }
-
-  azer::afx::ParseContext* context = linker.root()->GetContext();
-  azer::afx::TechniqueParser tparser;
-  if(!tparser.Parse(context)) {
     return -1;
   }
 
   if (FLAGS_hlslang) {
     std::cout << "generate hlslang code" << std::endl;
-    GenHLSLTechniques(&tparser);
+    GenHLSLTechniques(afx_parser.GetTechniques());
   }
 
-  GenCppCode(&tparser);
+  GenCppCode(afx_parser.GetTechniques());
   return 0;
 }
 
