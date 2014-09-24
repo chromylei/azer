@@ -428,7 +428,7 @@ class FuncDefNode : public ASTNode {
   void SetStatements(ASTNode* node);
   void SetAttributes(ASTNode* node);
   FuncProtoNode* GetProtoNode();
-  AttributesNode* GetAttributes() { return attributes_;}
+  AttributesNode* attributes() { return attributes_;}
 
   const std::string& funcname();
  private:

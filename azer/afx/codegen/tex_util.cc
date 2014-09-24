@@ -381,7 +381,21 @@ bool IsUniformTexture(ASTNode* node) {
   } else if (node->IsRefSymbolNode()) {
     SymbolNode* symbol = node->ToRefSymbolNode()->GetDeclNode();
     DCHECK(symbol != NULL);
-    return  IsUniformTexture(symbol);
+    return IsUniformTexture(symbol);
+  } else if (node->IsBinaryOpNode()) {
+    // cannot be uniform
+    // if texture is uniform, is will be put out of the uniform structure
+    BinaryOpNode* binary = node->ToBinaryOpNode();
+    if (binary->GetOperator() == kOpMember) {
+      TypePtr type1 = GetNodeType(binary->GetOper1());
+      return IsNodeTypeTexture(binary->GetOper2())
+          && (type1->storage_qualifier() & kUniform);
+      return true;
+    } else if (binary->GetOperator() == kOpIndex) {
+      return IsUniformTexture(binary->GetOper1());
+    } else {
+      return false;
+    }
   } else {
     NOTREACHED();
     return false;

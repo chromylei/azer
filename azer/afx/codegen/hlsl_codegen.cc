@@ -378,7 +378,7 @@ void FuncProtoNodeHLSLCodeGen::GenCodeEnd(std::string* code) {
   DCHECK(node()->parent());
   if (node()->parent()->IsFuncDefNode()) {
     FuncDefNode* func = node()->parent()->ToFuncDefNode();
-    AttributesNode* attrnode = func->GetAttributes();
+    AttributesNode* attrnode = func->attributes();
     code->append(std::move(AttributeSupfix("", attrnode)));
     code->append(" ");
   }
