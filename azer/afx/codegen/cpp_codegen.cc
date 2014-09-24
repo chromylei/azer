@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <ctype.h>
+#include <set>
 
 #include "azer/render/render_system_enum.h"
 #include "azer/afx/compiler/astnode.h"
@@ -24,9 +25,10 @@ bool IsSelfDefinedStruct(const TypePtr& typeptr);
 std::string GetSemanticName(const std::string& name);
 int GetSemanticIndex(FieldNode* field);
 
-bool IsCommonStruct(StructDeclNode* node);
+bool IsExternCppStruct(StructDeclNode* node);
 std::string UniformTypeName(ASTNode* node);
 std::string UniformTypeIndex(const TypePtr& type);
+std::string GetStructTypeName(ASTNode* node);
 }  // namespace
 
 CppCodeGen::CppCodeGen() {
@@ -197,7 +199,7 @@ std::string CppCodeGen::GenTechnique(const TechniqueParser::Technique& tech) {
   return ss.str();
 }
 
-std::string CppCodeGen::GenVertexStruct(const TechniqueParser::Technique& tech) {
+StructDeclNode* CppCodeGen::GetVertexDecl(const TechniqueParser::Technique& tech) {
   const TechniqueParser::StageInfo& stageinfo = tech.shader[kVertexStage];
   DCHECK(stageinfo.entry != NULL);
   DCHECK(stageinfo.entry->IsFuncDefNode());
@@ -209,9 +211,14 @@ std::string CppCodeGen::GenVertexStruct(const TechniqueParser::Technique& tech) 
   TypedNode* typed = param->GetTypedNode();
   DCHECK(typed != NULL && typed->GetStructDecl() != NULL);
   StructDeclNode* decl = typed->GetStructDecl();
+  return decl;
+}
+
+std::string CppCodeGen::GenVertexStruct(const TechniqueParser::Technique& tech) {
+  StructDeclNode* decl = GetVertexDecl(tech);
 
   // if vertex is extend, then return directly
-  if (IsCommonStruct(decl)) {
+  if (IsExternCppStruct(decl)) {
     return "";
   }
 
@@ -304,13 +311,12 @@ std::string CppCodeGen::GenInit(const TechniqueParser::Technique& tech) {
 
 std::string CppCodeGen::GenStageUniformStructure(RenderPipelineStage stage,
                                                  const ASTNodeVec& unideps) const {
-  
   std::stringstream ss;
   std::vector<StructDeclNode*> decl_nodes;
   for (auto iter = unideps.begin(); iter != unideps.end(); ++iter) {
     DCHECK((*iter)->IsStructDeclNode());
     StructDeclNode* decl = (*iter)->ToStructDeclNode();
-    if (IsCommonStruct(decl)) {
+    if (!IsExternCppStruct(decl)) {
       decl_nodes.push_back(decl);
     }
   }
@@ -432,6 +438,52 @@ std::string CppCodeGen::GetClassName(const TechniqueParser::Technique& tech) con
   return classname;
 }
 
+namespace {
+void GetAllDeclNode(std::vector<StructDeclNode*> *nodes,
+                    const ASTNodeVec& uniforms) {
+  for (auto iter = uniforms.begin(); iter != uniforms.end(); ++iter) {
+    DCHECK((*iter)->IsStructDeclNode());
+    StructDeclNode* decl = (*iter)->ToStructDeclNode();
+    nodes->push_back(decl);
+  }
+}
+}
+
+std::string CppCodeGen::GenStructDepIncludeCode(
+    const TechniqueParser::Technique& tech) {
+  std::vector<StructDeclNode*> decl_nodes;
+  std::set<std::string> includes;
+  for (auto iter = tech.shader.begin(); iter != tech.shader.end(); ++iter) {
+    const TechniqueParser::StageInfo& stage = *iter;
+    GetAllDeclNode(&decl_nodes, stage.uni_depend);
+  }
+
+  for (auto iter = decl_nodes.begin(); iter != decl_nodes.end(); ++iter) {
+    StructDeclNode* decl = (*iter)->ToStructDeclNode();
+    if (IsExternCppStruct(decl)) {
+      std::string v = decl->attributes()->GetAttrValue("cpphead");
+      if (!v.empty()) {
+        includes.insert(v);
+      }
+    }
+  }
+
+  StructDeclNode* decl = GetVertexDecl(tech);
+  if (IsExternCppStruct(decl)) {
+    std::string v = decl->attributes()->GetAttrValue("cpphead");
+    if (!v.empty()) {
+      includes.insert(v);
+    }
+  }
+
+  std::stringstream ss;
+  for (auto iter = includes.begin(); iter != includes.end(); ++iter) {
+    ss << "#include \"" << *iter << "\"" << std::endl;
+  }
+
+  return ss.str();
+}
+
 void CppCodeGen::GenHeadCode(const TechniqueParser::Technique& tech) {
   head_code_.clear();
   std::stringstream ss;
@@ -442,6 +494,7 @@ void CppCodeGen::GenHeadCode(const TechniqueParser::Technique& tech) {
      << "#pragma once\n" << std::endl
      << "#include \"azer/render/render.h\"" << std::endl
      << "#include \"azer/math/math.h\"" << std::endl
+     << GenStructDepIncludeCode(tech) << std::endl
      << std::endl << std::endl;
 
   std::string classname = std::move(GetClassName(tech));
@@ -632,20 +685,14 @@ std::string UniformTypeName(ASTNode* node) {
     case kTexture2D: return "azer::Texture";
     case kTexture3D: return "azer::Texture";
     case kTextureCube: return "azer::Texture";
-    case kStructure:
-      if (type->name() == "afx::DirectionalLight") {
-        return "azer::Light";
-      } else if (type->name() == "afx::PointLight") {
-        return "azer::Light";
-      } else if (type->name() == "afx::SpotLight") {
-        return "azer::Light";
-      } else if (type->name() == "afx::Material") {
-        return "azer::Material::material";
-      } else {
-        std::string output_name;
+    case kStructure: {
+      
+      std::string output_name = GetStructTypeName(node);
+      if (output_name.empty()) {
         ::base::ReplaceChars(type->name(), "::", "__", &output_name);
-        return output_name;
       }
+      return output_name;
+    }
     case kChar:
     case kString:
     case kDouble:
@@ -654,6 +701,25 @@ std::string UniformTypeName(ASTNode* node) {
     default: NOTREACHED(); return "";
   }
 }
+
+std::string GetStructTypeName(ASTNode* node) {
+  if (node->IsStructDeclNode()) {
+    StructDeclNode* decl = node->ToStructDeclNode();
+    if (IsExternCppStruct(decl)) {
+      return decl->attributes()->GetAttrValue("cppstruct");
+    }
+  } else if (node->IsDeclarationNode()) {
+    DeclarationNode* declare = node->ToDeclarationNode();
+    TypedNode* tnode = declare->GetTypedNode();
+    DCHECK(tnode != NULL && tnode->GetStructDecl());
+    StructDeclNode* decl = tnode->GetStructDecl()->ToStructDeclNode();
+    if (IsExternCppStruct(decl)) {
+      return decl->attributes()->GetAttrValue("cppstruct");
+    }
+  }
+  return "";
+}
+  
 
 inline std::string GpuTableDescVarName(RenderPipelineStage stage) {
   std::string ret = std::string(StagePrefix(stage)) + "_table_desc";
@@ -775,7 +841,7 @@ int GetSemanticIndex(FieldNode* field) {
   }
 }
 
-bool IsCommonStruct(StructDeclNode* decl) {
+bool IsExternCppStruct(StructDeclNode* decl) {
   // check if the struct is declared in another cpp header
   return decl->attributes() && decl->attributes()->HasAttr("cppstruct");
 }

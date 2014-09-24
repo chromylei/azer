@@ -16,8 +16,6 @@ bool FileLoader::Load(const std::string& file, std::string* content,
     if (LoadFileToString(fullpath, content)) {
       *finalpath = fullpath.NormalizePathSeparators();
       return true;
-    } else {
-      return false;
     }
   }
 

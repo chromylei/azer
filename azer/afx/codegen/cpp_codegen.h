@@ -31,7 +31,8 @@ class CppCodeGen {
   void GenHeadCode(const TechniqueParser::Technique& tech);
   void GenCppCode(const TechniqueParser::Technique& tech);
 
-  void GenStructDepIncludeCode(const TechniqueParser::Technique& tech);
+  // generate include directive for external struct declaration 
+  std::string GenStructDepIncludeCode(const TechniqueParser::Technique& tech);
 
   std::string GenSetMaterial(const TechniqueParser::Technique& tech);
   std::string GenInit(const TechniqueParser::Technique& tech);
@@ -64,6 +65,8 @@ class CppCodeGen {
   std::string GenUseTexture(const TechniqueParser::Technique& tech);
   std::string GenTextureStageUse(RenderPipelineStage stage,
                                  const ASTNodeVec& uniforms);
+
+  StructDeclNode* GetVertexDecl(const TechniqueParser::Technique& tech);
   std::string cpp_code_;
   std::string head_code_;
   DISALLOW_COPY_AND_ASSIGN(CppCodeGen);

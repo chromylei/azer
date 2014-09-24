@@ -202,7 +202,6 @@ TEST(AfxParser, StructureDeclaration) {
   dump_error(&context, std::cout);
 }
 
-
 TEST(AfxParser, AttributeStructureDecl) {
   const std::string str =
       "[cppstruct=\"azer::afx::DirLight\" cpphead=\"azer/afx/base/light.afx.h\"]"
