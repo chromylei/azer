@@ -85,6 +85,14 @@ bool AfxLinker::ParseASTreeRecursive(Program* program, Program* parent) {
       ReportError("compile failed");
       return false;
     }
+
+    if (cur->GetContext()->package().empty()) {
+      std::stringstream ss;
+      ss << "compile failed: included afx file need package, file: \""
+         << cur->path() << "\"";
+      ReportError(ss.str());
+      return false;
+    }
     cur = cur->next_sibling();
   }
 
