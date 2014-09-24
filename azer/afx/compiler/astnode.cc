@@ -483,7 +483,8 @@ void InitializerNode::AddExpression(ASTNode* node) {
          || node->IsConditionalOpNode()
          || node->IsInitializerNode()
          || node->IsFuncCallNode()
-         || node->IsConstNode());
+         || node->IsConstNode()
+         || node->IsRefSymbolNode());
   AddChildren(node);
 }
 
