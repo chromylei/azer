@@ -207,8 +207,10 @@ external_declaration
 }
 | attributed_declaration_statement {
   PARSER_TRACE << "external_declaration: attributed_declaration_statement\n";
-  parseContext->AddVariableDecl($1);
+  if ($1->IsDeclarationNode()) {
+    parseContext->AddVariableDecl($1);
   }
+}
 | technique_declaration {
   PARSER_TRACE << "external_declaration: technique_declaration\n";
   parseContext->AddTechnique($1);
@@ -269,8 +271,8 @@ declaration_statement
 
 attributed_declaration_statement
 : attributes declaration {
-  DCHECK($2->IsDeclarationNode());
-  ((DeclarationNode*)$2)->SetAttributes($1);
+  DCHECK($1->IsAttributesNode());
+  $2->SetAttributes($1);
   $$ = $2;
  }
 ;

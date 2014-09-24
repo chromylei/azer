@@ -202,14 +202,15 @@ TEST(AfxParser, StructureDeclaration) {
   dump_error(&context, std::cout);
 }
 
-TEST(AfxParser, StructureVariable) {
+
+TEST(AfxParser, AttributeStructureDecl) {
   const std::string str =
-      "struct VSoutput1 {\n"
-      "  vec3 position;\n"
-      "  vec3 normal;\n"
-      "  vec2 texcoord;\n"
+      "[cppstruct=\"azer::afx::DirLight\" cpphead=\"azer/afx/base/light.afx.h\"]"
+      "struct DirLight {\n"
+      "  vec3 direction;\n"
+      "  vec3 ambient;\n"
+      "  vec3 diffuse;\n"
       "};\n"
-      "void main() {VSoutput1 o; float x = o.normal.x;}\n"
       ;
   ParseContext::Options opt;
   // opt.dump_parser = true;
