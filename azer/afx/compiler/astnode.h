@@ -167,6 +167,10 @@ class ASTNode : public TreeNodeDownUp<ASTNode> {
   const char* name();
 
   ScopedNode* GetScoped();
+
+  // attributes node
+  void SetAttributes(ASTNode* node);
+  AttributesNode* attributes() { return attributes_;}
  protected:
   void SetError(const std::string& errmsg) { error_msg_ = errmsg;}
   std::string error_msg_;
@@ -179,6 +183,7 @@ class ASTNode : public TreeNodeDownUp<ASTNode> {
   ParseContext* context_;
  private:
   void* extra_;
+  AttributesNode* attributes_;
   DISALLOW_COPY_AND_ASSIGN(ASTNode);
 };
 
@@ -319,14 +324,11 @@ class DeclarationNode : public ASTNode {
   virtual bool IsDeclarationNode() OVERRIDE { return true;}
 
   void AddSymbol(ASTNode* node);
-  void SetAttributes(ASTNode* node);
-  AttributesNode* attributes() { return attributes_;}
   TypePtr& GetType();
   void SetTypedNode(ASTNode* node);
   TypedNode* GetTypedNode() { return typed_;}
  private:
   TypedNode* typed_;
-  AttributesNode* attributes_;
   DISALLOW_COPY_AND_ASSIGN(DeclarationNode);
 };
 
@@ -338,17 +340,13 @@ class FieldNode : public ASTNode {
 
   const std::string& fieldname() { return fieldname_;}
   void SetFieldName(const std::string& v) { fieldname_ = v;}
-  void SetAttributes(ASTNode* node);
   void SetTypedNode(ASTNode* node);
-  AttributesNode* attributes() { return attributes_;}
-  
   TypePtr& GetType();
   const TypePtr& GetType() const;
   TypedNode* GetTypedNode() { return typed_node_;}
  private:
   TypedNode* typed_node_;
   std::string fieldname_;
-  AttributesNode* attributes_;
   DISALLOW_COPY_AND_ASSIGN(FieldNode);
 };
 
@@ -426,15 +424,11 @@ class FuncDefNode : public ASTNode {
   virtual bool IsFuncDefNode() OVERRIDE { return true;}
   void SetProtoNode(ASTNode* node);
   void SetStatements(ASTNode* node);
-  void SetAttributes(ASTNode* node);
   FuncProtoNode* GetProtoNode();
-  AttributesNode* attributes() { return attributes_;}
-
   const std::string& funcname();
  private:
   FuncProtoNode* prototype_;
   ScopedNode* scoped_node_;
-  AttributesNode* attributes_;
   DISALLOW_COPY_AND_ASSIGN(FuncDefNode);
 };
 
@@ -557,17 +551,13 @@ class ParamNode : public ASTNode {
 
   const std::string& paramname() { return paramname_;}
   void SetParamName(const std::string& v) { paramname_ = v;}
-  void SetAttributes(ASTNode* node);
   void SetTypedNode(ASTNode* node);
-  AttributesNode* attributes() { return attributes_;}
-  
   TypePtr& GetType();
   const TypePtr& GetType() const;
   TypedNode* GetTypedNode() { return typed_node_;}
  private:
   TypedNode* typed_node_;
   std::string paramname_;
-  AttributesNode* attributes_;
   DISALLOW_COPY_AND_ASSIGN(ParamNode);
 };
 

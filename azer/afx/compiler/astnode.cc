@@ -16,6 +16,7 @@ ASTNode::ASTNode(const std::string& source_path, const SourceLoc& loc,
     , loc_(loc)
     , node_type_(type)
     , context_(NULL)
+    , attributes_(NULL)
     , extra_(NULL) {
 }
 
@@ -42,6 +43,17 @@ void ASTNode::AddChildren(ASTNode* node) {
     cur = cur->next_sibling();
     temp->reset_sibling();
     AddChild(temp);
+  }
+}
+
+void ASTNode::SetAttributes(ASTNode* node) {
+  DCHECK(attributes_ == NULL);
+  DCHECK_EQ(node->type(), ASTNode::kAttributesNode);
+  attributes_ = (AttributesNode*)node;
+  if (!HasChildren()) {
+    AddChildren(node);
+  } else {
+    node->InsertBefore(first_child());
   }
 }
 
@@ -190,7 +202,6 @@ void ExpressionNode::SetValue(const Value& value) {
 // class FieldNode
 FieldNode::FieldNode(const std::string& source, const SourceLoc& loc)
     : ASTNode(source, loc, kFieldNode)
-    , attributes_(NULL)
     , typed_node_(NULL) {
 }
 
@@ -207,13 +218,6 @@ const TypePtr& FieldNode::GetType() const {
 void FieldNode::SetTypedNode(ASTNode* node) {
   DCHECK(node != NULL && node->IsTypedNode());
   typed_node_ = node->ToTypedNode();
-}
-
-void FieldNode::SetAttributes(ASTNode* node) {
-  DCHECK(attributes_ == NULL);
-  DCHECK_EQ(node->type(), ASTNode::kAttributesNode);
-  attributes_ = (AttributesNode*)node;
-  AddChildren(node);
 }
 
 // class ForLoopNode
@@ -263,24 +267,12 @@ void ForLoopNode::SetStatements(ASTNode* node) {
 // class DeclarationNode
 DeclarationNode::DeclarationNode(const std::string& source, const SourceLoc& loc)
     : ASTNode(source, loc, kDeclarationNode)
-    , typed_(NULL)
-    , attributes_(NULL) {
+    , typed_(NULL) {
 }
 
 void DeclarationNode::AddSymbol(ASTNode* node) {
   DCHECK(node->IsSymbolNode());
   AddChildren(node);
-}
-
-void DeclarationNode::SetAttributes(ASTNode* node) {
-  DCHECK(attributes_ == NULL);
-  DCHECK_EQ(node->type(), ASTNode::kAttributesNode);
-  attributes_ = (AttributesNode*)node;
-  if (!HasChildren()) {
-    AddChildren(node);
-  } else {
-    node->InsertBefore(first_child());
-  }
 }
 
 TypePtr& DeclarationNode::GetType() {
@@ -359,8 +351,7 @@ void FuncCallTypeInitNode::SetType(TypePtr type) {
 FuncDefNode::FuncDefNode(const std::string& source, const SourceLoc& loc)
     : ASTNode(source, loc, kFuncDefNode)
     , prototype_(NULL)
-    , scoped_node_(NULL)
-    , attributes_(NULL) {
+    , scoped_node_(NULL) {
 }
 
 void FuncDefNode::SetStatements(ASTNode* node) {
@@ -368,12 +359,6 @@ void FuncDefNode::SetStatements(ASTNode* node) {
   DCHECK_EQ(node->type(), kScopedNode);
   scoped_node_ = node->ToScopedNode();
   AddChildren(node);
-}
-
-void FuncDefNode::SetAttributes(ASTNode* node) {
-  DCHECK(attributes_ == NULL);
-  DCHECK_EQ(node->type(), kAttributesNode);
-  attributes_ = node->ToAttributesNode();
 }
 
 void FuncDefNode::SetProtoNode(ASTNode* node) {
@@ -537,7 +522,6 @@ SymbolNode* ScopedNode::LookupSymbolGlobally(const std::string& node) {
 // class ParamNode
 ParamNode::ParamNode(const std::string& source, const SourceLoc& loc)
     : ASTNode(source, loc, kParamNode)
-    , attributes_(NULL)
     , typed_node_(NULL) {
 }
 
@@ -554,13 +538,6 @@ const TypePtr& ParamNode::GetType() const {
 void ParamNode::SetTypedNode(ASTNode* node) {
   DCHECK(node != NULL && node->IsTypedNode());
   typed_node_ = node->ToTypedNode();
-}
-
-void ParamNode::SetAttributes(ASTNode* node) {
-  DCHECK(attributes_ == NULL);
-  DCHECK_EQ(node->type(), ASTNode::kAttributesNode);
-  attributes_ = (AttributesNode*)node;
-  AddChildren(node);
 }
 
 // class RefSymbolNode
