@@ -103,7 +103,7 @@ static_library("afx") {
 
 executable("afxc") {
   hard_dep = true
-  sources = ["afxc/afxc_main.cc"]
+  sources = ["afxc/afxc_main.cc", "afxc/afx_wrapper.cc", "afxc/afx_wrapper.h"]
   deps = [
     ":afx"
     "//base:base"
