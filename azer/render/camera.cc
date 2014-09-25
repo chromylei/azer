@@ -65,6 +65,7 @@ void Camera::GenMatrices() {
   view[1][3] = trans.y;
   view[2][3] = trans.z;
   */
+  
   view_mat_ = std::move(LookDirRH(position(), direction(), up()));
   proj_view_mat_ = std::move(frustrum_.projection() * view_mat_);
 }
@@ -82,17 +83,5 @@ void Camera::SetDirection(const Vector3& dir) {
   DCHECK_FLOAT_EQ(dir.length(), 1.0f);
   Vector3 zaxis = -dir;
   CHECK(false);
-}
-
-Camera Camera::mirror(const Plane& plane) const {
-  Camera camera;
-  Matrix4 mirror = std::move(azer::MirrorTrans(plane));
-  Matrix4 mirror_view = std::move(mirror * GetViewMatrix());
-
-  Vector3 up     (mirror_view[0][1], mirror_view[1][1], mirror_view[2][1]);
-  Vector3 forward(mirror_view[0][2], mirror_view[1][2], mirror_view[2][2]);
-  Vector3 pos    (mirror_view[0][3], mirror_view[1][3], mirror_view[2][3]);
-  Vector3 lookat(pos + forward * 0.1f);
-  return Camera(pos, lookat, up);
 }
 }  // namespace azer

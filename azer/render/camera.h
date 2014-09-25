@@ -30,9 +30,6 @@ class AZER_EXPORT Camera : public MovableObject {
   void SetDirection(const Vector3& dir);
   void SetOrientation(const Quaternion& orientation);
 
-  // create mirror camera
-  Camera mirror(const Plane& plane) const;
-
   const Matrix4& GetViewMatrix() const { return view_mat_;}
   const Matrix4& GetProjViewMatrix() const { return proj_view_mat_;}
 
@@ -43,11 +40,11 @@ class AZER_EXPORT Camera : public MovableObject {
   const Frustrum& frustrum() const { return frustrum_;}
   Frustrum& frustrum() { return frustrum_;}
   friend std::ostream& operator << (std::ostream& os, const Camera& camera);
- private:
+ protected:
   // generate camera transform matrix
   // the matrix will transform the object from world-cord to camera-cord
   // Note: the view matrix is RIGHT-HAND  
-  void GenMatrices();
+  virtual void GenMatrices();
   void UpdateDirection();
 
   Matrix4 view_mat_;
