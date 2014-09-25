@@ -87,7 +87,7 @@ bool AfxLinker::ParseASTreeRecursive(Program* program, Program* parent) {
   Program* cur = program->first_child();
   while (cur) {
     if (!cur->ParseASTree(program)) {
-      ReportError("compile failed");
+      ReportError("");
       return false;
     }
 
@@ -102,7 +102,7 @@ bool AfxLinker::ParseASTreeRecursive(Program* program, Program* parent) {
   }
 
   if (!program->ParseASTree(parent)) {
-    ReportError("compile failed");
+    ReportError("");  // compile failed
   }
   return !failed_;
 }

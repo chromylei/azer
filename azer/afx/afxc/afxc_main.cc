@@ -45,8 +45,8 @@ int main(int argc, char* argv[]) {
   azer::afx::AfxParser afx_parser(inc, opt);
   afx_parser.Parse(::base::FilePath(FLAGS_afxpath));
   if (!afx_parser.success()) {
-    std::cerr << "Failed to compile afxfile: \""
-              << FLAGS_afxpath << "\"" << std::endl;
+    // std::cerr << "Failed to compile afxfile: \"" << FLAGS_afxpath
+    // << "\"" << std::endl;
     if (!afx_parser.GetCompileError().empty()) {
       std::cerr << "compiler error: \n" << afx_parser.GetCompileError() << std::endl;
     }
