@@ -23,7 +23,8 @@ template("afx") {
   # afx_gen_dir = rebase_path(target_gen_dir, root_build_dir, ".")
   afx_gen_dir = rebase_path(target_gen_dir, ".", "")
   afx_file_path = rebase_path("$source", ".", "")
-  azer_path = rebase_path("$root_build_dir/../../azer/afx", ".", "")
+  afxlib_path = rebase_path("$root_build_dir/../../azer/afx", ".", "")
+  azer_root_path = rebase_path("$root_build_dir/../..", ".", "")
   depfile = source
   
   custom(target_name+"_afx_cppcode") {
@@ -38,7 +39,7 @@ template("afx") {
       "--output_dir=$afx_gen_dir"
       "--afx=$afx_file_path"
       "--hlslang"
-      "--includes=$azer_path"
+      "--includes=$afxlib_path,$azer_root_path"
       "--cpp_filename=$filename"
     ]
     deps = ["//azer/afx:afxc"]
