@@ -4,6 +4,14 @@
 #include "base/logging.h"
 
 namespace azer {
+Frustrum& Frustrum::operator = (const Frustrum& frustrum) {
+  set_far(frustrum.get_far());
+  set_near(frustrum.get_near());
+  set_aspect(frustrum.aspect());
+  set_fovy(frustrum.fovy());
+  return *this;
+}
+
 void Frustrum::UpdatePlane() {
   DCHECK(NULL != camera_);
   const Matrix4& combo = camera_->GetProjViewMatrix();

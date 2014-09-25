@@ -28,6 +28,12 @@ Camera::Camera(const Vector3& pos, const Vector3& lookat,
   reset(pos, lookat, up);
 }
 
+Camera& Camera::operator = (const Camera& camera) {
+  reset(camera.position(), camera.position() + camera.direction(),
+        camera.up());
+  frustrum_ = camera.frustrum();
+  return *this;
+}
 
 void Camera::reset(const Vector3& pos, const Vector3& lookat, const Vector3& up) {
   Matrix4 mat = LookAtRH(pos, lookat, up);
@@ -78,4 +84,15 @@ void Camera::SetDirection(const Vector3& dir) {
   CHECK(false);
 }
 
+Camera Camera::mirror(const Plane& plane) const {
+  Camera camera;
+  Matrix4 mirror = std::move(azer::MirrorTrans(plane));
+  Matrix4 mirror_view = std::move(mirror * GetViewMatrix());
+
+  Vector3 up     (mirror_view[0][1], mirror_view[1][1], mirror_view[2][1]);
+  Vector3 forward(mirror_view[0][2], mirror_view[1][2], mirror_view[2][2]);
+  Vector3 pos    (mirror_view[0][3], mirror_view[1][3], mirror_view[2][3]);
+  Vector3 lookat(pos + forward * 0.1f);
+  return Camera(pos, lookat, up);
+}
 }  // namespace azer

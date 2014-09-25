@@ -18,6 +18,9 @@ class AZER_EXPORT Frustrum {
 
   Frustrum(Camera* camera, Radians fovy, float apsect,
            float z_near = 1.0f, float z_far = 1000.0f);
+  Frustrum& operator = (const Frustrum& frustrum);
+
+  void set_fovy(Radians fovy) { fovY_ = fovy; GenProjMatrix();}
   void set_far(float _far) { far_ = _far; GenProjMatrix();}
   void set_near(float _near) { near_ = _near; GenProjMatrix();}
   void set_aspect(float aspect) { aspect_ = aspect; GenProjMatrix();}
@@ -66,7 +69,6 @@ class AZER_EXPORT Frustrum {
   azer::Matrix4 projection_;
 
   std::vector<Plane> planes_;
-  DISALLOW_COPY_AND_ASSIGN(Frustrum);
 };
 
 inline Frustrum::Frustrum(Camera* camera)
