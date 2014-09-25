@@ -9,7 +9,7 @@
 namespace azer {
 namespace afx {
 inline std::ostream& operator << (std::ostream& os, const std::wstring& str) {
-  return os << str.c_str();
+  return os << ::base::WideToUTF8(str.c_str());
 }
 }  // namespace afx
 }  // namespace azer
