@@ -6,6 +6,7 @@ group("root") {
      "//ui/gfx:gfx",
      "//third_party/build:third_party",
      "//azer:azer",
+     "//uisbox:uisbox",
      "//sandbox:sandbox",
      "//samples:samples",
      "//sbox:sbox",

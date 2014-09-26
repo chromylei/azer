@@ -15,6 +15,11 @@
 #include "azer/afx/codegen/cpp_codegen.h"
 #include "azer/afx/codegen/util.h"
 #include "azer/afx/linker/afx_parser.h"
+#include "azer/afx/afxc/afx_wrapper.h"
+
+using ::base::FilePath;
+using azer::afx::TechniqueParser;
+using azer::afx::AfxWrapper;
 
 int ParseArgs();
 void PrintHelp();
@@ -26,11 +31,16 @@ base::FilePath::StringType FLAGS_includes;
 std::string FLAGS_output_dir;
 std::string FLAGS_cpp_filename;
 
-void GenHLSLTechniques(azer::afx::TechniqueParser* parser);
-void GenCppCode(azer::afx::TechniqueParser* parser);
-std::string stage_supfix(azer::RenderPipelineStage stage);
 
+void GenCppCode(const AfxWrapper::AfxResult& result);
+void GenHLSLTechniques(const AfxWrapper::AfxResult& result);
+std::string stage_supfix(azer::RenderPipelineStage stage);
 void WriteContent(const std::string& path, const std::string& content);
+
+bool GenerateTechnique(const AfxWrapper::AfxResult& result) {
+  const std::string& name = result.technique->name;
+  return true;
+}
 
 int main(int argc, char* argv[]) {
   ::base::InitApp(&argc, &argv, "AfxCompiler");
@@ -38,34 +48,25 @@ int main(int argc, char* argv[]) {
     return -1;
   }
 
-  std::vector<::base::FilePath::StringType> inc;
-  ::base::SplitString(FLAGS_includes, FILE_PATH_LITERAL(','), &inc);
-  azer::afx::AfxLinker::Options opt;
-  opt.parse_astree = false;
-  azer::afx::AfxParser afx_parser(inc, opt);
-  afx_parser.Parse(::base::FilePath(FLAGS_afxpath));
-  if (!afx_parser.success()) {
-    // std::cerr << "Failed to compile afxfile: \"" << FLAGS_afxpath
-    // << "\"" << std::endl;
-    if (!afx_parser.GetCompileError().empty()) {
-      std::cerr << "compiler error: \n" << afx_parser.GetCompileError() << std::endl;
-    }
-    if (!afx_parser.GetErrorText().empty()) {
-      std::cerr << "link error: \n" << afx_parser.GetErrorText() << std::endl;
-    }
+  azer::afx::AfxWrapper afx(FLAGS_includes);
+  azer::afx::AfxWrapperResultVec resvec;
+  if (!afx.Parse(FilePath(FLAGS_afxpath), std::cerr, &resvec)) {
     return -1;
   }
 
-  if (FLAGS_hlslang) {
-    std::cout << "generate hlslang code" << std::endl;
-    GenHLSLTechniques(afx_parser.GetTechniques());
-  }
+  for (auto iter = resvec.begin(); iter != resvec.end(); ++iter) {
+    const AfxWrapper::AfxResult& res = *iter;
+    if (FLAGS_hlslang) {
+      GenHLSLTechniques(res);
+    }
 
-  GenCppCode(afx_parser.GetTechniques());
+    GenCppCode(res);
+  }
+  
   return 0;
 }
 
-void GenCppCode(azer::afx::TechniqueParser* parser) {
+void GenCppCode(const AfxWrapper::AfxResult& result) {
   using azer::afx::CppCodeGen;
   std::string hpppath = ::base::StringPrintf("%s/%s.afx.h",
                                              FLAGS_output_dir.c_str(),
@@ -73,39 +74,20 @@ void GenCppCode(azer::afx::TechniqueParser* parser) {
   std::string cpppath = ::base::StringPrintf("%s/%s.afx.cc",
                                              FLAGS_output_dir.c_str(),
                                              FLAGS_cpp_filename.c_str());
-  for (auto iter = parser->GetTechniques().begin();
-       iter != parser->GetTechniques().end(); ++iter) {
-    CppCodeGen codegen;
-    codegen.GenCode(iter->second);
-    std::string hpp_code = codegen.GetHeadCode();
-    std::string cpp_code = codegen.GetCppCode();
-    WriteContent(hpppath, hpp_code);
-    WriteContent(cpppath, cpp_code);
-  }
+  WriteContent(hpppath, result.hpp);
+  WriteContent(cpppath, result.cpp);
 }
 
-void GenHLSLTechniques(azer::afx::TechniqueParser* parser) {
-  using azer::afx::TechniqueParser;
-  
-  for (auto iter = parser->GetTechniques().begin();
-       iter != parser->GetTechniques().end(); ++iter) {
-    int cnt = 0;
-    for (auto shader_iter = iter->second.shader.begin();
-         shader_iter != iter->second.shader.end(); ++shader_iter, ++cnt) {
-      if (!shader_iter->entry) continue;
-
-      azer::RenderPipelineStage stage = (azer::RenderPipelineStage)cnt;
-      std::stringstream ss;
-      ss << FLAGS_output_dir << "/" << iter->second.name << ".afx."
-         << stage_supfix((azer::RenderPipelineStage)stage) << "";
-      std::string path = ss.str();
-      
-      azer::afx::HLSLCodeGeneratorFactory gen_factory;
-      azer::afx::AfxCodegen codegen(&gen_factory);
-      std::string code = azer::afx::FormatCode(codegen.GenCode(
-          stage, *shader_iter, true));
-      WriteContent(path, code);
-    }
+void GenHLSLTechniques(const AfxWrapper::AfxResult& result) {
+  for (int i = 0; i < azer::kRenderPipelineStageNum; ++i) {
+    std::string code = result.hlsl[i];
+    if (code.empty()) { continue; }
+    azer::RenderPipelineStage stage = (azer::RenderPipelineStage)i;
+    std::stringstream ss;
+    ss << FLAGS_output_dir << "/" << result.technique->name << ".afx."
+       << stage_supfix((azer::RenderPipelineStage)stage) << "";
+    std::string path = ss.str();
+    WriteContent(path, code);
   }
 }
 
