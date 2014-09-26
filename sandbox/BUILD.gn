@@ -1,6 +1,0 @@
-
-group("sandbox") {
-  deps = [
-#    "//sandbox/ui:gfx_sbox",
-  ]
-}
