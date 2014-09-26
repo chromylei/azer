@@ -3,7 +3,7 @@
 
 namespace azer {
 namespace window {
-int NativeMessageHandler::OnIdle(NativeMessage* message) {
+int NativeMessageHandler::OnIdle(NativeIdleMsg* message) {
   return kDefAction;
 }
 

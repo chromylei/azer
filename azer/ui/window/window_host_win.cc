@@ -98,14 +98,15 @@ void WindowHost::MainLoop(WindowHost* mainwnd) {
   ::base::MessageLoop message_loop(::base::MessageLoop::TYPE_UI);
   MSG msg; 
   memset(&msg, 0, sizeof(msg));
-  mainwnd->OnInit();
-  while (msg.message != WM_QUIT) {
-    if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-    } else {
-      NativeIdleMsg m(msg.message, msg.wParam, msg.lParam, mainwnd);
-      mainwnd->OnIdle(&m);
+  if (mainwnd->OnInit()) {
+    while (msg.message != WM_QUIT) {
+      if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+      } else {
+        NativeIdleMsg m(msg.message, msg.wParam, msg.lParam, mainwnd);
+        mainwnd->OnIdle(&m);
+      }
     }
   }
 

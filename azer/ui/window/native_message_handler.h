@@ -23,7 +23,7 @@ class AZER_EXPORT NativeMessageHandler {
     kSuccess = 0,
   };
 
-  virtual int OnIdle(NativeMessage* message);
+  virtual int OnIdle(NativeIdleMsg* message);
 
   virtual int OnMouseMove(NativeMouseMoveMsg* msg);
   virtual int OnMouseLeftClick(NativeMouseClickMsg* msg);

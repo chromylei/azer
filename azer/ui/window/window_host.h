@@ -48,7 +48,7 @@ class AZER_EXPORT WindowHost : public window::Window {
   WindowHost(const Options& opt, Delegate* delegate);
   ~WindowHost();
 
-  virtual void OnInit() {};
+  virtual bool OnInit() {return true;};
   virtual void OnQuit() {};
 
   void Init();
