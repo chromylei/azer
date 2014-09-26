@@ -9,12 +9,9 @@
 #include "base/basictypes.h"
 #include "base/time/time.h"
 #include "azer/base/render_export.h"
+#include "azer/ui/window/handle.h"
 #include "ui/gfx/geometry/size.h"
 #include "ui/gfx/geometry/rect.h"
-
-#if defined(OS_WIN)
-typedef uint32 NativeWindowHandle;
-#endif
 
 namespace azer {
 class RenderSystem;

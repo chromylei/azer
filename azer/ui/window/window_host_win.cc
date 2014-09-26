@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <tchar.h>
 
+#include "azer/ui/window/message.h"
 #include "base/logging.h"
 #include "base/lazy_instance.h"
 #include "base/strings/utf_string_conversions.h"
