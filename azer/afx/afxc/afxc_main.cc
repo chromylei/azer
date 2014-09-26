@@ -2,35 +2,19 @@
 #include <fstream>
 
 #include "base/base.h"
-#include "base/command_line.h"
+
 #include "base/logging.h"
 #include "base/files/file_path.h"
 #include "base/file_util.h"
 #include "base/strings/string_util.h"
-#include "base/strings/string_split.h"
 #include "base/strings/stringprintf.h"
 #include "azer/render/render.h"
-#include "azer/afx/codegen/afx_codegen.h"
-#include "azer/afx/codegen/hlsl_codegen.h"
-#include "azer/afx/codegen/cpp_codegen.h"
-#include "azer/afx/codegen/util.h"
-#include "azer/afx/linker/afx_parser.h"
 #include "azer/afx/afxc/afx_wrapper.h"
+#include "azer/afx/afxc/flags.h"
 
 using ::base::FilePath;
 using azer::afx::TechniqueParser;
 using azer::afx::AfxWrapper;
-
-int ParseArgs();
-void PrintHelp();
-
-bool FLAGS_hlslang = false;
-bool FLAGS_glslang = false;
-base::FilePath::StringType FLAGS_afxpath;
-base::FilePath::StringType FLAGS_includes;
-std::string FLAGS_output_dir;
-std::string FLAGS_cpp_filename;
-
 
 void GenCppCode(const AfxWrapper::AfxResult& result);
 void GenHLSLTechniques(const AfxWrapper::AfxResult& result);
@@ -67,7 +51,6 @@ int main(int argc, char* argv[]) {
 }
 
 void GenCppCode(const AfxWrapper::AfxResult& result) {
-  using azer::afx::CppCodeGen;
   std::string hpppath = ::base::StringPrintf("%s/%s.afx.h",
                                              FLAGS_output_dir.c_str(),
                                              FLAGS_cpp_filename.c_str());
@@ -101,53 +84,6 @@ std::string stage_supfix(azer::RenderPipelineStage stage) {
     case azer::kPixelStage: return "ps";
     default: NOTREACHED() << "No such RenderPipelineStage: " << stage; return "";
   }
-}
-
-void Help() {
-  std::cout << "afxc: transloate afx to hlsl or glslang, and generate "
-            << " c++ wrapper class " << std::endl
-            << "  --afx" << std::endl
-            << "  --output_dir" << std::endl
-            << "  --includes" << std::endl
-            << "  --glslang: generate glslang code" << std::endl
-            << "  --hlslang: generate hlslang code" << std::endl;
-}
-
-int ParseArgs() {
-  CommandLine* cmd = CommandLine::ForCurrentProcess();
-  if (cmd->HasSwitch("help")) {
-    Help();
-    return -1;
-  }
-
-  FLAGS_afxpath = cmd->GetSwitchValueNative("afx");
-  FLAGS_output_dir = cmd->GetSwitchValueASCII("output_dir");
-  FLAGS_includes = cmd->GetSwitchValueNative("includes");
-  FLAGS_hlslang = cmd->HasSwitch("hlslang");
-  FLAGS_glslang = cmd->HasSwitch("glslang");
-  FLAGS_cpp_filename = cmd->GetSwitchValueASCII("cpp_filename");
-
-  if (FLAGS_includes.empty()) {
-    std::cerr << "includes cannot be empty\n";
-    return -1;
-  }
-
-  if (FLAGS_afxpath.empty()) {
-    std::cerr << "afx cannot be empty\n";
-    return -1;
-  }
-
-  if (FLAGS_output_dir.empty()) {
-    std::cerr << "output_dir cannot be empty\n";
-    return -1;
-  }
-
-  if (FLAGS_cpp_filename.empty()) {
-    std::cerr << "cpp_filename cannot be empty\n";
-    return -1;
-  }
-
-  return 0;
 }
 
 void WriteContent(const std::string& path, const std::string& content) {
