@@ -89,11 +89,11 @@ shared_library("render") {
     "util/shader_array.h",
     "util/image.cc",
     "util/image.h",
-    "win/window_host.cc",
-    "win/window_host.h",
-    "win/window_host_win.cc",
-    "win/message_loop_win.cc",
-    "win/message_loop.h",
+    "../ui/window/window_host.cc",
+    "../ui/window/window_host.h",
+    "../ui/window/window_host_win.cc",
+    "../ui/window/message_loop_win.cc",
+    "../ui/window/message_loop.h",
   ]
 
   deps = [

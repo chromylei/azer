@@ -3,7 +3,7 @@
 #include "base/basictypes.h"
 #include "base/logging.h"
 #include "azer/math/math.h"
-#include "azer/render/win/window_host.h"
+#include "azer/ui/window/window_host.h"
 #include "azer/render/util/dynlib.h"
 
 typedef azer::RenderSystem* (*CreateRenderSystemFunc)(azer::WindowHost* win);
