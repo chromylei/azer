@@ -99,7 +99,7 @@ shared_library("render") {
     "../ui/window/window_host.cc",
     "../ui/window/window_host.h",
     "../ui/window/window_host_win.cc",
-    "../ui/window/window_win.h",
+    "../ui/window/window_win.cc",
     "../ui/window/window.h",
   ]
 
