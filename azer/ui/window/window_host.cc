@@ -4,15 +4,13 @@
 
 namespace azer {
 WindowHost::WindowHost(const Options& opt, Delegate* delegate)
-    : handle_(0)
-    , delegate_(delegate)
+    : delegate_(delegate)
     , render_system_(NULL)
     , options_(opt) {
 }
 
 WindowHost::WindowHost(const Options& opt)
-    : handle_(0)
-    , delegate_(NULL)
+    : delegate_(NULL)
     , render_system_(NULL)
     , options_(opt) {
 }

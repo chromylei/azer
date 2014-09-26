@@ -89,11 +89,18 @@ shared_library("render") {
     "util/shader_array.h",
     "util/image.cc",
     "util/image.h",
+    "../ui/window/handle.h"
+    "../ui/window/message_loop_win.cc",
+    "../ui/window/message_loop.h",
+    "../ui/window/native_message_handler.h",
+    "../ui/window/native_message_handler.cc",
+    "../ui/window/native_message.h",
+    "../ui/window/native_mouse_message.h",
     "../ui/window/window_host.cc",
     "../ui/window/window_host.h",
     "../ui/window/window_host_win.cc",
-    "../ui/window/message_loop_win.cc",
-    "../ui/window/message_loop.h",
+    "../ui/window/window_win.h",
+    "../ui/window/window.h",
   ]
 
   deps = [

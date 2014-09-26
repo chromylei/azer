@@ -24,8 +24,7 @@ void MainRenderLoop(WindowHost* mainwnd) {
   ::base::MessageLoop message_loop(::base::MessageLoop::TYPE_UI);
   ::base::TimeDelta total_ticking;
   base::TimeTicks prev_frame = ::base::TimeTicks::HighResNow();
-  MSG msg;
- 
+  MSG msg; 
   memset(&msg, 0, sizeof(msg));
   if (mainwnd->delegate_) {
     mainwnd->delegate_->OnUpdateScene(0, 0);

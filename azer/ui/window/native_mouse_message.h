@@ -6,6 +6,7 @@
 #include "ui/gfx/point.h"
 
 namespace azer {
+namespace window {
 class AZER_EXPORT NativeMouseMessage : public NativeMessage {
  public:
  protected:
@@ -25,4 +26,5 @@ class AZER_EXPORT NativeMouseClickMsg : public NativeMouseMessage {
  public:
  private:
 };
+}  // namespace window
 }  // namespace azer

@@ -3,10 +3,11 @@
 #include <windows.h>
 #include <tchar.h>
 
-#include "azer/ui/window/message.h"
+#include "azer/ui/window/native_message.h"
 #include "base/logging.h"
 #include "base/lazy_instance.h"
 #include "base/strings/utf_string_conversions.h"
+#include "base/message_loop/message_loop.h"
 
 namespace azer {
 namespace {
@@ -63,7 +64,7 @@ void WindowHost::Init() {
   AzerWinClassRegister::Pointer();
 
   if (options_.primary) {
-    handle_ = (NativeWindowHandle)CreateWindow(
+    handle_ = (window::NativeWindowHandle)CreateWindow(
         AzerWinClassRegister::kMainWndClassName,
         ::base::UTF8ToWide(options_.title).c_str(),
         WS_OVERLAPPEDWINDOW,
@@ -81,19 +82,7 @@ void WindowHost::Init() {
   SetCursor(NULL);
 }
 
-void WindowHost::Show() {
-  DCHECK_GT(handle_, 0);
-  ShowWindow((HWND)handle_, SW_SHOW);
-  UpdateWindow((HWND)handle_);
-}
-
-gfx::Rect WindowHost::GetClientBounds() const {
-  RECT r;
-  GetClientRect((HWND)handle_, &r);
-  return gfx::Rect(r);
-}
-
-void WindowHost::Attach(NativeWindowHandle handle) {
+void WindowHost::Attach(window::NativeWindowHandle handle) {
   HWND hwnd = (HWND)handle;
   handle_ = handle;
   RECT r;
@@ -102,5 +91,24 @@ void WindowHost::Attach(NativeWindowHandle handle) {
   options_.top = r.top;
   options_.width = r.right - r.left;
   options_.height = r.bottom - r.top;
+}
+
+void WindowHost::MainLoop(WindowHost* mainwnd) {
+  using namespace azer::window;
+  ::base::MessageLoop message_loop(::base::MessageLoop::TYPE_UI);
+  MSG msg; 
+  memset(&msg, 0, sizeof(msg));
+  mainwnd->OnInit();
+  while (msg.message != WM_QUIT) {
+    if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
+    } else {
+      NativeIdleMsg m(msg.message, msg.wParam, msg.lParam, mainwnd);
+      mainwnd->OnIdle(&m);
+    }
+  }
+
+  mainwnd->OnQuit();
 }
 }  // namespace azer

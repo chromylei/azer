@@ -8,15 +8,14 @@
 
 #include "base/basictypes.h"
 #include "base/time/time.h"
-#include "azer/base/render_export.h"
-#include "azer/ui/window/handle.h"
+#include "azer/ui/window/window.h"
 #include "ui/gfx/geometry/size.h"
 #include "ui/gfx/geometry/rect.h"
 
 namespace azer {
 class RenderSystem;
 
-class AZER_EXPORT WindowHost {
+class AZER_EXPORT WindowHost : public window::Window {
  public:
   struct Options {
     int32 left;
@@ -49,24 +48,20 @@ class AZER_EXPORT WindowHost {
   WindowHost(const Options& opt, Delegate* delegate);
   ~WindowHost();
 
-  gfx::Rect GetClientBounds() const;
-  void SetBounds(const gfx::Rect& rect);
+  virtual void OnInit() {};
+  virtual void OnQuit() {};
 
   void Init();
   void SetDelegate(Delegate* delegate) {delegate_ = delegate;}
-  void Attach(NativeWindowHandle handle);
-  NativeWindowHandle Handle() const { return handle_;}
+  void Attach(window::NativeWindowHandle handle);
   const Options& GetMetrics() const { return options_;}
 
-  void Show();
-  void Hide();
-
+  static void MainLoop(WindowHost* mainwnd);
   friend void AZER_EXPORT MainRenderLoop(WindowHost* mainwnd);
 
   void SetRenderSystem(RenderSystem* rs) { render_system_ = rs;}
   RenderSystem* GetRenderSystem() { return render_system_;}
  private:
-  NativeWindowHandle handle_;
   Delegate* delegate_;
   RenderSystem* render_system_;
   Options options_;
