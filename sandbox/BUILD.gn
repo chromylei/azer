@@ -1,8 +1,6 @@
 
 group("sandbox") {
   deps = [
-#    "//sandbox/wxwidget:wxwidget_samples",
-     "//sandbox/skia:skia_sbox",
 #    "//sandbox/ui:gfx_sbox",
   ]
 }

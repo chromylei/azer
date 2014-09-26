@@ -1,8 +1,0 @@
-executable("wxwidget_xrc") {
-  sources = [
-    "custclas.cpp", "derivdlg.cpp", "myframe.cpp", "objrefdlg.cpp", "xrcdemo.cpp",
-  ]
-  deps = ["//third_party/wxwidget:wxwidget"]
-  configs -= ["//build/config/win:console"]
-  configs += ["//build/config/win:windowed"]
-}
