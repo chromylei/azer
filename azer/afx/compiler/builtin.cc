@@ -15,6 +15,7 @@ namespace afx {
 namespace {
 base::LazyInstance<BuiltinContext>::Leaky lazy_builtin;
 const std::string g_builtin_str =
+    "void clip(float v) {}\n"
     "float fmod(float x, float y) { return 0.0;}\n"
     "float degree(float a) {return 0.0;}\n"
     "float radians(float a) { return 0.0;}\n"
@@ -49,6 +50,8 @@ const std::string g_builtin_str =
     "float min(float v, float v2) {}\n"
     "vec3 min(vec3 v, float v2) {}\n"
     "vec4 min(vec4 v, float v2) {}\n"
+    "float pow(float v1, int v2) {}\n"
+    "float pow(float v1, float v2) {}\n"
     "vec3 lerp(vec3 v1, vec3 v2, float s) {}\n"
     "vec4 lerp(vec4 v1, vec4 v2, float s) {}\n"
     ;
