@@ -65,7 +65,7 @@ void AfxWrapper::GenHLSL(const TechniqueParser::Technique& tech, AfxResult* resu
     std::stringstream ss;
     HLSLCodeGeneratorFactory gen_factory;
     AfxCodegen codegen(&gen_factory);
-    result->hlsl[cnt] = codegen.GenCode(stage, *iter, true);
+    result->hlsl[cnt] = FormatCode(codegen.GenCode(stage, *iter, true));
   }
 }
 
