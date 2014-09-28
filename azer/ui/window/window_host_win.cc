@@ -3,7 +3,7 @@
 #include <windows.h>
 #include <tchar.h>
 
-#include "azer/ui/window/native_message.h"
+#include "azer/ui/window/native_event.h"
 #include "base/logging.h"
 #include "base/lazy_instance.h"
 #include "base/strings/utf_string_conversions.h"
@@ -104,8 +104,8 @@ void WindowHost::MainLoop(WindowHost* mainwnd) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
       } else {
-        NativeIdleMsg m(msg.message, msg.wParam, msg.lParam, mainwnd);
-        mainwnd->OnIdle(&m);
+        NativeIdleEvent e(msg.message, msg.wParam, msg.lParam, mainwnd);
+        mainwnd->OnIdle(&e);
       }
     }
   }

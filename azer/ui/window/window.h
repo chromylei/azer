@@ -3,13 +3,13 @@
 #include "base/basictypes.h"
 #include "azer/base/render_export.h"
 #include "azer/ui/window/native_handle.h"
-#include "azer/ui/window/native_message.h"
-#include "azer/ui/window/native_message_handler.h"
+#include "azer/ui/window/native_event.h"
+#include "azer/ui/window/native_event_handler.h"
 #include "ui/gfx/rect.h"
 
 namespace azer {
 namespace window {
-class AZER_EXPORT Window : public NativeMessageHandler {
+class AZER_EXPORT Window : public NativeEventHandler {
  public:
   Window() : handle_(kInvalidWindowHandle) {}
 
