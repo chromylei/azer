@@ -29,6 +29,7 @@ bool SampleApp::OnInit() {
     return false;
   }
 
+  delegate_->render_system_ = render_system_;
   prev_frame_ = ::base::TimeTicks::HighResNow();
   delegate_->OnUpdateScene(0, 0);
   return true;

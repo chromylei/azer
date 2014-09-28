@@ -22,7 +22,7 @@ class SampleApp : public azer::WindowHost {
   azer::RenderSystem* GetRS() { return render_system_;}
 
   void MainLoop();
- private:
+ protected:
   virtual bool OnInit();
   virtual void OnQuit();
   virtual int OnIdle(azer::window::NativeIdleEvent* message);
