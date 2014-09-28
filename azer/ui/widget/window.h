@@ -45,8 +45,8 @@ class AZER_WIDGET_EXPORT Window : public azer::Widget {
   void UpdateTexture(RenderSystem* rs);
   
   RootWindow* root_;
-
-  OverlayEffectPtr overlay_effect_;
+  
+  EffectPtr overlay_effect_;
   BlendingPtr blending_;
   OverlayPtr overlay_;
   TexturePtr texture_;

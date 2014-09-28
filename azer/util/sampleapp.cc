@@ -29,7 +29,6 @@ bool SampleApp::OnInit() {
     return false;
   }
 
-  delegate_->render_system_ = render_system_;
   prev_frame_ = ::base::TimeTicks::HighResNow();
   delegate_->OnUpdateScene(0, 0);
   return true;
@@ -40,7 +39,7 @@ void SampleApp::OnQuit() {
   delegate_->OnQuit();
 }
 
-int SampleApp::OnIdle(azer::window::NativeIdleMsg* message) {
+int SampleApp::OnIdle(azer::window::NativeIdleEvent* message) {
   DCHECK(delegate_ != NULL);
   ::base::TimeTicks now = ::base::TimeTicks::HighResNow();
   ::base::TimeDelta delta = now - prev_frame_;

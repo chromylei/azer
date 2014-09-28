@@ -54,7 +54,8 @@ bool Window::Init() {
   DCHECK(overlay_.get() != NULL);
   overlay_effect_.reset(overlay_->CreateDefaultEffect());
   overlay_->SetEffect(overlay_effect_);
-  overlay_effect_->SetTexture(texture_);
+  // overlay_effect_->SetTexture(texture_);
+  NOTREACHED() << " no implement ";
 
   Blending::Desc blending_desc;
   blending_desc.src = Blending::kSrcColor;
