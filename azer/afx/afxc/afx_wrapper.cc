@@ -1,5 +1,6 @@
 #include "azer/afx/afxc/afx_wrapper.h"
 
+#include "azer/afx/compiler/afxl.h"
 #include "azer/afx/codegen/afx_codegen.h"
 #include "azer/afx/codegen/hlsl_codegen.h"
 #include "azer/afx/codegen/cpp_codegen.h"
@@ -19,7 +20,7 @@ AfxWrapper::AfxWrapper(const FilePath::StringType& includes) {
   ::base::SplitString(includes, FILE_PATH_LITERAL(','), &includes_);
 }
 
-bool AfxWrapper::Parse(const FilePath& path, std::ostream& os,
+bool AfxWrapper::Parse(const FilePath& path, std::string* err,
                        std::vector<AfxResult>* resvec) {
   DCHECK(parser_.get() == NULL);
   AfxLinker::Options opt;
@@ -27,13 +28,16 @@ bool AfxWrapper::Parse(const FilePath& path, std::ostream& os,
   parser_.reset(new AfxParser(includes_, opt));
   parser_->Parse(path);
   if (!parser_->success()) {
-    os << "Failed to compile afxfile: \"" << path.value() << "\"" << std::endl;
-    if (!parser_->GetCompileError().empty()) {
-      os << "compiler error: \n" << parser_->GetCompileError() << std::endl;
+    std::stringstream ss;
+    const std::string& compile_err = parser_->GetCompileError();
+    if (!compile_err.empty()) {
+      ss << path.value() << " compiler error: " << compile_err << std::endl;
     }
-    if (!parser_->GetErrorText().empty()) {
-      os << "link error: \n" << parser_->GetErrorText() << std::endl;
+    const std::string& link_err = parser_->GetErrorText();
+    if (!link_err.empty()) {
+      ss << path.value() << " link error: " << link_err << std::endl;
     }
+    *err = ss.str();
     return false;
   }
 

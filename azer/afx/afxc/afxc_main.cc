@@ -34,7 +34,9 @@ int main(int argc, char* argv[]) {
 
   azer::afx::AfxWrapper afx(FLAGS_includes);
   azer::afx::AfxWrapperResultVec resvec;
-  if (!afx.Parse(FilePath(FLAGS_afxpath), std::cerr, &resvec)) {
+  std::string errmsg;
+  if (!afx.Parse(FilePath(FLAGS_afxpath), &errmsg, &resvec)) {
+    std::cerr << errmsg << std::endl;
     return -1;
   }
 

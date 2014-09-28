@@ -21,7 +21,7 @@ class AfxWrapper {
     std::vector<std::string> glsl;
     const TechniqueParser::Technique* technique;
   };
-  bool Parse(const ::base::FilePath& path, std::ostream& os,
+  bool Parse(const ::base::FilePath& path, std::string* str,
              std::vector<AfxResult>* result); 
  private:
   void GenCppCode(const TechniqueParser::Technique& tech,

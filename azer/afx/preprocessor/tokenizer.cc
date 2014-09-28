@@ -112,17 +112,21 @@ CodeParty::Part CodeParty::GetNextToken(std::string* content) {
         }
         break;
       case kPreprocessor:
-        content->push_back(c);
         if (c == '\n') {
+          content->push_back(c);
           lineno_++;
           if (prev != '\\') {
             ++current_;
             EnterStatus(kInit);
             return kPreprocessorPart;
           }
+        } else if (c == '\r') {
         } else if (c == '/') {
+          content->push_back(c);
           rest_.push_back(c);
           EnterStatus(kCommentStartBegin);
+        } else {
+          content->push_back(c);
         }
         break;
     }
