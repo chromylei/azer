@@ -25,7 +25,7 @@ class SampleApp : public azer::WindowHost {
  private:
   virtual bool OnInit();
   virtual void OnQuit();
-  virtual int OnIdle(azer::window::NativeIdleMsg* message);
+  virtual int OnIdle(azer::window::NativeIdleEvent* message);
   Delegate* delegate_;
   ::base::TimeDelta total_ticking_;
   base::TimeTicks prev_frame_;
