@@ -181,15 +181,21 @@ GpuConstantsTable* D3D11RenderSystem::CreateGpuConstantsTable(
 }
 
 Texture* D3D11RenderSystem::CreateTexture(const Texture::Options& opt,
-                                          const Image* image) {
-  Texture::Options texopt = opt;
-  texopt.width = image->width();
-  texopt.height = image->height();
-  texopt.format = image->format();
-  std::unique_ptr<D3D11Texture2D> tex(new D3D11Texture2D(texopt, this));
-  if (tex->InitFromData(image->data(), image->data_size())) {
-    return tex.release();
+                                          const Image* img) {
+  if (img->depth() == 1u) {
+    const ImageDataPtr& image = img->data(0);
+    Texture::Options texopt = opt;
+    texopt.width = image->width();
+    texopt.height = image->height();
+    texopt.format = image->format();
+    std::unique_ptr<D3D11Texture2D> tex(new D3D11Texture2D(texopt, this));
+    if (tex->InitFromData(image->data(), image->data_size())) {
+      return tex.release();
+    } else {
+      return NULL;
+    }
   } else {
+    NOTREACHED();
     return NULL;
   }
 }

@@ -175,7 +175,7 @@ bool ilImageWrapper::Save(const ::base::FilePath& path) {
   }
 }
 
-void ilImageWrapper::CopyToImage(azer::Image* image) {
+void ilImageWrapper::CopyToImage(azer::ImageData* image) {
   DCHECK(image_id_ != (ILuint)-1);
   ilBindImage(image_id_);
 

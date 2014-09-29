@@ -31,7 +31,7 @@ class ilImageWrapper {
   bool InitFromData(const uint32* data);
   bool InitFromData(const uint8* data);
 
-  void CopyToImage(azer::Image* image);
+  void CopyToImage(azer::ImageData* image);
  private:
   uint32 image_id_;
   int32 width_, height_;

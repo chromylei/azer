@@ -6,15 +6,15 @@
 #include "azer/render/util/image.h"
 
 namespace azer {
+ImageData* ImageData::Load(const ::base::FilePath& path) {
+  return LoadImageData(path);
+}
+
 Image* Image::Load(const ::base::FilePath& path) {
   return LoadImageFromFile(path);
 }
 
-bool Image::Save(const ::base::FilePath& path) {
-  return SaveImage(this, path);
-}
-
-Vector4 Image::BoxSample(float tu, float tv) const {
+Vector4 ImageData::BoxSample(float tu, float tv) const {
   float x = width() * tu;
   float y = width() * tv;
   int x1 = std::max(std::floor(x), 0.0f);

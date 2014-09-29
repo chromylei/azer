@@ -16,6 +16,12 @@ inline Image* LoadImageFromFile(const ::base::FilePath::StringType& path) {
   return LoadImageFromFile(::base::FilePath(path));
 }
 
+AZER_EXPORT ImageData* LoadImageData(const ::base::FilePath& path);
+
+inline ImageData* LoadImageData(const ::base::FilePath::StringType& path) {
+  return LoadImageData(::base::FilePath(path));
+}
+
 // create texture for shader resource
 AZER_EXPORT Texture* CreateShaderTexture(const ::base::FilePath& path,
                                          azer::RenderSystem* rs);
@@ -24,5 +30,5 @@ inline Texture* CreateShaderTexture(const ::base::FilePath::StringType& path,
   return CreateShaderTexture(::base::FilePath(path), rs);
 }
 
-bool AZER_EXPORT SaveImage(Image* image, const ::base::FilePath& path);
+bool AZER_EXPORT SaveImage(ImageData* image, const ::base::FilePath& path);
 }  // namespace azer

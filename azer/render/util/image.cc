@@ -9,7 +9,8 @@
 
 namespace azer {
 
-azer::Vector4 SampleImage(float u, float v, Image* image) {
+azer::Vector4 SampleImage(float u, float v, Image* img) {
+  ImageDataPtr image = img->data(0);
   int x = u * image->width();
   int y = v * image->height();
   int32 rgba = image->pixel(x, y);
@@ -20,7 +21,7 @@ azer::Vector4 SampleImage(float u, float v, Image* image) {
   return azer::Vector4(r, g, b, 1.0f);
 }
 
-bool SaveImage(azer::Image* image, const ::base::FilePath& path) {
+bool SaveImage(azer::ImageData* image, const ::base::FilePath& path) {
   detail::ilImageWrapper ilimg;
   ilimg.Create(image->width(), image->height());
   ilimg.InitFromData(image->data());
@@ -28,14 +29,25 @@ bool SaveImage(azer::Image* image, const ::base::FilePath& path) {
 }
 
 azer::Image* LoadImageFromFile(const ::base::FilePath& path) {
+  ImageDataPtr ptr(LoadImageData(path));
+  if (ptr.get() != NULL) {
+    std::vector<ImageDataPtr> vec;
+    vec.push_back(ptr);
+    return new Image(vec);
+  } else {
+    return NULL;
+  }
+}
+
+ImageData* LoadImageData(const ::base::FilePath& path) {
   detail::ilImageWrapper ilimg;
   if (!ilimg.Load(path)) {
     return NULL;
   }
 
   int32 size = ilimg.GetDataSize();
-  std::unique_ptr<azer::Image> ptr(new azer::Image(ilimg.width(),
-                                                   ilimg.height(), azer::kRGBAn8));
+  std::unique_ptr<ImageData> ptr(
+      new ImageData(ilimg.width(), ilimg.height(), kRGBAn8));
   ilimg.CopyToImage(ptr.get());
   return ptr.release();
 }
