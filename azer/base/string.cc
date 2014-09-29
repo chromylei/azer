@@ -3,7 +3,8 @@
 
 namespace azer {
 std::ostream& operator << (std::ostream& os, const wchar_t* str) {
-  os << ::base::WideToUTF8(str);
+  std::string s = std::move(::base::WideToUTF8(str));
+  os << s;
   return os;
 }
 

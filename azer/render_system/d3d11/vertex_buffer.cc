@@ -56,8 +56,7 @@ HardwareBufferDataPtr D3D11VertexBuffer::map(MapType flags) {
   D3D11_MAP d3d11_map = TranslateMapType(flags);
   hr = d3d_context->Map(buffer_, 0, d3d11_map, 0, &mapped);
   if (FAILED(hr)) {
-    LOG(ERROR) << "D3D11 VertexBuffer: Map failed, desc: "
-               << ::base::HRMessage(hr);
+    LOG(ERROR) << "D3D11 VertexBuffer: Map failed, desc: " << HRMessage(hr);
     return NULL;
   }
 

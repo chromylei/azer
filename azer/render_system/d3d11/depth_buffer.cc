@@ -77,7 +77,7 @@ bool D3D11DepthBuffer::Init(D3D11RenderSystem* rs) {
   DCHECK(texture_.get() == NULL);
   D3D11Texture2D* tex = new D3D11Texture2D(options_, rs);
   texture_.reset(tex);
-  if (!tex->Init(NULL)) {
+  if (!tex->Init(NULL, 1)) {
     return false;
   }
 

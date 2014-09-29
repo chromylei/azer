@@ -7,8 +7,8 @@
 #include "azer/base/string.h"
 #include "base/strings/utf_string_conversions.h"
 
-namespace base {
-string16 HRMessage(uint32 hr) {
+namespace azer {
+std::string HRMessage(uint32 hr) {
   /*
   string16 msg;
   LPTSTR pvMsgBuf = NULL;
@@ -26,6 +26,8 @@ string16 HRMessage(uint32 hr) {
   */
   _com_error error(hr);
 
-  return base::string16(error.ErrorMessage());
+  string16 msg = error.ErrorMessage();
+  std::string str(::base::UTF16ToUTF8(msg));
+  return str;
 }
 }

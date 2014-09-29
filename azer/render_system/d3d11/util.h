@@ -19,13 +19,13 @@
 
 #define HRESULT_HANDLE(HR, LEVEL, MSG)                                  \
   if (FAILED(HR)) {                                                     \
-    LOG(##LEVEL) << ##MSG << "(" << ::base::HRMessage(HR) << ")";       \
+    LOG(##LEVEL) << ##MSG << "(" << HRMessage(HR) << ")";       \
         return false;                                                   \
   }
 
 #define HRESULT_HANDLE_NORET(HR, LEVEL, MSG)                            \
   if (FAILED(HR)) {                                                     \
-    LOG(##LEVEL) << ##MSG << "(" << ::base::HRMessage(HR) << ")";       \
+    LOG(##LEVEL) << ##MSG << "(" << HRMessage(HR) << ")";       \
   }
 
 

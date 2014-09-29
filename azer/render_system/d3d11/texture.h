@@ -17,7 +17,7 @@ class D3D11Texture: public Texture {
   D3D11Texture(const Texture::Options& opt, D3D11RenderSystem* rs);
 
   virtual ~D3D11Texture();
-  virtual bool Init(const D3D11_SUBRESOURCE_DATA* data) = 0;
+  bool Init(const D3D11_SUBRESOURCE_DATA* data, int num);
   virtual void GenerateMips(int level) OVERRIDE;
   virtual bool SetSamplerState(const SamplerState& sampler_state) OVERRIDE;
 
@@ -31,7 +31,8 @@ class D3D11Texture: public Texture {
   bool Initialized() const { return NULL != resource_;}
   ID3D11Resource* GetResource() { return resource_; }
  protected:
-  virtual void InitTextureDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) = 0;
+  virtual void InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) = 0;
+  virtual void InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) = 0;
   bool InitResourceView();
 
   ID3D11Resource* resource_;
@@ -39,6 +40,7 @@ class D3D11Texture: public Texture {
   ID3D11ShaderResourceView* view_;
   ID3D11SamplerState* sampler_state_;
   D3D11_SHADER_RESOURCE_VIEW_DESC res_view_desc_;
+  D3D11_TEXTURE2D_DESC tex_desc_;
 
 #ifdef DEBUG
   bool mapped_;
@@ -52,12 +54,10 @@ class D3D11Texture2D : public D3D11Texture {
       : D3D11Texture(opt, rs) {
   }
 
-  virtual bool Init(const D3D11_SUBRESOURCE_DATA* data) OVERRIDE;
   virtual bool InitFromImage(const Image* image) OVERRIDE;
  private:
-  virtual void InitTextureDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) OVERRIDE;
-  D3D11_TEXTURE2D_DESC tex_desc_;
-
+  virtual void InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;
+  virtual void InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) OVERRIDE;
   friend class D3D11RenderTarget;
   friend class D3D11DepthBuffer;
   DISALLOW_COPY_AND_ASSIGN(D3D11Texture2D);
@@ -69,11 +69,10 @@ class D3D11TextureCubeMap : public D3D11Texture {
       : D3D11Texture(opt, rs) {
   }
 
-  virtual bool Init(const D3D11_SUBRESOURCE_DATA* data) OVERRIDE;
   virtual bool InitFromImage(const Image* image) OVERRIDE;
  private:
-  virtual void InitTextureDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) OVERRIDE;
-  D3D11_TEXTURE2D_DESC tex_desc_;
+  virtual void InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;
+  virtual void InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) OVERRIDE;
   DISALLOW_COPY_AND_ASSIGN(D3D11TextureCubeMap);
 };
 

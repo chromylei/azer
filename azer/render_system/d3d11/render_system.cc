@@ -42,7 +42,6 @@ D3D11RenderSystem::~D3D11RenderSystem() {
 bool D3D11RenderSystem::Init(WindowHost* window) {
   DCHECK(NULL == swap_chain_);
   DCHECK(NULL == d3d_device_);
-  using ::base::HRMessage;
   HRESULT hr;
 
   //Describe our Buffer
@@ -182,22 +181,24 @@ GpuConstantsTable* D3D11RenderSystem::CreateGpuConstantsTable(
 
 Texture* D3D11RenderSystem::CreateTexture(const Texture::Options& opt,
                                           const Image* img) {
-  if (img->type() == Image::k2D) {
-    const ImageDataPtr& image = img->data(0);
-    Texture::Options texopt = opt;
-    texopt.width = image->width();
-    texopt.height = image->height();
-    texopt.format = image->format();
-    std::unique_ptr<D3D11Texture> tex(new D3D11Texture2D(texopt, this));
-    if (tex->InitFromImage(img)) {
-      return tex.release();
-    } else {
-      return NULL;
-    }
-  } else if (img->type() == Image::kCubeMap) {
-    return NULL;
+  const ImageDataPtr& image = img->data(0);
+  Texture::Options texopt = opt;
+  texopt.width = image->width();
+  texopt.height = image->height();
+  texopt.format = image->format();
+  texopt.type = (Texture::Type)img->type();
+  std::unique_ptr<D3D11Texture> tex;
+  if (texopt.type == Texture::k2D) {
+    tex.reset(new D3D11Texture2D(texopt, this));
+  } else if (texopt.type == Texture::kCubeMap) {
+    tex.reset(new D3D11TextureCubeMap(texopt, this));
   } else {
     NOTREACHED();
+    return NULL;
+  }
+  if (tex->InitFromImage(img)) {
+    return tex.release();
+  } else {
     return NULL;
   }
 }
