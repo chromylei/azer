@@ -45,7 +45,7 @@ std::string HLSLTypeName(const TypePtr& type) {
     case kTexture2D: return "Texture2D";
     case kTexture2DArray: return "Texture2DArray";
     case kTexture3D: return "Texture3D";
-    case kTextureCube: return "Texturecube";
+    case kTextureCube: return "TextureCube";
     case kStructure: return std::move(ReplaceDoubleColon(type->name()));
     case kFunctional: return std::move(ReplaceDoubleColon(type->name()));
     default: NOTREACHED() << "Unknown ASTNodeType"; return "";

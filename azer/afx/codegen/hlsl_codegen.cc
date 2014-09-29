@@ -285,7 +285,8 @@ bool FuncCallNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
   if (func->IsBuiltIn()) {
     if (func->funcname() == "sample1D"
         || func->funcname() == "sample2D"
-        || func->funcname() == "sample3D") {
+        || func->funcname() == "sample3D"
+        || func->funcname() == "sampleCube") {
       ss << std::move(GenCodeForSample());
     } else if (func->funcname() == "load") {
       ss << std::move(GenCodeForTexLoad());
