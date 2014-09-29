@@ -31,8 +31,13 @@ class ilImageWrapper {
   bool InitFromData(const uint32* data);
   bool InitFromData(const uint8* data);
 
-  void CopyToImage(azer::ImageData* image);
+  void CopyToImage(azer::ImageData* image, int active);
+  void CreateImage(std::vector<ImageDataPtr>* imgs);
+  bool IsCubemap() const;
  private:
+  void CreateCubeImages(std::vector<ImageDataPtr>* imgs);
+  void Create2DImage(std::vector<ImageDataPtr>* imgs);
+
   uint32 image_id_;
   int32 width_, height_;
   int32 bytes_per_pixel_;

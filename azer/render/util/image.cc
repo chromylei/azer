@@ -28,14 +28,18 @@ bool SaveImage(azer::ImageData* image, const ::base::FilePath& path) {
   return ilimg.Save(path);
 }
 
-azer::Image* LoadImageFromFile(const ::base::FilePath& path) {
-  ImageDataPtr ptr(LoadImageData(path));
-  if (ptr.get() != NULL) {
-    std::vector<ImageDataPtr> vec;
-    vec.push_back(ptr);
-    return new Image(vec);
-  } else {
+Image* LoadImageFromFile(const ::base::FilePath& path) {
+  detail::ilImageWrapper ilimg;
+  if (!ilimg.Load(path)) {
     return NULL;
+  }
+
+  std::vector<ImageDataPtr> vec;
+  ilimg.CreateImage(&vec);
+  if (ilimg.IsCubemap()) {
+    return new Image(vec, Image::kCubeMap);
+  } else {
+    return new Image(vec, Image::k2D);
   }
 }
 
@@ -48,7 +52,7 @@ ImageData* LoadImageData(const ::base::FilePath& path) {
   int32 size = ilimg.GetDataSize();
   std::unique_ptr<ImageData> ptr(
       new ImageData(ilimg.width(), ilimg.height(), kRGBAn8));
-  ilimg.CopyToImage(ptr.get());
+  ilimg.CopyToImage(ptr.get(), 0);
   return ptr.release();
 }
 

@@ -4,22 +4,32 @@
 #include <vector>
 
 #include "azer/base/image_data.h"
+#include "azer/render/texture.h"
 
 namespace azer {
 
 class AZER_EXPORT Image {
  public:
-  explicit Image(std::vector<ImageDataPtr>& image) {
+  enum Type {
+    k1D = Texture::k1D,
+    k2D = Texture::k2D,
+    k3D = Texture::k3D,
+    kCubeMap = Texture::kCubeMap,
+  };
+  explicit Image(std::vector<ImageDataPtr>& image, Type type)
+      : type_(type) {
     data_.swap(image);
   }
 
-  explicit Image(const std::vector<ImageDataPtr>& image) {
+  explicit Image(const std::vector<ImageDataPtr>& image, Type type)
+      : type_(type) {
     data_ = image;
   }
 
   int32 width() const;
   int32 height() const;
   int32 depth() const;
+  Type type() const { return type_;}
 
   DataFormat format() const;
 
@@ -30,7 +40,7 @@ class AZER_EXPORT Image {
   static Image* Load(const ::base::FilePath::StringType& path);
  private:
   std::vector<ImageDataPtr> data_;
-  
+  Type type_;
   DISALLOW_COPY_AND_ASSIGN(Image);
 };
 

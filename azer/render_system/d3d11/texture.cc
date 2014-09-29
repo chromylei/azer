@@ -65,26 +65,6 @@ void D3D11Texture2D::SetVSSampler(int index, D3D11Renderer* renderer) {
   }
 }
 
-bool D3D11Texture2D::LoadFromFile(const base::FilePath& path) {
-  DCHECK(NULL == view_) << "RenderTargetView has been created.";
-  DCHECK(NULL == sampler_state_);
-  ID3D11Device* d3d_device = render_system_->GetDevice();
-  D3DX11_IMAGE_LOAD_INFO loadinfo;
-  HRESULT hr = D3DX11CreateTextureFromFile(d3d_device,
-                                           path.value().c_str(),
-                                           &loadinfo,
-                                           0,
-                                           (ID3D11Resource**)&texture_,
-                                           0);
-  if (FAILED(hr)) {
-    LOG(ERROR) << "Failed to CreateTexture from file: \"" << path.value() << "\"";
-    return false;
-  }
-
-  texture_->GetDesc(&tex_desc_);
-  return InitResourceView();
-}
-
 void D3D11Texture2D::GenerateMips(int level) {
   DCHECK(view_ != NULL);
   ID3D11Device* d3d_device = render_system_->GetDevice();

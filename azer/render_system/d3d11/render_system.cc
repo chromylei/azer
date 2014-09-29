@@ -182,7 +182,7 @@ GpuConstantsTable* D3D11RenderSystem::CreateGpuConstantsTable(
 
 Texture* D3D11RenderSystem::CreateTexture(const Texture::Options& opt,
                                           const Image* img) {
-  if (img->depth() == 1u) {
+  if (img->type() == Image::k2D) {
     const ImageDataPtr& image = img->data(0);
     Texture::Options texopt = opt;
     texopt.width = image->width();
@@ -194,6 +194,8 @@ Texture* D3D11RenderSystem::CreateTexture(const Texture::Options& opt,
     } else {
       return NULL;
     }
+  } else if (img->type() == Image::kCubeMap) {
+    return NULL;
   } else {
     NOTREACHED();
     return NULL;

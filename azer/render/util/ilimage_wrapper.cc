@@ -175,9 +175,19 @@ bool ilImageWrapper::Save(const ::base::FilePath& path) {
   }
 }
 
-void ilImageWrapper::CopyToImage(azer::ImageData* image) {
+void ilImageWrapper::CreateCubeImages(std::vector<ImageDataPtr>* imgs) {
+  DCHECK(IsCubemap());
+  for (int i = 0; i < 6; ++i) {
+    ImageDataPtr ptr(new ImageData(width(), height(), kRGBAn8));
+    CopyToImage(ptr.get(), i);
+    imgs->push_back(ptr);
+  }
+}
+
+void ilImageWrapper::CopyToImage(azer::ImageData* image, int active) {
   DCHECK(image_id_ != (ILuint)-1);
   ilBindImage(image_id_);
+  ilActiveImage(active);
 
   DCHECK_EQ(image->width(), width());
   DCHECK_EQ(image->height(), height());
@@ -191,6 +201,34 @@ void ilImageWrapper::CopyToImage(azer::ImageData* image) {
       break;
     default:
       NOTREACHED();
+  }
+}
+
+bool ilImageWrapper::IsCubemap() const {
+  DCHECK(image_id_ != (ILuint)-1);
+  ilBindImage(image_id_);
+  
+  ILint ilvalue = ilGetInteger(IL_IMAGE_CUBEFLAGS);
+  if (ilvalue == IL_CUBEMAP_POSITIVEX) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void ilImageWrapper::Create2DImage(std::vector<ImageDataPtr>* imgs) {
+  ImageDataPtr ptr(new ImageData(width(), height(), kRGBAn8));
+  CopyToImage(ptr.get(), 0);
+  imgs->push_back(ptr);
+}
+
+void ilImageWrapper::CreateImage(std::vector<ImageDataPtr>* imgs) {
+  DCHECK(imgs != NULL);
+  DCHECK_EQ(imgs->size(), 0u);
+  if (IsCubemap()) {
+    CreateCubeImages(imgs);
+  } else {
+    Create2DImage(imgs);
   }
 }
 }  // namespace detail

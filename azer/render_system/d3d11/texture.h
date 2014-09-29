@@ -14,11 +14,7 @@ class D3D11RenderSystem;
 
 class D3D11Texture2D : public Texture {
  public:
-  virtual ~D3D11Texture2D() {
-    SAFE_RELEASE(texture_);
-    SAFE_RELEASE(view_);
-    SAFE_RELEASE(sampler_state_);
-  }
+  virtual ~D3D11Texture2D();
 
   bool Init(const D3D11_SUBRESOURCE_DATA* data);
   void UseForStage(RenderPipelineStage stage, int index, D3D11Renderer* renderer);
@@ -36,18 +32,7 @@ class D3D11Texture2D : public Texture {
   void SetVSSampler(int index, D3D11Renderer* renderer);
   void SetPSSampler(int index, D3D11Renderer* renderer);
  private:
-  D3D11Texture2D(const Texture::Options& opt, D3D11RenderSystem* rs)
-      : Texture(opt)
-      , render_system_(rs)
-      , texture_(NULL)
-      , view_(NULL)
-      , sampler_state_(NULL) {
-    DCHECK(opt.type == Texture::k2D
-           || opt.type == Texture::kCubeMap);
-#ifdef DEBUG
-    mapped_ = false;
-#endif
-  }
+  D3D11Texture2D(const Texture::Options& opt, D3D11RenderSystem* rs);
 
   bool InitResourceView();
   void InitTexture2DDesc();
@@ -69,4 +54,23 @@ class D3D11Texture2D : public Texture {
   DISALLOW_COPY_AND_ASSIGN(D3D11Texture2D);
 };
 
+inline D3D11Texture2D::D3D11Texture2D(const Texture::Options& opt,
+                                      D3D11RenderSystem* rs)
+    : Texture(opt)
+    , render_system_(rs)
+    , texture_(NULL)
+    , view_(NULL)
+    , sampler_state_(NULL) {
+  DCHECK(opt.type == Texture::k2D
+         || opt.type == Texture::kCubeMap);
+#ifdef DEBUG
+  mapped_ = false;
+#endif
+}
+
+inline D3D11Texture2D::~D3D11Texture2D() {
+  SAFE_RELEASE(texture_);
+  SAFE_RELEASE(view_);
+  SAFE_RELEASE(sampler_state_);
+}
 }  // namespace azer

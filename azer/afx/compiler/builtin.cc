@@ -40,6 +40,7 @@ const std::string g_builtin_str =
     "vec4 sample1D(Texture1D tex, float texcoord) { return vec4(1, 1, 1, 1);}\n"
     "vec4 sample2D(Texture2D tex, vec2 texcoord) { return vec4(1, 1, 1, 1);}\n"
     "vec4 sample3D(Texture3D tex, vec3 texcoord) { return vec4(1, 1, 1, 1);}\n"
+    "vec4 sampleCube(TextureCube tex, vec3 texcoord) { return vec4(1, 1, 1, 1);}\n"
     "vec4 load(Texture2D, ivec3 coord) { return vec4(1.0, 1.0, 1.0, 1.0);}\n"
     "float frac(float v) { return 1.0;}\n"
     "vec3 frac(vec3 v) { return vec3(1, 1, 1);}\n"

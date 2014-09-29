@@ -3,10 +3,16 @@
 
 namespace azer {
 Texture* Texture::LoadShaderTexture(const ::base::FilePath& path,
-                                      azer::RenderSystem* rs) {
+                                    azer::RenderSystem* rs) {
   Texture::Options texopt;
   texopt.target = Texture::kShaderResource;
-  return LoadTexture(texopt, path, rs);
+  std::unique_ptr<Image> imgptr(LoadImageFromFile(path));
+  if (!imgptr.get()) {
+    return NULL;
+  }
+
+  texopt.type = (Texture::Type)imgptr->type();
+  return rs->CreateTexture(texopt, imgptr.get());
 }
 
 Texture* Texture::LoadTexture(const Texture::Options& opt,
