@@ -24,7 +24,7 @@ bool D3D11RenderTarget::InitDefault(D3D11RenderSystem* rs) {
 
   DCHECK(texture_.get() == NULL);
   texture_.reset(new D3D11Texture2D(options_, rs));
-  ((D3D11Texture2D*)texture_.get())->texture_ = texture_buffer;
+  ((D3D11Texture2D*)texture_.get())->resource_ = texture_buffer;
   return true;
 }
 
@@ -49,10 +49,10 @@ bool D3D11RenderTarget::Init(D3D11RenderSystem* rs) {
     return false;
   }
 
-  ID3D11Texture2D* texture_buffer = ((D3D11Texture2D*)texture_.get())->texture_;
+  ID3D11Resource* resource = ((D3D11Texture2D*)texture_.get())->resource_;
   DCHECK(TranslateBindTarget(options_.target) & D3D11_BIND_RENDER_TARGET);
 
-  hr = d3d_device->CreateRenderTargetView(texture_buffer, NULL, &target_);
+  hr = d3d_device->CreateRenderTargetView(resource, NULL, &target_);
   HRESULT_HANDLE(hr, ERROR, "CreateRenderTargetView failed ");
   return true;
 }

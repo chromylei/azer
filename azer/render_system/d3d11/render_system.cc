@@ -188,7 +188,7 @@ Texture* D3D11RenderSystem::CreateTexture(const Texture::Options& opt,
     texopt.width = image->width();
     texopt.height = image->height();
     texopt.format = image->format();
-    std::unique_ptr<D3D11Texture2D> tex(new D3D11Texture2D(texopt, this));
+    std::unique_ptr<D3D11Texture> tex(new D3D11Texture2D(texopt, this));
     if (tex->InitFromData(image->data(), image->data_size())) {
       return tex.release();
     } else {
@@ -203,7 +203,11 @@ Texture* D3D11RenderSystem::CreateTexture(const Texture::Options& opt,
 }
 
 Texture* D3D11RenderSystem::CreateTexture(const Texture::Options& opt) {
-  return new D3D11Texture2D(opt, this);
+  if (opt.type == Texture::k2D) {
+    return new D3D11Texture2D(opt, this);
+  } else {
+    return NULL;
+  }
 }
 
 /*

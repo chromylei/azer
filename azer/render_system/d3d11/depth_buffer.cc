@@ -81,10 +81,10 @@ bool D3D11DepthBuffer::Init(D3D11RenderSystem* rs) {
     return false;
   }
 
-  ID3D11Texture2D* texture_buffer = ((D3D11Texture2D*)texture_.get())->texture_;
+  ID3D11Resource* resource = ((D3D11Texture2D*)texture_.get())->resource_;
   DCHECK_EQ(TranslateBindTarget(options_.target), D3D11_BIND_DEPTH_STENCIL);
 
-  hr = d3d_device->CreateDepthStencilView(texture_buffer, NULL, &target_);
+  hr = d3d_device->CreateDepthStencilView(resource, NULL, &target_);
   HRESULT_HANDLE(hr, ERROR, "CreateDepthStencilView failed ");  
 
   return InitDepthAndStencilState(rs);

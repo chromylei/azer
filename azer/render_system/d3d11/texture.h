@@ -12,13 +12,12 @@ namespace azer {
 class D3D11Renderer;
 class D3D11RenderSystem;
 
-class D3D11Texture2D : public Texture {
+class D3D11Texture: public Texture {
  public:
-  virtual ~D3D11Texture2D();
+  D3D11Texture(const Texture::Options& opt, D3D11RenderSystem* rs);
 
-  bool Init(const D3D11_SUBRESOURCE_DATA* data);
-  void UseForStage(RenderPipelineStage stage, int index, D3D11Renderer* renderer);
-
+  virtual ~D3D11Texture();
+  virtual bool Init(const D3D11_SUBRESOURCE_DATA* data) = 0;
   virtual void GenerateMips(int level) OVERRIDE;
   virtual bool SetSamplerState(const SamplerState& sampler_state) OVERRIDE;
 
@@ -26,51 +25,60 @@ class D3D11Texture2D : public Texture {
   virtual void unmap() OVERRIDE;
   virtual bool InitFromData(const uint8* data, uint32 size) OVERRIDE;
 
-  bool LoadFromFile(const base::FilePath& path);
-  bool Initialized() const { return NULL != texture_;}
-
+  void UseForStage(RenderPipelineStage stage, int index, D3D11Renderer* renderer);
   void SetVSSampler(int index, D3D11Renderer* renderer);
   void SetPSSampler(int index, D3D11Renderer* renderer);
- private:
-  D3D11Texture2D(const Texture::Options& opt, D3D11RenderSystem* rs);
 
+  bool Initialized() const { return NULL != resource_;}
+  ID3D11Resource* GetResource() { return resource_; }
+ protected:
+  virtual void InitTextureDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) = 0;
   bool InitResourceView();
-  void InitTexture2DDesc();
-  void InitTextureCubeMapDesc();
 
+  ID3D11Resource* resource_;
   D3D11RenderSystem* render_system_;
-  ID3D11Texture2D* texture_;
   ID3D11ShaderResourceView* view_;
   ID3D11SamplerState* sampler_state_;
-  D3D11_TEXTURE2D_DESC tex_desc_;
   D3D11_SHADER_RESOURCE_VIEW_DESC res_view_desc_;
+
 #ifdef DEBUG
   bool mapped_;
 #endif
+  DISALLOW_COPY_AND_ASSIGN(D3D11Texture);
+};
 
-  friend class D3D11RenderSystem;
+class D3D11Texture2D : public D3D11Texture {
+ public:
+  D3D11Texture2D(const Texture::Options& opt, D3D11RenderSystem* rs)
+      : D3D11Texture(opt, rs) {
+  }
+
+  virtual bool Init(const D3D11_SUBRESOURCE_DATA* data) OVERRIDE;
+ private:
+  virtual void InitTextureDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) OVERRIDE;
+  D3D11_TEXTURE2D_DESC tex_desc_;
+
   friend class D3D11RenderTarget;
   friend class D3D11DepthBuffer;
   DISALLOW_COPY_AND_ASSIGN(D3D11Texture2D);
 };
 
-inline D3D11Texture2D::D3D11Texture2D(const Texture::Options& opt,
-                                      D3D11RenderSystem* rs)
+inline D3D11Texture::D3D11Texture(const Texture::Options& opt,
+                                  D3D11RenderSystem* rs)
     : Texture(opt)
     , render_system_(rs)
-    , texture_(NULL)
     , view_(NULL)
+    , resource_(NULL)
     , sampler_state_(NULL) {
-  DCHECK(opt.type == Texture::k2D
-         || opt.type == Texture::kCubeMap);
 #ifdef DEBUG
   mapped_ = false;
 #endif
 }
 
-inline D3D11Texture2D::~D3D11Texture2D() {
-  SAFE_RELEASE(texture_);
+inline D3D11Texture::~D3D11Texture() {
+  SAFE_RELEASE(resource_);
   SAFE_RELEASE(view_);
   SAFE_RELEASE(sampler_state_);
 }
+
 }  // namespace azer

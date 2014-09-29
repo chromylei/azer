@@ -17,35 +17,7 @@
 #include "azer/render_system/d3d11/util.h"
 
 namespace azer {
-bool D3D11Texture2D::Init(const D3D11_SUBRESOURCE_DATA* data) {
-  HRESULT hr;
-  DCHECK(NULL == texture_);
-  ID3D11Device* d3d_device = render_system_->GetDevice();
-
-  ZeroMemory(&tex_desc_, sizeof(D3D11_TEXTURE2D_DESC));
-  tex_desc_.Width     = options_.width;
-  tex_desc_.Height    = options_.height;
-  tex_desc_.MipLevels = options_.sampler.mip_level;
-  tex_desc_.ArraySize = 1;
-  tex_desc_.Format    = TranslateFormat(options_.format);
-  tex_desc_.SampleDesc.Count   = options_.sampler.sample_level;
-  tex_desc_.SampleDesc.Quality = options_.sampler.sample_qualifiy;
-  tex_desc_.Usage          = TranslateUsage(options_.usage);
-  tex_desc_.BindFlags      = TranslateBindTarget(options_.target);
-  tex_desc_.CPUAccessFlags = TranslateCPUAccess(options_.cpu_access);
-  tex_desc_.MiscFlags      = 0;
-
-  hr = d3d_device->CreateTexture2D(&tex_desc_, data, &texture_);
-  HRESULT_HANDLE(hr, ERROR, "CreateTexture2D failed ");
-
-  if (options_.target & Texture::kShaderResource) {
-    return InitResourceView();
-  } else {
-    return true;
-  }
-}
-
-void D3D11Texture2D::SetPSSampler(int index, D3D11Renderer* renderer) {
+void D3D11Texture::SetPSSampler(int index, D3D11Renderer* renderer) {
   DCHECK(NULL != view_);
   DCHECK_GE(index, 0);
   ID3D11DeviceContext* d3d_context = renderer->GetContext();
@@ -55,7 +27,7 @@ void D3D11Texture2D::SetPSSampler(int index, D3D11Renderer* renderer) {
   }
 }
 
-void D3D11Texture2D::SetVSSampler(int index, D3D11Renderer* renderer) {
+void D3D11Texture::SetVSSampler(int index, D3D11Renderer* renderer) {
   DCHECK(NULL != view_);
   DCHECK_GE(index, 0);
   ID3D11DeviceContext* d3d_context = renderer->GetContext();
@@ -65,7 +37,7 @@ void D3D11Texture2D::SetVSSampler(int index, D3D11Renderer* renderer) {
   }
 }
 
-void D3D11Texture2D::GenerateMips(int level) {
+void D3D11Texture::GenerateMips(int level) {
   DCHECK(view_ != NULL);
   ID3D11Device* d3d_device = render_system_->GetDevice();
   D3D11Renderer* renderer = (D3D11Renderer*)(render_system_->GetDefaultRenderer());
@@ -74,39 +46,16 @@ void D3D11Texture2D::GenerateMips(int level) {
   d3d_context->GenerateMips(view_);
 }
 
-bool D3D11Texture2D::InitResourceView() {
+bool D3D11Texture::InitResourceView() {
   ID3D11Device* d3d_device = render_system_->GetDevice();
-  DCHECK(texture_ != NULL);
-  if (options_.type == Texture::k2D) InitTexture2DDesc();
-  else if (options_.type == Texture::kCubeMap) InitTextureCubeMapDesc();
-  else { CHECK(false) << "not implement";}
-
-  HRESULT hr = d3d_device->CreateShaderResourceView(texture_, &res_view_desc_,
+  InitTextureDesc(&res_view_desc_);
+  HRESULT hr = d3d_device->CreateShaderResourceView(resource_, &res_view_desc_,
                                             &view_);
   HRESULT_HANDLE(hr, ERROR, "CreateResourceView failed for texture");
-  
   return SetSamplerState(options_.sampler);
 }
 
-void D3D11Texture2D::InitTexture2DDesc() {
-  DCHECK_EQ(GetViewDimensionFromTextureType(options_.type),
-            D3D11_SRV_DIMENSION_TEXTURE2D);
-  res_view_desc_.Format = tex_desc_.Format;
-  res_view_desc_.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-  res_view_desc_.Texture2D.MipLevels = tex_desc_.MipLevels;
-  res_view_desc_.Texture2D.MostDetailedMip = 0;
-}
-
-void D3D11Texture2D::InitTextureCubeMapDesc() {
-  DCHECK_EQ(GetViewDimensionFromTextureType(options_.type),
-            D3D11_SRV_DIMENSION_TEXTURECUBE);
-  res_view_desc_.Format = tex_desc_.Format;
-  res_view_desc_.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
-  res_view_desc_.TextureCube.MipLevels = tex_desc_.MipLevels;
-  res_view_desc_.TextureCube.MostDetailedMip = 0;
-}
-
-bool D3D11Texture2D::SetSamplerState(const SamplerState& sampler_state) {
+bool D3D11Texture::SetSamplerState(const SamplerState& sampler_state) {
   ID3D11Device* d3d_device = render_system_->GetDevice();
   if (sampler_state_) {
     SAFE_RELEASE(sampler_state_);
@@ -134,8 +83,8 @@ bool D3D11Texture2D::SetSamplerState(const SamplerState& sampler_state) {
   return true;
 }
 
-void D3D11Texture2D::UseForStage(RenderPipelineStage stage, int index,
-                                 D3D11Renderer* renderer) {
+void D3D11Texture::UseForStage(RenderPipelineStage stage, int index,
+                               D3D11Renderer* renderer) {
   DCHECK(NULL != render_system_);
   if (stage == kVertexStage) {
     SetVSSampler(index, renderer);
@@ -146,9 +95,25 @@ void D3D11Texture2D::UseForStage(RenderPipelineStage stage, int index,
   }
 }
 
+bool D3D11Texture::InitFromData(const uint8* data, uint32 size) {
+  // [reference] MSDN: How to: Initialize a Texture Programmatically
+  uint32 expect_size = SizeofDataFormat(options_.format)
+      * options_.width * options_.height;
+  if (size != expect_size) {
+    LOG(ERROR) << "unexpected size: " << size << " expected: " << expect_size;
+    return false;
+  }
+
+  D3D11_SUBRESOURCE_DATA subres;
+  subres.pSysMem = data;
+  subres.SysMemPitch = options_.width * SizeofDataFormat(options_.format);
+  subres.SysMemSlicePitch = 0;  // no meaning for 2D
+  return Init(&subres);
+}
+
 // reference: MSDN "How to: Use dynamic resources"
-Texture::MapData D3D11Texture2D::map(MapType maptype) {
-  DCHECK(NULL != texture_);
+Texture::MapData D3D11Texture::map(MapType maptype) {
+  DCHECK(NULL != resource_);
   MapData mapdata;
   ZeroMemory(&mapdata, sizeof(mapdata));
   D3D11Renderer* renderer = (D3D11Renderer*)(render_system_->GetDefaultRenderer());
@@ -156,7 +121,7 @@ Texture::MapData D3D11Texture2D::map(MapType maptype) {
 
   D3D11_MAPPED_SUBRESOURCE mapped;
   ZeroMemory(&mapped, sizeof(D3D11_MAPPED_SUBRESOURCE));
-  HRESULT hr = d3d_context->Map(texture_, 0, TranslateMapType(maptype), 0, &mapped);
+  HRESULT hr = d3d_context->Map(resource_, 0, TranslateMapType(maptype), 0, &mapped);
   if (FAILED(hr)) {
     LOG(ERROR) << "Map Texture failed.";
     return mapdata;
@@ -173,31 +138,67 @@ Texture::MapData D3D11Texture2D::map(MapType maptype) {
   return mapdata;
 }
 
-void D3D11Texture2D::unmap() {
+void D3D11Texture::unmap() {
 #ifdef DEBUG
   DCHECK(mapped_);
   mapped_ = false;
 #endif
-  DCHECK(NULL != texture_);
+  DCHECK(NULL != resource_);
   D3D11Renderer* renderer = (D3D11Renderer*)(render_system_->GetDefaultRenderer());
   ID3D11DeviceContext* d3d_context = renderer->GetContext();
-  d3d_context->Unmap(texture_, 0);
+  d3d_context->Unmap(resource_, 0);
 }
 
-bool D3D11Texture2D::InitFromData(const uint8* data, uint32 size) {
-  // [reference] MSDN: How to: Initialize a Texture Programmatically
-  uint32 expect_size = SizeofDataFormat(options_.format)
-      * options_.width * options_.height;
-  if (size != expect_size) {
-    LOG(ERROR) << "unexpected size: " << size << " expected: " << expect_size;
-    return false;
+// class D3D11Texture2D
+bool D3D11Texture2D::Init(const D3D11_SUBRESOURCE_DATA* data) {
+  HRESULT hr;
+  DCHECK(NULL == resource_);
+  ID3D11Device* d3d_device = render_system_->GetDevice();
+
+  ZeroMemory(&tex_desc_, sizeof(D3D11_TEXTURE2D_DESC));
+  tex_desc_.Width     = options_.width;
+  tex_desc_.Height    = options_.height;
+  tex_desc_.MipLevels = options_.sampler.mip_level;
+  tex_desc_.ArraySize = 1;
+  tex_desc_.Format    = TranslateFormat(options_.format);
+  tex_desc_.SampleDesc.Count   = options_.sampler.sample_level;
+  tex_desc_.SampleDesc.Quality = options_.sampler.sample_qualifiy;
+  tex_desc_.Usage          = TranslateUsage(options_.usage);
+  tex_desc_.BindFlags      = TranslateBindTarget(options_.target);
+  tex_desc_.CPUAccessFlags = TranslateCPUAccess(options_.cpu_access);
+  tex_desc_.MiscFlags      = 0;
+
+  ID3D11Texture2D* tex = NULL;
+  hr = d3d_device->CreateTexture2D(&tex_desc_, data, &tex);
+  HRESULT_HANDLE(hr, ERROR, "CreateTexture2D failed ");
+
+  resource_ = tex;
+  if (options_.target & Texture::kShaderResource) {
+    return InitResourceView();
+  } else {
+    return true;
   }
-
-  D3D11_SUBRESOURCE_DATA  subres;
-  subres.pSysMem = data;
-  subres.SysMemPitch = options_.width * SizeofDataFormat(options_.format);
-  subres.SysMemSlicePitch = 0;  // no meaning for 2D
-  return Init(&subres);
 }
+
+void D3D11Texture2D::InitTextureDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) {
+  DCHECK(resource_ != NULL);
+  DCHECK_EQ(GetViewDimensionFromTextureType(options_.type),
+            D3D11_SRV_DIMENSION_TEXTURE2D);
+  desc->Format = tex_desc_.Format;
+  desc->ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+  desc->Texture2D.MipLevels = tex_desc_.MipLevels;
+  desc->Texture2D.MostDetailedMip = 0;
+}
+
+/*
+void D3D11Texture2D::InitTextureCubeMapDesc() {
+  DCHECK_EQ(GetViewDimensionFromTextureType(options_.type),
+            D3D11_SRV_DIMENSION_TEXTURECUBE);
+  res_view_desc_.Format = tex_desc_.Format;
+  res_view_desc_.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+  res_view_desc_.TextureCube.MipLevels = tex_desc_.MipLevels;
+  res_view_desc_.TextureCube.MostDetailedMip = 0;
+}
+*/
 
 }  // namespace azer
