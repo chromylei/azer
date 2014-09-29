@@ -23,7 +23,6 @@ class D3D11Texture: public Texture {
 
   virtual MapData map(MapType type) OVERRIDE;
   virtual void unmap() OVERRIDE;
-  virtual bool InitFromData(const uint8* data, uint32 size) OVERRIDE;
 
   void UseForStage(RenderPipelineStage stage, int index, D3D11Renderer* renderer);
   void SetVSSampler(int index, D3D11Renderer* renderer);
@@ -54,6 +53,7 @@ class D3D11Texture2D : public D3D11Texture {
   }
 
   virtual bool Init(const D3D11_SUBRESOURCE_DATA* data) OVERRIDE;
+  virtual bool InitFromImage(const Image* image) OVERRIDE;
  private:
   virtual void InitTextureDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) OVERRIDE;
   D3D11_TEXTURE2D_DESC tex_desc_;
@@ -61,6 +61,20 @@ class D3D11Texture2D : public D3D11Texture {
   friend class D3D11RenderTarget;
   friend class D3D11DepthBuffer;
   DISALLOW_COPY_AND_ASSIGN(D3D11Texture2D);
+};
+
+class D3D11TextureCubeMap : public D3D11Texture {
+ public:
+  D3D11TextureCubeMap(const Texture::Options& opt, D3D11RenderSystem* rs)
+      : D3D11Texture(opt, rs) {
+  }
+
+  virtual bool Init(const D3D11_SUBRESOURCE_DATA* data) OVERRIDE;
+  virtual bool InitFromImage(const Image* image) OVERRIDE;
+ private:
+  virtual void InitTextureDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) OVERRIDE;
+  D3D11_TEXTURE2D_DESC tex_desc_;
+  DISALLOW_COPY_AND_ASSIGN(D3D11TextureCubeMap);
 };
 
 inline D3D11Texture::D3D11Texture(const Texture::Options& opt,

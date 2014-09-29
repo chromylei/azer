@@ -11,6 +11,7 @@
 
 #include "base/logging.h"
 #include "base/strings/string16.h"
+#include "azer/base/image.h"
 #include "azer/render_system/d3d11/enum_transform.h"
 #include "azer/render_system/d3d11/render_system.h"
 #include "azer/render_system/d3d11/renderer.h"
@@ -95,22 +96,6 @@ void D3D11Texture::UseForStage(RenderPipelineStage stage, int index,
   }
 }
 
-bool D3D11Texture::InitFromData(const uint8* data, uint32 size) {
-  // [reference] MSDN: How to: Initialize a Texture Programmatically
-  uint32 expect_size = SizeofDataFormat(options_.format)
-      * options_.width * options_.height;
-  if (size != expect_size) {
-    LOG(ERROR) << "unexpected size: " << size << " expected: " << expect_size;
-    return false;
-  }
-
-  D3D11_SUBRESOURCE_DATA subres;
-  subres.pSysMem = data;
-  subres.SysMemPitch = options_.width * SizeofDataFormat(options_.format);
-  subres.SysMemSlicePitch = 0;  // no meaning for 2D
-  return Init(&subres);
-}
-
 // reference: MSDN "How to: Use dynamic resources"
 Texture::MapData D3D11Texture::map(MapType maptype) {
   DCHECK(NULL != resource_);
@@ -150,6 +135,25 @@ void D3D11Texture::unmap() {
 }
 
 // class D3D11Texture2D
+bool D3D11Texture2D::InitFromImage(const Image* image) {
+  // [reference] MSDN: How to: Initialize a Texture Programmatically
+  const ImageDataPtr& data = image->data(0);
+  uint32 expect_size = SizeofDataFormat(options_.format)
+      * options_.width * options_.height;
+  if (data->data_size() != expect_size) {
+    LOG(ERROR) << "unexpected size: " << data->data_size()
+               << " expected: " << expect_size;
+    return false;
+  }
+  
+  
+  D3D11_SUBRESOURCE_DATA subres;
+  subres.pSysMem = data->data();
+  subres.SysMemPitch = options_.width * SizeofDataFormat(options_.format);
+  subres.SysMemSlicePitch = 0;  // no meaning for 2D
+  return Init(&subres);
+}
+
 bool D3D11Texture2D::Init(const D3D11_SUBRESOURCE_DATA* data) {
   HRESULT hr;
   DCHECK(NULL == resource_);

@@ -8,6 +8,7 @@
 namespace azer {
 
 class RenderSystem;
+class Image;
 
 class AZER_EXPORT Texture {
  public:
@@ -124,9 +125,10 @@ class AZER_EXPORT Texture {
     uint32 row_pitch;
     uint32 depth_pitch;
   };
+
   virtual MapData map(MapType maptype) = 0;
   virtual void unmap() = 0;
-  virtual bool InitFromData(const uint8* data, uint32 size) = 0;
+  virtual bool InitFromImage(const Image* image) = 0;
  protected:
   Options options_;
   DISALLOW_COPY_AND_ASSIGN(Texture);

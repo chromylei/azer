@@ -189,7 +189,7 @@ Texture* D3D11RenderSystem::CreateTexture(const Texture::Options& opt,
     texopt.height = image->height();
     texopt.format = image->format();
     std::unique_ptr<D3D11Texture> tex(new D3D11Texture2D(texopt, this));
-    if (tex->InitFromData(image->data(), image->data_size())) {
+    if (tex->InitFromImage(img)) {
       return tex.release();
     } else {
       return NULL;
