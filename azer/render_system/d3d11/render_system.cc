@@ -70,7 +70,7 @@ bool D3D11RenderSystem::Init(WindowHost* window) {
   swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
   //Create our SwapChain
-  ID3D11DeviceContext* d3d_context;
+  ID3D11DeviceContext* d3d_context = NULL;
   hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE,
                                      NULL, NULL, NULL, NULL,
                                      D3D11_SDK_VERSION, &swapChainDesc,

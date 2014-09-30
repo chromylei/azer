@@ -64,7 +64,6 @@ class D3D11RenderSystem : public RenderSystem {
 
   IDXGISwapChain* swap_chain_;
   ID3D11Device* d3d_device_;
-  ID3D11DeviceContext* d3d_context_;
   static const StringType& name_;
   static const StringType& short_name_;
 };
