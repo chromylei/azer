@@ -1,0 +1,9 @@
+#package sandbox;
+
+[cppstruct="Material" cpphead="sandbox/base/afx/material.afx.h"]
+struct Material {
+  vec4 diffuse_color;
+  vec4 specular_color;
+  float specular_power;
+  float specular_intensity;
+};

@@ -1,6 +1,7 @@
 #include <map>
 #include <string>
 
+#include "azer/afx/afx.h"
 #include "azer/afx/linker/linker.h"
 #include "azer/afx/linker/testutil.h"
 #include "azer/afx/compiler/testutil.h"
@@ -77,4 +78,14 @@ TEST(AfxLinkerTest, LoadFailed) {
 }
 
 TEST(AfxLinkerTest, DependencyTree) {
+}
+
+TEST(AfxLinkerTest, MultiLevelInclude) {
+  const FilePath::StringType kTestdataDir = AFXL("azer/afx/testdata/multi_level_include");
+  std::vector<FilePath::StringType> inc;
+  inc.push_back(kTestdataDir);
+  AfxLinker::Options opt;
+  opt.parse_astree = false;
+  azer::afx::AfxParser parser(inc, opt);
+  EXPECT_TRUE(parser.Parse(AFXL("azer/afx/testdata/multi_level_include/diffuse.afx")));
 }

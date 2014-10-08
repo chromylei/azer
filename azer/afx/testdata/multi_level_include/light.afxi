@@ -1,0 +1,23 @@
+#package sandbox;
+
+#include "material.afxi"
+
+[cppstruct="DirLight" cpphead="sandbox/base/afx/light.afx.h"]
+struct DirLight {
+  vec4 dir;
+  vec4 diffuse;
+  vec4 ambient;
+};
+
+
+vec3 CalcSpecularColor(vec4 cpos, vec4 vpos, vec4 normal, DirLight l, Material m) {
+  vec4 to_eye = normalize(cpos - vpos);
+  vec4 ref = normalize(reflect(l.dir, normal));
+  float specular_factor = dot(to_eye.xyz, ref.xyz);
+  specular_factor = pow(specular_factor, m.specular_power);
+  if (specular_factor > 0.0f) {
+    return vec3(m.specular_color.xyz * m.specular_intensity * specular_factor);
+  } else {
+    return vec3(0.0f, 0.0f, 0.0f);
+  }
+}

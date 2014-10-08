@@ -195,7 +195,12 @@ ParseContext::SymbolType ParseContext::LookupSymbolTypeLocal(
 
 ParseContext::SymbolType ParseContext::LookupSymbolType(const std::string& symbol) {
   if (extern_prefix_.empty()) {
-    return LookupSymbolTypeLocal(symbol);
+    SymbolType stype = LookupSymbolTypeLocal(symbol);
+    if (stype != kUnknownSymbol) {
+      return stype;
+    }
+
+    return LookupSymbolTypeFromDep("", symbol);
   } else {
     return LookupSymbolTypeFromDep(extern_prefix_, symbol);
   }
@@ -214,12 +219,21 @@ ParseContext::SymbolType ParseContext::LookupSymbolTypeFromDep(
   DCHECK(!EndsWith(package, "::", true));
   SymbolType stype = kUnknownSymbol;
   if (package_ == package) {
-    stype = LookupSymbolType(symbol);
+    stype = LookupSymbolTypeLocal(symbol);
   }
 
   ParseContext* cur = first_child();
   while (cur && stype == kUnknownSymbol) {
-    stype = cur->LookupSymbolTypeFromDep(package, symbol);
+    if (cur->package() == package) {
+      stype = cur->LookupSymbolType(symbol);
+    }
+    if (stype == kUnknownSymbol && package.empty()) {
+      stype = cur->LookupSymbolTypeFromDep(this->package(), symbol);
+    }
+    if (stype == kUnknownSymbol && !package.empty()) {
+      stype = cur->LookupSymbolTypeFromDep(package, symbol);
+    }
+
     cur = cur->next_sibling();
   }
   
@@ -304,7 +318,12 @@ ASTNode* ParseContext::LookupType(const std::string& fullname) {
     std::string name = fullname.substr(pos + 1);
     return LookupType(package, name);
   } else {
-    return LookupType("", fullname);
+    ASTNode* node = LookupType(this->package(), fullname);
+    if (node != NULL) {
+      return node;
+    } else {
+      return LookupType("", fullname);
+    }
   }
 }
 
