@@ -28,7 +28,7 @@ bool ContextValidator::Valid(ASTNode* node) {
     // add symbol into symbol_table
     if (!AddSymbolToScoped(symbol)) return false;
     // check type
-    if (!LookupTypeDecl(symbol)) return false;
+    if (!LookupTypeDecl(symbol, symbol->GetTypedNode())) return false;
     if (!CheckSymbolTexture(symbol)) return false;
   } else if (node->IsFuncCallNode()) {
     // attention:
@@ -105,18 +105,17 @@ bool ContextValidator::LookupField(ASTNode* node, FieldNode* field) {
   }
 }
 
-bool ContextValidator::LookupTypeDecl(SymbolNode* node) {
+bool ContextValidator::LookupTypeDecl(ASTNode* node, TypedNode* typed) {
   DCHECK(node->IsSymbolNode());
-  if (!node->GetType()->IsStructure()) return true;
-  if (node->GetType()->IsAnomyousStruct()) return true;
+  TypePtr& type = typed->GetType();
+  if (!type->IsStructure()) return true;
+  if (type->IsAnomyousStruct()) return true;
 
-  const std::string& type_name = node->GetType()->name();
-  ASTNode* symbol = context_->LookupType(type_name);
+  const std::string& type_name = type->name();
+  ASTNode* decl = context_->LookupType(type_name);
 
-  if (symbol != NULL) {
-    TypedNode* typed = node->GetTypedNode();
-    DCHECK(NULL != typed);
-    typed->SetStructDecl(symbol->ToStructDeclNode());
+  if (decl != NULL) {
+    typed->SetStructDecl(decl->ToStructDeclNode());
     return true;
   } else {
     std::stringstream ss;

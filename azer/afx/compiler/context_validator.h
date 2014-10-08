@@ -13,6 +13,7 @@ class FuncCallNode;
 class RefSymbolNode;
 class SymbolNode;
 class ScopedNode;
+class TypedNode;
 class ParseContext;
 
 /**
@@ -37,7 +38,7 @@ class ContextValidator {
 
   bool LookupSymbolDecl(RefSymbolNode* node);
   bool LookupFunctionDecl(FuncCallNode* node);
-  bool LookupTypeDecl(SymbolNode* node);
+  bool LookupTypeDecl(ASTNode* node, TypedNode* typed);
   bool LookupField(ASTNode* node, FieldNode* field);
   bool AddSymbolToScoped(SymbolNode* node);
   bool CheckRefTexture(RefSymbolNode* reftype);
