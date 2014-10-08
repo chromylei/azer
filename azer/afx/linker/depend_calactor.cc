@@ -141,7 +141,8 @@ void DependCalactor::AddTypeDep(TypePtr type, ASTNode* node) {
   if (!type->IsStructure()) return;
   if (type->IsAnomyousStruct()) return;
   // type name is fullname here.
-  Add(type->name(), node);
+  DCHECK(node->IsStructDeclNode());
+  AddStructDeclDep(node);
 }
 
 bool DependCalactor::OnVisitBegin(ASTNode* node) {
