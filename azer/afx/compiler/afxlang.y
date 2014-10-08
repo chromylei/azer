@@ -18,8 +18,8 @@
 using namespace azer::afx;
 extern char* yytext;
 
-#define REGISTER_STRUCT(SNAME, RTYPE, LOC) {                            \
-    ParseContext::SymbolType stype = parseContext->LookupSymbolType(SNAME); \
+#define REGISTER_STRUCT(SNAME, RNAME, RTYPE, LOC) {                      \
+    ParseContext::SymbolType stype = parseContext->LookupSymbolType(SNAME, &(RNAME)); \
     azer::afx::CompileErrno err = azer::afx::kStructDeclared;              \
     if (stype != ParseContext::kUnknownSymbol) {                           \
       std::stringstream ss;                                             \
@@ -30,8 +30,8 @@ extern char* yytext;
     }                                                                   \
   }
 
-#define REGISTER_FUNCDECL(SNAME, RTYPE, LOC) {                          \
-    ParseContext::SymbolType stype = parseContext->LookupSymbolType(SNAME); \
+#define REGISTER_FUNCDECL(SNAME, RNAME, RTYPE, LOC) {                    \
+    ParseContext::SymbolType stype = parseContext->LookupSymbolType(SNAME, &(RNAME)); \
     azer::afx::CompileErrno err = azer::afx::kFuncDefined;                 \
     if (stype == ParseContext::kFunctionSymbol) {                          \
     } else if (stype != ParseContext::kUnknownSymbol) {                       \
@@ -473,7 +473,9 @@ declaration
   PARSER_TRACE << "declaration: function_prototype; " << std::endl;
   $$ = $1;
   FuncProtoNode* node = $$->ToFuncProtoNode();
-  REGISTER_FUNCDECL(node->funcname(), ParseContext::kFunctionSymbol, node->loc());
+  std::string rname;
+  REGISTER_FUNCDECL(node->funcname(), rname, ParseContext::kFunctionSymbol,
+                    node->loc());
 }
 | init_declarator_list SEMICOLON {
   PARSER_TRACE << "declaration: init_declarator_list " << std::endl;
@@ -711,6 +713,7 @@ attributed_function_definition
 function_definition
 : function_prototype compound_statement_no_new_scope {
   DCHECK($1->IsFuncProtoNode());
+  std::string rname;
   const SourceLoc& loc = $1->loc();
   FuncDefNode* func = parseContext->Create(ASTNode::kFuncDefNode, loc)
       ->ToFuncDefNode();
@@ -718,7 +721,7 @@ function_definition
   func->SetProtoNode($1);
   $$ = func;
   PARSER_TRACE << "function_definition: "<<  func->funcname() << std::endl;
-  REGISTER_FUNCDECL(func->funcname(), ParseContext::kFunctionSymbol, func->loc());
+  REGISTER_FUNCDECL(func->funcname(), rname, ParseContext::kFunctionSymbol, func->loc());
  }
 ;
 
@@ -789,7 +792,9 @@ struct_specifier
   node->AddFields($4);
   delete $2.identifier;
 
-  REGISTER_STRUCT(node->struct_name(), ParseContext::kStructureDecl, node->loc());
+  std::string rname;
+  REGISTER_STRUCT(node->struct_name(), rname, ParseContext::kStructureDecl,
+                  node->loc());
   parseContext->AddStructDecl(node);
  }
 ;
@@ -801,7 +806,9 @@ anonymous_specifier: STRUCT LEFT_BRACE struct_declaration_list RIGHT_BRACE {
   StructDeclNode* node = $$->ToStructDeclNode();
   node->AddFields($3);
 
-  REGISTER_STRUCT(node->struct_name(), ParseContext::kStructureDecl, node->loc());
+  std::string rname;
+  REGISTER_STRUCT(node->struct_name(), rname, ParseContext::kStructureDecl,
+                  node->loc());
  }
 ;
 

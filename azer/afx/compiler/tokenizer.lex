@@ -231,24 +231,21 @@
   yylval->lex.identifier = new std::string(yytext, yyleng);
   using azer::afx::ParseContext;
 
+  std::string rname;
   ParseContext::SymbolType stype =
-      context->LookupSymbolType(*yylval->lex.identifier);
+      context->LookupSymbolType(*yylval->lex.identifier, &rname);
   
   bool external = !context->GetExternPrefix().empty();
   if (external) {
-    yylval->lex.identifier->insert(0, context->GetExternPrefix() + "::");
+    *yylval->lex.identifier = rname;
     context->ClearExternSymbol(); 
   }
 
   if (stype == ParseContext::kStructureDecl) {
-    // append current package name
-    if (!context->package().empty()) {
-      std::string prefix = context->package();
-      prefix.append("::");
-      yylval->lex.identifier->insert(0, prefix);
-    }
+    *yylval->lex.identifier = rname;
     return STRUCT_TYPE;
   } else if (stype == ParseContext::kExternStructDecl) {
+    *yylval->lex.identifier = rname;
     return STRUCT_TYPE;
   } else {
     if (external && stype != ParseContext::kExternFuncSymbol) {

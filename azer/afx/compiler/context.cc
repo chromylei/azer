@@ -18,6 +18,14 @@ namespace azer {
 namespace afx {
 // class ParseContext
 
+std::string fullname(const std::string& package, const std::string& name) {
+  if (package.empty()) {
+    return name;
+  } else {
+    return std::string(package + "::" + name);
+  }
+}
+
 ParseContext::ParseContext(const FilePath& path, const std::string& package,
                            const std::string& source, ASTNodeFactory* factory,
                            Options opt)
@@ -193,16 +201,18 @@ ParseContext::SymbolType ParseContext::LookupSymbolTypeLocal(
   return kUnknownSymbol;
 }
 
-ParseContext::SymbolType ParseContext::LookupSymbolType(const std::string& symbol) {
+ParseContext::SymbolType ParseContext::LookupSymbolType(const std::string& symbol,
+                                                        std::string* rname) {
   if (extern_prefix_.empty()) {
     SymbolType stype = LookupSymbolTypeLocal(symbol);
     if (stype != kUnknownSymbol) {
+      *rname = fullname(this->package(), symbol);
       return stype;
     }
 
-    return LookupSymbolTypeFromDep("", symbol);
+    return LookupSymbolTypeFromDep("", symbol, rname);
   } else {
-    return LookupSymbolTypeFromDep(extern_prefix_, symbol);
+    return LookupSymbolTypeFromDep(extern_prefix_, symbol, rname);
   }
 }
 
@@ -215,23 +225,29 @@ void ParseContext::AppendExternal(const std::string& str) {
 
 
 ParseContext::SymbolType ParseContext::LookupSymbolTypeFromDep(
-    const std::string& package, const std::string& symbol) {
+    const std::string& package, const std::string& symbol, std::string* rname) {
   DCHECK(!EndsWith(package, "::", true));
   SymbolType stype = kUnknownSymbol;
   if (package_ == package) {
     stype = LookupSymbolTypeLocal(symbol);
+    *rname = fullname(this->package(), symbol);
   }
 
   ParseContext* cur = first_child();
   while (cur && stype == kUnknownSymbol) {
     if (cur->package() == package) {
-      stype = cur->LookupSymbolType(symbol);
+      stype = cur->LookupSymbolType(symbol, rname);
+      *rname = fullname(cur->package(), symbol);
     }
-    if (stype == kUnknownSymbol && package.empty()) {
-      stype = cur->LookupSymbolTypeFromDep(this->package(), symbol);
-    }
+ 
     if (stype == kUnknownSymbol && !package.empty()) {
-      stype = cur->LookupSymbolTypeFromDep(package, symbol);
+      stype = cur->LookupSymbolTypeFromDep(package, symbol, rname);
+      *rname = fullname(package, symbol);
+    }
+
+    if (stype == kUnknownSymbol && package.empty()) {
+      stype = cur->LookupSymbolTypeFromDep(this->package(), symbol, rname);
+      *rname = fullname(cur->package(), symbol);
     }
 
     cur = cur->next_sibling();

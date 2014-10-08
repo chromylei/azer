@@ -97,9 +97,10 @@ class ParseContext: public TreeNode<ParseContext> {
     kExternStructDecl,
   };
   
-  SymbolType LookupSymbolType(const std::string& symbol);
+  SymbolType LookupSymbolType(const std::string& symbol, std::string* name);
   SymbolType LookupSymbolTypeFromDep(const std::string& package,
-                                     const std::string& symbol);
+                                     const std::string& symbol,
+                                     std::string* name);
   void RegisteSymbolType(const std::string& symbol, SymbolType type);
   std::ostream& tokenizer_stream();
   std::ostream& parser_stream();

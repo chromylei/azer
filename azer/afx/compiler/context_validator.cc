@@ -123,13 +123,7 @@ bool ContextValidator::LookupTypeDecl(ASTNode* node, TypedNode* typed) {
   if (tmp != NULL) {
     DCHECK(tmp->IsStructDeclNode());
     StructDeclNode* decl = tmp->ToStructDeclNode();
-    typed->SetStructDecl(decl->ToStructDeclNode());
-    std::stringstream ss;
-    const std::string& package = decl->GetContext()->package();
-    if (!package.empty()) {
-      ss << package << "::" << decl->struct_name();
-      type->SetName(ss.str());
-    }
+    typed->SetStructDecl(decl);
 
     return true;
   } else {
