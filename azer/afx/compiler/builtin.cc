@@ -43,6 +43,7 @@ const std::string g_builtin_str =
     "vec3 normalize(vec3 v) { return vec3(1, 1, 1);}\n"
     "vec4 normalize(vec4 v) { return vec4(1, 1, 1, 1);}\n"
     "vec3 reflect(vec3 r, vec3 n) { return vec3(1, 1, 1);}\n"
+    "vec4 reflect(vec4 r, vec4 n) { return vec4(1, 1, 1, 0.0f);}\n"
     "vec4 sample1D(Texture1D tex, float texcoord) { return vec4(1, 1, 1, 1);}\n"
     "vec4 sample2D(Texture2D tex, vec2 texcoord) { return vec4(1, 1, 1, 1);}\n"
     "vec4 sample3D(Texture3D tex, vec3 texcoord) { return vec4(1, 1, 1, 1);}\n"
