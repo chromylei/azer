@@ -14,6 +14,14 @@ namespace afx {
 bool ContextValidator::Valid(ASTNode* node) {
   if (failed_) {
     return !failed_;
+  } else if (node->IsParamNode()) {
+    ParamNode* param = node->ToParamNode();
+    if (!LookupTypeDecl(param, param->GetTypedNode())) return false;
+    return true;
+  } else if (node->IsFuncProtoNode()) {
+    FuncProtoNode* proto = node->ToFuncProtoNode();
+    if (!LookupTypeDecl(proto, proto->rettype())) return false;
+    return true;
   } else if (node->IsRefSymbolNode()) {
     // lookup symbol declaratin astnode
     if (!LookupSymbolDecl(node->ToRefSymbolNode())) {
@@ -106,16 +114,23 @@ bool ContextValidator::LookupField(ASTNode* node, FieldNode* field) {
 }
 
 bool ContextValidator::LookupTypeDecl(ASTNode* node, TypedNode* typed) {
-  DCHECK(node->IsSymbolNode());
   TypePtr& type = typed->GetType();
   if (!type->IsStructure()) return true;
   if (type->IsAnomyousStruct()) return true;
 
   const std::string& type_name = type->name();
-  ASTNode* decl = context_->LookupType(type_name);
-
-  if (decl != NULL) {
+  ASTNode* tmp = context_->LookupType(type_name);
+  if (tmp != NULL) {
+    DCHECK(tmp->IsStructDeclNode());
+    StructDeclNode* decl = tmp->ToStructDeclNode();
     typed->SetStructDecl(decl->ToStructDeclNode());
+    std::stringstream ss;
+    const std::string& package = decl->GetContext()->package();
+    if (!package.empty()) {
+      ss << package << "::" << decl->struct_name();
+      type->SetName(ss.str());
+    }
+
     return true;
   } else {
     std::stringstream ss;

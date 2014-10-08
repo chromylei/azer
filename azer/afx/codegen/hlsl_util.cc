@@ -70,11 +70,23 @@ std::string DumpArraySpecifier(const TypePtr& type) {
   }
 }
 
-std::string DumpFullType(const TypePtr& type) {
+std::string HLSLDumpFullType(TypedNode* node) {
+  const TypePtr& type = node->GetType();
   std::stringstream ss;
   if (type->storage_qualifier() != kNoQualifier) {
     ss << DumpStorageQualifier(type->storage_qualifier()) << " ";
   }
+
+  /*
+  if (type->IsStructure() && !type->IsAnomyousStruct()) {
+    StructDeclNode* decl = node->GetStructDecl();
+    DCHECK(NULL != decl);
+    std::string package = decl->GetContext()->package();
+    if (!package.empty()) {
+      ss << package << "__";
+    }
+  }
+  */
 
   ss << HLSLTypeName(type);
   return ss.str();

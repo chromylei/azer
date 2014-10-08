@@ -157,7 +157,7 @@ bool DeclarationNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
 
   if (!decl->GetType()->IsTexture()) {
     std::stringstream ss;
-    ss << DumpFullType(decl->GetType()) << " ";
+    ss << HLSLDumpFullType(decl->GetTypedNode()) << " ";
     *code = ss.str();
     return true;
   } else {
@@ -353,7 +353,7 @@ bool FuncProtoNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
   std::stringstream ss;
   DCHECK(node()->GetContext());
   FuncProtoNode* func = node()->ToFuncProtoNode();
-  ss << DumpFullType(func->rettype()->GetType()) << " "
+  ss << HLSLDumpFullType(func->rettype()) << " "
      << PackagePrefix(node()->GetContext()) << func->funcname() << "(";
 
   for (auto iter = func->GetParams().begin();
@@ -363,7 +363,7 @@ bool FuncProtoNodeHLSLCodeGen::GenCodeBegin(std::string* code) {
     }
     DCHECK((*iter)->IsParamNode());
     ParamNode* param = (*iter)->ToParamNode();
-    ss << DumpFullType(param->GetType()) << " " << param->paramname();
+    ss << HLSLDumpFullType(param->GetTypedNode()) << " " << param->paramname();
     if (param->GetType()->IsTexture()) {
       ss << ", SamplerState " << HLSLUniformTextureSamplerFullName(param);
     }
