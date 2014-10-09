@@ -8,12 +8,14 @@
 
 namespace azer {
 #if defined(DEBUG)
-const DWORD kCompileFlags1 = D3DCOMPILE_DEBUG
+const DWORD kCompileFlags =
+    D3DCOMPILE_DEBUG
     | D3DCOMPILE_ENABLE_STRICTNESS
     | D3DCOMPILE_OPTIMIZATION_LEVEL0
+    | D3DCOMPILE_PREFER_FLOW_CONTROL
     | D3DCOMPILE_SKIP_OPTIMIZATION;
 #else
-const DWORD kCompileFlags1 =
+const DWORD kCompileFlags =
     D3DCOMPILE_ENABLE_STRICTNESS
     | D3DCOMPILE_SKIP_VALIDATION
     ;
@@ -32,7 +34,7 @@ inline ID3DBlob* CompileHLSL(const std::string& shader, const std::string& targe
                   NULL,                 // pIncludes
                   entrypointer.c_str(), // pEntryPointer
                   target.c_str(),
-                  D3DCOMPILE_DEBUG,
+                  kCompileFlags,
                   0,
                   &blob,
                   &msgblob);
