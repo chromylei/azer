@@ -34,6 +34,8 @@ const std::string g_builtin_str =
     "float sqrt(float a) { return 0.0;}\n"
     "float dot(vec3 v1, vec3 v2) { return 1.0;}\n"
     "float dot(vec4 v1, vec4 v2) { return 1.0;}\n"
+    "vec3 cross(vec3 v1, vec3 v2) { return vec3(0.0f, 0.0f, 0.0f);}\n"
+    "vec4 cross(vec4 v1, vec4 v2) { return vec4(0.0f, 0.0f, 0.0f, 0.0f);}\n"
     "float length(vec3) { return 1.0;}\n"
     "float length(vec4) { return 1.0;}\n"
     "float clamp(float v, float min, float max) { return vec3(1, 1, 1);}\n"
