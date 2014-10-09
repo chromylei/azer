@@ -25,7 +25,7 @@ class TexRenderTarget {
   azer::Renderer* Begin(const azer::Vector4& color);
   void Reset(azer::Renderer* renderer);
 
-  azer::TexturePtr GetRTTex() {
+  azer::TexturePtr& GetRTTex() {
     return renderer_->GetRenderTarget()->GetTexture();
   }
 

@@ -105,6 +105,7 @@ shared_library("render") {
 
   deps = [
     "//azer/math:math",
+    "//azer/angle:azer_angle",
     "//ui/gfx:gfx",
     "//base:base",
     ":azer_devil_util",

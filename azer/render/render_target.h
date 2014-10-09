@@ -18,7 +18,8 @@ class AZER_EXPORT RenderTarget {
 
   virtual void Clear(const azer::Vector4& color) = 0;
 
-  TexturePtr GetTexture() { return texture_;}
+  TexturePtr& GetTexture() { return texture_;}
+  const TexturePtr& GetTexture() const { return texture_;}
   bool IsDefaultRenderTarget() { return default_render_target_;}
  protected:
   const bool default_render_target_;

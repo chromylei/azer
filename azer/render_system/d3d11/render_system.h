@@ -53,10 +53,12 @@ class D3D11RenderSystem : public RenderSystem {
 
   virtual void Present() OVERRIDE;
 
-  ID3D11Device* GetDevice() {
-    DCHECK(NULL != d3d_device_);
-    return d3d_device_;
-  }
+  /**
+   * direct3d relevent
+   */
+  D3D_FEATURE_LEVEL feature_level() const { return feature_level_; }
+  ID3D11Device* GetDevice();
+  ID3D11DeviceContext* GetContext();
   IDXGISwapChain* GetSwapChain() { return swap_chain_;}
   void ResetRenderTarget();
  protected:
@@ -64,7 +66,20 @@ class D3D11RenderSystem : public RenderSystem {
 
   IDXGISwapChain* swap_chain_;
   ID3D11Device* d3d_device_;
+  ID3D11DeviceContext* d3d_context_;
+  D3D_FEATURE_LEVEL feature_level_;
   static const StringType& name_;
   static const StringType& short_name_;
+
+  DISALLOW_COPY_AND_ASSIGN(D3D11RenderSystem);
 };
+
+inline ID3D11DeviceContext* D3D11RenderSystem::GetContext() {
+  DCHECK(NULL != d3d_context_);
+  return d3d_context_;
+}
+inline ID3D11Device* D3D11RenderSystem::GetDevice() {
+  DCHECK(NULL != d3d_device_);
+  return d3d_device_;
+}
 }  // namespace azer

@@ -69,19 +69,27 @@ bool D3D11RenderSystem::Init(WindowHost* window) {
   swapChainDesc.Windowed = !window->GetMetrics().fullscreen;
   swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-  //Create our SwapChain
-  ID3D11DeviceContext* d3d_context = NULL;
+  // Create our SwapChain
+  D3D_FEATURE_LEVEL featureLevels[] = {
+    D3D_FEATURE_LEVEL_11_0,
+    D3D_FEATURE_LEVEL_10_1,
+    D3D_FEATURE_LEVEL_10_0,
+  };
+
   hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE,
-                                     NULL, NULL, NULL, NULL,
+                                     NULL, NULL,
+                                     featureLevels,
+                                     arraysize(featureLevels),
                                      D3D11_SDK_VERSION, &swapChainDesc,
-                                     &swap_chain_, &d3d_device_, NULL,
-                                     &d3d_context);
+                                     &swap_chain_, &d3d_device_,
+                                     &feature_level_,
+                                     &d3d_context_);
   HRESULT_HANDLE(hr, ERROR, "Failed to create D3D11 and Swapchain ");
 
   azer::Texture::Options o;
   o.width = window->GetMetrics().width;
   o.height = window->GetMetrics().height;
-  renderer_.reset(new D3D11Renderer(d3d_context, this));
+  renderer_.reset(new D3D11Renderer(d3d_context_, this));
   if (!renderer_->Init(o)) {
     return false;
   }
