@@ -4,6 +4,7 @@
 #include "libGLESv2/renderer/d3d11/Renderer11.h"
 #include "libEGL/Display.h"
 
+namespace azer {
 bool InitializeDisplay(EGLDisplay* display, EGLint* major, EGLint* minor) {
   AzerDisplay* azer_display = new AzerDisplay(GetDC(hWnd), GetDC(hWnd));
   if (!azer_displar->initialize(rs)) {
@@ -25,7 +26,12 @@ bool InitAngle(RenderSystem* rrs) {
   EGLSurface surface;
   EGLConfig config;
   EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
-  
+
+  /**
+   * 与 egl 的实现的主要区别在于 display 的创建及初始化
+   * 当然 renderer 也是其中一部分，renderer 的创建在 display 内部
+   * 创建完成 display 及 renderer 之后的部分是一样的
+   */
   if (!InitializeDisplay(&display, &majorVersion, &minorVersion)) {
     return false;
   }
@@ -44,6 +50,7 @@ bool InitAngle(RenderSystem* rrs) {
     return EGL_FALSE;
   }
 
-
   return true;
 }
+
+}  // namespace azer

@@ -1,2 +1,11 @@
 
-此包的主要功能是完成从 azer 创建的 device 来初始化 ANGLE 的功能
+azer 的 3D UI 库，使用 skia 完成，skia 针对的 GPU 的实现，全部使用 gl 风格的接口。对于 Direct3D 的支持则通过 ANGLE 作为中介来调用。而 ANGLE 的初始化过程使用 egl 接口实现。
+此包的功能包括一下几个
+1. 使用 azer 创建的 D3D11Device 以及 D3D11DeviceContext 来初始化 ANGLE
+2. 初始化以 ANGLE 为驱动的 skia
+3. 将 ANGLE 创建的 Texture 作为 azer 的 Texture 直接使用
+
+对于 ANGLE 的主要变更如下：
+1. Display 是用了自己实现的 AzerDisplay, 增添了保存 Display 的接口（实际是保存在定义与 Display 的静态变量的 map （libEGL/Display.cpp) 当中）。
+2. 不再使用 eglInitializer 因为他的创建 Renderer11 的操作无法融入到我们的系统中，这些初始化函数我们现在在了 api.cc 当中
+3. Display、Renderer11 的成员变量全部变更为了 protected 以供继承类访问，由于这两个类没有虚函数，因此还是用转换类型
