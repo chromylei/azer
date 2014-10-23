@@ -4,7 +4,11 @@ static_library("azer_angle11") {
     "angle/display.h",
     "angle/renderer.cc",
     "angle/renderer.h",
+    "angle/api.cc",
     "angle/api.h",
+    "angle/precompile.h",
+#    "angle/surface.cc",
+#    "angle/surface.h",
   ]
   deps = [
     "//third_party/angle:libGLESv2",
@@ -42,6 +46,8 @@ shared_library("d3d11_render_system") {
     "render_target.h",
     "renderer.cc",
     "renderer.h",
+    "swap_chain.cc",
+    "swap_chain.h",
     "technique.cc",
     "technique.h",
     "texture.cc",

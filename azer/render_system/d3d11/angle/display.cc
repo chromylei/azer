@@ -69,4 +69,47 @@ bool AzerDisplay::initialize(D3D11RenderSystem* rs) {
   return true;
 }
 
+/*
+EGLSurface AzerDisplay::createWindowSurface(HWND hWnd, EGLConfig config,
+                                            const EGLint* attribList) {
+  const Config *configuration = mConfigSet.get(config);
+  EGLint postSubBufferSupported = EGL_FALSE;
+  if (attribList) {
+    while (*attribList != EGL_NONE) {
+      switch (attribList[0]) {
+        case EGL_RENDER_BUFFER:
+          switch (attribList[1]){
+            case EGL_BACK_BUFFER:
+              break;
+            case EGL_SINGLE_BUFFER:
+              // Rendering directly to front buffer not supported
+              return (EGL_BAD_MATCH, EGL_NO_SURFACE);
+            default:
+              return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+          }
+          break;
+        case EGL_POST_SUB_BUFFER_SUPPORTED_NV:
+          postSubBufferSupported = attribList[1];
+          break;
+        case EGL_VG_COLORSPACE:
+          return error(EGL_BAD_MATCH, EGL_NO_SURFACE);
+        case EGL_VG_ALPHA_FORMAT:
+          return error(EGL_BAD_MATCH, EGL_NO_SURFACE);
+        default:
+          return error(EGL_BAD_ATTRIBUTE, EGL_NO_SURFACE);
+      }
+      attribList += 2;
+    }
+  }
+
+  Surface* surface = new Surface(this, configuration, window,
+                                 postSubBufferSupported);
+  if (surface->initialize()) {
+    delete surface;
+    return EGL_NO_SURFACE;
+  }
+  mSurfaceSet.insert(surface);
+  return success(surface);
+}
+*/
 }  // namespace azer

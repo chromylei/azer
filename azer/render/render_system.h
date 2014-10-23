@@ -10,6 +10,7 @@
 #include "azer/render/render_capability.h"
 #include "azer/render/renderer.h"
 #include "azer/render/vertex_buffer.h"
+#include "azer/render/swap_chain.h"
 #include "ui/gfx/geometry/rect.h"
 
 namespace azer {
@@ -80,8 +81,11 @@ class AZER_EXPORT RenderSystem {
     DCHECK(renderer_.get() != NULL);
     return renderer_.get();
   }
+
+  SwapChainPtr& GetSwapChain() { return swap_chain_;}
  protected:
   RenderSystemCapability capability_;
+  SwapChainPtr swap_chain_;
   WindowHost* win_host_;
 
   std::unique_ptr<Renderer> renderer_;

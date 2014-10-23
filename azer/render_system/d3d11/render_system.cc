@@ -28,68 +28,20 @@ namespace azer {
 const StringType& D3D11RenderSystem::name_ = AZER_LITERAL("Direct3D11RenderSystem");
 const StringType& D3D11RenderSystem::short_name_ = AZER_LITERAL("d3d11");
 
-D3D11RenderSystem::D3D11RenderSystem()
-    : swap_chain_(NULL)
-    , d3d_device_(NULL) {
+D3D11RenderSystem::D3D11RenderSystem() {
 }
 
 D3D11RenderSystem::~D3D11RenderSystem() {
-  SAFE_RELEASE(swap_chain_);
-  SAFE_RELEASE(d3d_device_);
 }
 
-
 bool D3D11RenderSystem::Init(WindowHost* window) {
-  DCHECK(NULL == swap_chain_);
-  DCHECK(NULL == d3d_device_);
-  HRESULT hr;
-
-  //Describe our Buffer
-  DXGI_MODE_DESC bufferDesc;
-  ZeroMemory(&bufferDesc, sizeof(DXGI_MODE_DESC));
-  bufferDesc.Width = window->GetMetrics().width;
-  bufferDesc.Height = window->GetMetrics().height;
-  bufferDesc.RefreshRate.Numerator = 60;
-  bufferDesc.RefreshRate.Denominator = 1;
-  bufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-  bufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-  bufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-  
-  //Describe our SwapChain
-  DXGI_SWAP_CHAIN_DESC swapChainDesc; 
-  
-  ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
-
-  swapChainDesc.BufferDesc = bufferDesc;
-  swapChainDesc.SampleDesc.Count = 1;
-  swapChainDesc.SampleDesc.Quality = 0;
-  swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-  swapChainDesc.BufferCount = 1;
-  swapChainDesc.OutputWindow = (HWND)window->Handle();
-  swapChainDesc.Windowed = !window->GetMetrics().fullscreen;
-  swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-
-  // Create our SwapChain
-  D3D_FEATURE_LEVEL featureLevels[] = {
-    D3D_FEATURE_LEVEL_11_0,
-    D3D_FEATURE_LEVEL_10_1,
-    D3D_FEATURE_LEVEL_10_0,
-  };
-
-  hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE,
-                                     NULL, NULL,
-                                     featureLevels,
-                                     arraysize(featureLevels),
-                                     D3D11_SDK_VERSION, &swapChainDesc,
-                                     &swap_chain_, &d3d_device_,
-                                     &feature_level_,
-                                     &d3d_context_);
-  HRESULT_HANDLE(hr, ERROR, "Failed to create D3D11 and Swapchain ");
+  swap_chain_.reset(new D3D11SwapChain(this, window));
+  swap_chain_->recreate();
 
   azer::Texture::Options o;
   o.width = window->GetMetrics().width;
   o.height = window->GetMetrics().height;
-  renderer_.reset(new D3D11Renderer(d3d_context_, this));
+  renderer_.reset(new D3D11Renderer(GetContext(), this));
   if (!renderer_->Init(o)) {
     return false;
   }
@@ -100,7 +52,7 @@ bool D3D11RenderSystem::Init(WindowHost* window) {
 
 void D3D11RenderSystem::Present() {
   DCHECK(swap_chain_ != NULL) << "swap_chain cannto be NULL";
-  swap_chain_->Present(0, 0);
+  swap_chain_->Present();
 }
 
 void D3D11RenderSystem::GetDriverCapability() {

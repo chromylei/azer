@@ -10,6 +10,7 @@
 #include "base/logging.h"
 #include "azer/render/render_system.h"
 #include "azer/render/gpu_program.h"
+#include "azer/render_system/d3d11/swap_chain.h"
 
 namespace azer {
 
@@ -56,30 +57,32 @@ class D3D11RenderSystem : public RenderSystem {
   /**
    * direct3d relevent
    */
-  D3D_FEATURE_LEVEL feature_level() const { return feature_level_; }
   ID3D11Device* GetDevice();
   ID3D11DeviceContext* GetContext();
-  IDXGISwapChain* GetSwapChain() { return swap_chain_;}
   void ResetRenderTarget();
+  D3D_FEATURE_LEVEL feature_level() const;
  protected:
   void GetDriverCapability();
 
-  IDXGISwapChain* swap_chain_;
-  ID3D11Device* d3d_device_;
-  ID3D11DeviceContext* d3d_context_;
-  D3D_FEATURE_LEVEL feature_level_;
   static const StringType& name_;
   static const StringType& short_name_;
-
   DISALLOW_COPY_AND_ASSIGN(D3D11RenderSystem);
 };
 
 inline ID3D11DeviceContext* D3D11RenderSystem::GetContext() {
-  DCHECK(NULL != d3d_context_);
-  return d3d_context_;
+  DCHECK(NULL != swap_chain_.get());
+  D3D11SwapChain* swap_chain = (D3D11SwapChain*)swap_chain_.get();
+  return swap_chain->GetContext();
 }
 inline ID3D11Device* D3D11RenderSystem::GetDevice() {
-  DCHECK(NULL != d3d_device_);
-  return d3d_device_;
+  DCHECK(NULL != swap_chain_.get());
+  D3D11SwapChain* swap_chain = (D3D11SwapChain*)swap_chain_.get();
+  return swap_chain->GetDevice();
+}
+
+inline D3D_FEATURE_LEVEL D3D11RenderSystem::feature_level() const {
+  DCHECK(NULL != swap_chain_.get());
+  D3D11SwapChain* swap_chain = (D3D11SwapChain*)swap_chain_.get();
+  return swap_chain->feature_level();
 }
 }  // namespace azer

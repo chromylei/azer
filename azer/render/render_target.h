@@ -21,10 +21,13 @@ class AZER_EXPORT RenderTarget {
   TexturePtr& GetTexture() { return texture_;}
   const TexturePtr& GetTexture() const { return texture_;}
   bool IsDefaultRenderTarget() { return default_render_target_;}
+
+  const Texture::Options& options() { return options_;}
  protected:
   const bool default_render_target_;
   TexturePtr texture_;
   const Texture::Options& options_;
+  DISALLOW_COPY_AND_ASSIGN(RenderTarget);
 };
 
 typedef std::shared_ptr<RenderTarget> RenderTargetPtr;

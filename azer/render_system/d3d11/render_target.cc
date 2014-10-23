@@ -5,26 +5,22 @@
 #include "azer/render_system/d3d11/enum_transform.h"
 #include "azer/render_system/d3d11/render_system.h"
 #include "azer/render_system/d3d11/renderer.h"
+#include "azer/render_system/d3d11/swap_chain.h"
 #include "azer/render_system/d3d11/util.h"
 
 namespace azer {
 bool D3D11RenderTarget::InitDefault(D3D11RenderSystem* rs) {
   DCHECK(target_ == NULL);
   DCHECK(default_render_target_);
-  IDXGISwapChain* swap_chain = rs->GetSwapChain();
-  ID3D11Device* d3d_device = rs->GetDevice();
-
   HRESULT hr;
-  ID3D11Texture2D* texture_buffer;
-  hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&texture_buffer);
-  HRESULT_HANDLE(hr, ERROR, "SwapChain::GetBuffer failed ");
 
-  hr = d3d_device->CreateRenderTargetView(texture_buffer, NULL, &target_);
+  ID3D11Device* d3d_device = rs->GetDevice();
+  texture_ = rs->GetSwapChain()->GetRenderTargetTexture();
+
+  hr = d3d_device->CreateRenderTargetView(
+      ((D3D11Texture2D*)texture_.get())->resource_, NULL, &target_);
   HRESULT_HANDLE(hr, ERROR, "CreateRenderTargetView failed ");
-
-  DCHECK(texture_.get() == NULL);
-  texture_.reset(new D3D11Texture2D(options_, rs));
-  ((D3D11Texture2D*)texture_.get())->resource_ = texture_buffer;
+  
   return true;
 }
 

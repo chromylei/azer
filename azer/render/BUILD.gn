@@ -72,6 +72,7 @@ shared_library("render") {
     "render_target.h",
     "render_system_enum.cc",
     "render_system_enum.h",
+    "swap_chain.h",
     "texture.cc",
     "texture.h",
     "vertex_buffer.h",

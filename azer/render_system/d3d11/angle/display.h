@@ -13,6 +13,9 @@ class AzerDisplay : public egl::Display {
   AzerDisplay(EGLNativeDisplayType displayId, HDC deviceContext);
 
   bool initialize(D3D11RenderSystem* rs);
+
+  EGLSurface createWindowSurface(HWND hWnd, EGLConfig config,
+                                 const EGLint* attribList);
  private:
   DISALLOW_COPY_AND_ASSIGN(AzerDisplay);
 };

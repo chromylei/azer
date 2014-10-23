@@ -322,6 +322,9 @@ bool D3D11Renderer::Init(const Texture::Options& o) {
   D3D11RenderTarget* target = new D3D11RenderTarget(target_opt_, default_target, this);
   targets_[0].reset(target);
   if (default_target) {
+    D3D11SwapChain* swapchain =
+        (D3D11SwapChain*)d3d11_render_system_->GetSwapChain().get();
+    swapchain->InitRenderTargetTexture(target->options());
     if (!target->InitDefault(d3d11_render_system_)) {
       return false;
     }
