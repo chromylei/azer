@@ -40,6 +40,8 @@ class D3D11DepthBuffer : public DepthBuffer {
   bool Init(D3D11RenderSystem* rs);
   void Clear(D3D11Renderer*, ClearFlag flag = kClearAll, float depth_val = 1.0,
              int stencil_val = 0);
+
+  ID3D11DepthStencilView* GetD3D11DepthStencilView() { return target_;}
  private:
   void UpdateState();
   bool InitDepthAndStencilState(D3D11RenderSystem* rs);

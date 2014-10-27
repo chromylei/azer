@@ -12,13 +12,6 @@ class D3D11Renderer;
 
 class D3D11RenderTarget : public RenderTarget {
  public:
-  virtual ~D3D11RenderTarget() {
-    SAFE_RELEASE(target_);
-  }
-
-  
-  virtual void Clear(const azer::Vector4& color);
- private:
   // create by RenderSystem
   D3D11RenderTarget(const Texture::Options& opt, bool default_rt,
                     D3D11Renderer* renderer)
@@ -26,16 +19,22 @@ class D3D11RenderTarget : public RenderTarget {
       , target_(NULL)
       , renderer_(renderer) {
   }
+  
+  virtual ~D3D11RenderTarget() {
+    SAFE_RELEASE(target_);
+  }
+
+  
+  virtual void Clear(const azer::Vector4& color);
 
   bool Init(D3D11RenderSystem* rs);
   bool InitDefault(const Texture::Options& opt, D3D11SwapChain*);
   
+  ID3D11RenderTargetView* GetD3D11RenderTargetView() { return target_;}
+ private:
   ID3D11RenderTargetView* target_;
   D3D11Renderer* renderer_;
 
-  // texture_ 从 azer::RenderTarget 处继承而来
-  friend class D3D11Renderer;
-  friend class D3D11SwapChain;
   DISALLOW_COPY_AND_ASSIGN(D3D11RenderTarget);
 };
 

@@ -19,6 +19,8 @@ class AZER_EXPORT DepthBuffer {
   // store and restore state of DepthBuffer and Stencil Buffer
   virtual void PushState() = 0;
   virtual void PopState() = 0;
+
+  TexturePtr& GetTexture() { return texture_;}
   
   enum ClearFlag {
     kClearDepth    = 0x0001,
@@ -30,7 +32,7 @@ protected:
       : options_(opt) {
   }
 
-  std::unique_ptr<Texture> texture_;
+  TexturePtr texture_;
   const Texture::Options& options_;
   DISALLOW_COPY_AND_ASSIGN(DepthBuffer);
 };

@@ -55,9 +55,10 @@ void D3D11Renderer::Use() {
   DCHECK(!targets_.empty() && targets_[0].get() != NULL);
   DCHECK(depth_.get() != NULL);
   ID3D11RenderTargetView* target_view[1] = {0};
-  D3D11RenderTarget* target = (D3D11RenderTarget*)targets_[0].get();
-  target_view[0] = target->target_;
-  ID3D11DepthStencilView* depth_view = ((D3D11DepthBuffer*)depth_.get())->target_;
+  target_view[0] =
+      ((D3D11RenderTarget*)targets_[0].get())->GetD3D11RenderTargetView();
+  ID3D11DepthStencilView* depth_view =
+      ((D3D11DepthBuffer*)depth_.get())->GetD3D11DepthStencilView();
   d3d_context_->OMSetRenderTargets(1, target_view, depth_view);
 }
 
@@ -148,10 +149,12 @@ void D3D11Renderer::UseBlending(Blending* vblending, float* factor, uint32 mask)
 
 void D3D11Renderer::Clear(const azer::Vector4& color) {
   DCHECK(d3d_context_ != NULL);
-  D3D11RenderTarget* target = (D3D11RenderTarget*)targets_[0].get();
-  DCHECK(target != NULL);
+  DCHECK(targets_[0].get() != NULL);
+  ID3D11RenderTargetView* target_view =
+      ((D3D11RenderTarget*)targets_[0].get())->GetD3D11RenderTargetView();
+  DCHECK(target_view != NULL);
   d3d_context_->ClearRenderTargetView(
-      target->target_,
+      target_view,
       D3DXCOLOR(color.x, color.y, color.z, color.w));
 }
 
