@@ -25,7 +25,6 @@ class D3D11Renderer : public Renderer {
   D3D11Renderer(ID3D11DeviceContext* context, D3D11RenderSystem* rs);
   ~D3D11Renderer();
 
-  virtual bool Init(const Texture::Options& opt) OVERRIDE;
   virtual void Reset() OVERRIDE;
   virtual void Use() OVERRIDE;
   virtual const std::string& name() const OVERRIDE;
@@ -86,6 +85,10 @@ class D3D11Renderer : public Renderer {
   }
 
   void ResetRenderTarget();
+
+  bool Init(const Texture::Options& opt);
+  bool InitDefault(const Texture::Options& o, D3D11RenderTarget* target,
+                   D3D11DepthBuffer* depth);
  protected:
   void InitRenderState();
   void InitForRenderTarget();

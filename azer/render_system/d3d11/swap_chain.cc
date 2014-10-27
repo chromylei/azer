@@ -1,6 +1,9 @@
 #include "azer/render_system/d3d11/swap_chain.h"
 
+#include "azer/render_system/d3d11/renderer.h"
 #include "azer/render_system/d3d11/render_system.h"
+#include "azer/render_system/d3d11/render_target.h"
+#include "azer/render_system/d3d11/depth_buffer.h"
 #include "azer/render_system/d3d11/util.h"
 #include "azer/render_system/d3d11/texture.h"
 #include "azer/ui/window/window_host.h"
@@ -19,7 +22,7 @@ D3D11SwapChain::~D3D11SwapChain() {
   SAFE_RELEASE(d3d_device_);
 }
 
-bool D3D11SwapChain::recreate()  {
+bool D3D11SwapChain::Init()  {
   DCHECK(NULL == swap_chain_);
   DCHECK(NULL == d3d_device_);
   HRESULT hr;
@@ -65,23 +68,43 @@ bool D3D11SwapChain::recreate()  {
                                      &feature_level_,
                                      &d3d_context_);
   HRESULT_HANDLE(hr, ERROR, "Failed to create D3D11 and Swapchain ");
-  return true;
-}
 
-bool D3D11SwapChain::InitRenderTargetTexture(const Texture::Options& options) {
-  HRESULT hr;
-  ID3D11Texture2D* texture_buffer;
-  hr = swap_chain_->GetBuffer(0, __uuidof(ID3D11Texture2D),
-                              (void**)&texture_buffer);
-  HRESULT_HANDLE(hr, ERROR, "SwapChain::GetBuffer failed ");
+  azer::Texture::Options o;
+  o.width = win_host_->GetMetrics().width;
+  o.height = win_host_->GetMetrics().height;
+  o.target = Texture::kRenderTarget;
+  std::unique_ptr<D3D11Renderer> renderer(
+          new D3D11Renderer(d3d_context_, render_system_));
+  
+  std::unique_ptr<D3D11RenderTarget> target(
+          new D3D11RenderTarget(o, true, renderer.get()));
+  if (!target->InitDefault(o, this)) {
+    return false;
+  }
 
-  DCHECK(render_target_tex_.get() == NULL);
-  render_target_tex_.reset(new D3D11Texture2D(options, render_system_));
-  ((D3D11Texture2D*)render_target_tex_.get())->Attach(texture_buffer);
+  Texture::Options depth_opt;
+  depth_opt.width = o.width;
+  depth_opt.height = o.height;
+  depth_opt.format = kDepth24Stencil8;
+  depth_opt.target = Texture::kDepthStencil;
+  std::unique_ptr<D3D11DepthBuffer> depth(new D3D11DepthBuffer(depth_opt,
+                                                                 renderer.get()));
+  if (!depth->Init(render_system_)) {
+    return false;
+  }
+
+  if (!renderer->InitDefault(o, target.get(), depth.get())) {
+    return false;
+  }
+
+  target.release();
+  depth.release();
+  renderer_.reset(renderer.release());
   return true;
 }
 
 bool D3D11SwapChain::resize(int width, int height) {
+  CHECK(false);
   return true;
 }
 
@@ -90,6 +113,9 @@ void D3D11SwapChain::Present() {
   swap_chain_->Present(0, 0);
 }
 
-
+bool D3D11SwapChain::reset(int width, int height) {
+  CHECK(false);
+  return true;
+}
 
 }  // namespace azer

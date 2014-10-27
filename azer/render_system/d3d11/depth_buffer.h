@@ -13,6 +13,14 @@ class D3D11Renderer;
 
 class D3D11DepthBuffer : public DepthBuffer {
  public:
+   // create by rendersystem
+  D3D11DepthBuffer(const Texture::Options& opt, D3D11Renderer* renderer)
+      : DepthBuffer(opt)
+      , stencil_ref_value_(0)
+      , target_(NULL)
+      , renderer_(renderer) {
+  }
+
   virtual ~D3D11DepthBuffer() {
     SAFE_RELEASE(target_);
   }
@@ -29,18 +37,10 @@ class D3D11DepthBuffer : public DepthBuffer {
   virtual void PushState();
   virtual void PopState();
 
+  bool Init(D3D11RenderSystem* rs);
   void Clear(D3D11Renderer*, ClearFlag flag = kClearAll, float depth_val = 1.0,
              int stencil_val = 0);
  private:
-  // create by rendersystem
-  D3D11DepthBuffer(const Texture::Options& opt, D3D11Renderer* renderer)
-      : DepthBuffer(opt)
-      , stencil_ref_value_(0)
-      , target_(NULL)
-      , renderer_(renderer) {
-  }
-
-  bool Init(D3D11RenderSystem* rs);
   void UpdateState();
   bool InitDepthAndStencilState(D3D11RenderSystem* rs);
 

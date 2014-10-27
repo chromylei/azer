@@ -28,7 +28,6 @@ class AZER_EXPORT Renderer {
   }
   virtual ~Renderer() {}
 
-  virtual bool Init(const Texture::Options& opt) = 0;
   virtual const std::string& name() const = 0;
 
   virtual void Use() = 0;
@@ -111,10 +110,9 @@ class AZER_EXPORT Renderer {
   RenderSystem* render_system_;
   std::unique_ptr<DepthBuffer> depth_;
   RenderTargetVec targets_;
-  Texture::Options depth_opt_;
-  Texture::Options target_opt_;
-
   const int kNumOfRenderTarget;
   DISALLOW_COPY_AND_ASSIGN(Renderer);
 };
+
+typedef std::shared_ptr<Renderer> RendererPtr;
 }  // namespace azer

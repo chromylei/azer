@@ -310,36 +310,35 @@ void D3D11Renderer::SetShaderResource(RenderPipelineStage stage,
   }
 }
 
+bool D3D11Renderer::InitDefault(const Texture::Options& o,
+                                D3D11RenderTarget* target, D3D11DepthBuffer* depth) {
+  targets_[0].reset(target);
+  depth_.reset(depth);
+  Reset();
+  SetViewport(azer::Renderer::Viewport(0, 0, o.width, o.height));
+  return true;
+}
+
 bool D3D11Renderer::Init(const Texture::Options& o) {
-  bool default_target = !(o.target & Texture::kShaderResource);
-  DCHECK(target_opt_.width == 0 && target_opt_.height == 0);
   DCHECK(o.width != 0 && o.height != 0);
   DCHECK(targets_[0].get() == NULL);
   DCHECK(depth_.get() == NULL);
-  target_opt_ = o;
-  target_opt_.target = (Texture::BindTarget)
-      (Texture::kRenderTarget | o.target);
-  D3D11RenderTarget* target = new D3D11RenderTarget(target_opt_, default_target, this);
+
+  Texture::Options target_opt;
+  target_opt = o;
+  target_opt.target = (Texture::BindTarget)(Texture::kRenderTarget | o.target);
+  D3D11RenderTarget* target = new D3D11RenderTarget(target_opt, true, this);
   targets_[0].reset(target);
-  if (default_target) {
-    D3D11SwapChain* swapchain =
-        (D3D11SwapChain*)d3d11_render_system_->GetSwapChain().get();
-    swapchain->InitRenderTargetTexture(target->options());
-    if (!target->InitDefault(d3d11_render_system_)) {
-      return false;
-    }
-  } else {
-    if (!target->Init(d3d11_render_system_)) {
-      return false;
-    }
+  if (!target->Init(d3d11_render_system_)) {
+    return false;
   }
 
   Texture::Options depth_opt;
-  depth_opt_.width = o.width;
-  depth_opt_.height = o.height;
-  depth_opt_.format = kDepth24Stencil8;
-  depth_opt_.target = Texture::kDepthStencil;
-  D3D11DepthBuffer* depth = new D3D11DepthBuffer(depth_opt_, this);
+  depth_opt.width = o.width;
+  depth_opt.height = o.height;
+  depth_opt.format = kDepth24Stencil8;
+  depth_opt.target = Texture::kDepthStencil;
+  D3D11DepthBuffer* depth = new D3D11DepthBuffer(depth_opt, this);
   depth_.reset(depth);
   if (!depth->Init(d3d11_render_system_)) {
     return false;

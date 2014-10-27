@@ -78,8 +78,8 @@ class AZER_EXPORT RenderSystem {
   static const int32 kMaxRenderTarget = 256;
 
   Renderer* GetDefaultRenderer() {
-    DCHECK(renderer_.get() != NULL);
-    return renderer_.get();
+    DCHECK(swap_chain_.get() != NULL);
+    return swap_chain_->GetRenderer().get();
   }
 
   SwapChainPtr& GetSwapChain() { return swap_chain_;}
@@ -87,8 +87,6 @@ class AZER_EXPORT RenderSystem {
   RenderSystemCapability capability_;
   SwapChainPtr swap_chain_;
   WindowHost* win_host_;
-
-  std::unique_ptr<Renderer> renderer_;
   friend class AutoRenderSystemInit;
   DISALLOW_COPY_AND_ASSIGN(RenderSystem);
 };

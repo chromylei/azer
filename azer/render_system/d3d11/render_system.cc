@@ -36,17 +36,8 @@ D3D11RenderSystem::~D3D11RenderSystem() {
 
 bool D3D11RenderSystem::Init(WindowHost* window) {
   swap_chain_.reset(new D3D11SwapChain(this, window));
-  swap_chain_->recreate();
-
-  azer::Texture::Options o;
-  o.width = window->GetMetrics().width;
-  o.height = window->GetMetrics().height;
-  renderer_.reset(new D3D11Renderer(GetContext(), this));
-  if (!renderer_->Init(o)) {
-    return false;
-  }
-
-  renderer_->Use();
+  swap_chain_->Init();
+  GetDefaultRenderer()->Use();
   return true;
 }
 
@@ -232,7 +223,7 @@ Renderer* D3D11RenderSystem::CreateDeferredRenderer(const Texture::Options& opt)
   }
 
   std::unique_ptr<D3D11Renderer> renderer(new D3D11Renderer(context, this));
-  if (renderer_->Init(opt)) {
+  if (renderer->Init(opt)) {
     return renderer.release();
   } else {
     return NULL;

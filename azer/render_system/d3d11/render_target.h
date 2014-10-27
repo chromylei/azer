@@ -4,6 +4,7 @@
 #include "azer/render/render_target.h"
 #include "azer/render_system/d3d11/util.h"
 #include "azer/render_system/d3d11/texture.h"
+#include "azer/render_system/d3d11/swap_chain.h"
 
 namespace azer {
 class D3D11RenderSystem;
@@ -26,15 +27,15 @@ class D3D11RenderTarget : public RenderTarget {
       , renderer_(renderer) {
   }
 
-  bool Init(D3D11RenderSystem* );
-  bool InitDefault(D3D11RenderSystem*);
+  bool Init(D3D11RenderSystem* rs);
+  bool InitDefault(const Texture::Options& opt, D3D11SwapChain*);
   
   ID3D11RenderTargetView* target_;
   D3D11Renderer* renderer_;
 
   // texture_ 从 azer::RenderTarget 处继承而来
   friend class D3D11Renderer;
-  friend class D3D11RenderSystem;
+  friend class D3D11SwapChain;
   DISALLOW_COPY_AND_ASSIGN(D3D11RenderTarget);
 };
 
