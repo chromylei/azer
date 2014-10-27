@@ -19,10 +19,8 @@ bool AzerSurface::resetSwapChain() {
   if (mWindow) {
     RECT windowRect;
     if (!GetClientRect(getWindowHandle(), &windowRect)) {
-      ASSERT(false);
-
-      ERR("Could not retrieve the window dimensions");
-      return error(EGL_BAD_SURFACE, false);
+      CHECK(false) << "Could not retrieve the window dimensions";
+      return false;
     }
 
     width = windowRect.right - windowRect.left;
@@ -39,7 +37,7 @@ bool AzerSurface::resetSwapChain() {
                                          mConfig->mDepthStencilFormat);
   if (!mSwapChain)
   {
-    return error(EGL_BAD_ALLOC, false);
+    CHECK(false) << "Failed to createSwapChain";
   }
 
   if (!resetSwapChain(width, height))

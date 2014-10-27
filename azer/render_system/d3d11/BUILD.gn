@@ -4,11 +4,13 @@ static_library("azer_angle11") {
     "angle/display.h",
     "angle/renderer.cc",
     "angle/renderer.h",
+    "angle/swap_chain.cc",
+    "angle/swap_chain.h",
     "angle/api.cc",
     "angle/api.h",
     "angle/precompile.h",
-#    "angle/surface.cc",
-#    "angle/surface.h",
+    # "angle/surface.cc",
+    # "angle/surface.h",
   ]
   deps = [
     "//third_party/angle:libGLESv2",

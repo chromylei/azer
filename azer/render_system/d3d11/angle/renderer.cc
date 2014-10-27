@@ -1,5 +1,6 @@
 #include "azer/render_system/d3d11/angle/renderer.h"
 
+#include "azer/render_system/d3d11/angle/swap_chain.h"
 #include "azer/render_system/d3d11/render_system.h"
 #include "azer/render_system/d3d11/renderer.h"
 #include "base/logging.h"
@@ -286,4 +287,9 @@ EGLint AzerRenderer::initialize() {
 
 }
 
+rx::SwapChain *AzerRenderer::createSwapChain(HWND window, HANDLE shareHandle,
+                                             GLenum backBufferFormat,
+                                             GLenum depthBufferFormat) {
+  return NULL;
+}
 }  // namespace azer

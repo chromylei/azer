@@ -80,8 +80,7 @@ bool InitAngle(RenderSystem* rrs, WindowHost* host) {
   if (context == EGL_NO_CONTEXT) {
     return EGL_FALSE;
   }
-
-
+  
   return true;
 }
 

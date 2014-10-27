@@ -11,6 +11,10 @@ class AzerRenderer : public rx::Renderer11 {
   AzerRenderer(egl::Display *display, HDC hDc, D3D11RenderSystem* rs);
 
   EGLint initialize();
+
+  virtual rx::SwapChain *createSwapChain(HWND window, HANDLE shareHandle,
+                                         GLenum backBufferFormat,
+                                         GLenum depthBufferFormat);
  private:
   DISALLOW_COPY_AND_ASSIGN(AzerRenderer);
 };
