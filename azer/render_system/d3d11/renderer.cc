@@ -330,7 +330,7 @@ bool D3D11Renderer::Init(const Texture::Options& o) {
   Texture::Options target_opt;
   target_opt = o;
   target_opt.target = (Texture::BindTarget)(Texture::kRenderTarget | o.target);
-  D3D11RenderTarget* target = new D3D11RenderTarget(target_opt, true, this);
+  D3D11RenderTarget* target = new D3D11RenderTarget(target_opt, false, this);
   targets_[0].reset(target);
   if (!target->Init(d3d11_render_system_)) {
     return false;

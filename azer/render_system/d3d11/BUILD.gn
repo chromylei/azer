@@ -1,27 +1,28 @@
-static_library("azer_angle11") {
-  sources = [
-    "angle/display.cc",
-    "angle/display.h",
-    "angle/renderer.cc",
-    "angle/renderer.h",
-    "angle/swap_chain.cc",
-    "angle/swap_chain.h",
-    "angle/api.cc",
-    "angle/api.h",
-    "angle/precompile.h",
-    # "angle/surface.cc",
-    # "angle/surface.h",
-  ]
-  deps = [
-    "//third_party/angle:libGLESv2",
-    "//third_party/angle:libEGL",
-  ]
-
-  configs += [
-    "//third_party/angle:angle_libGLESv2_config"
-    "//build/config/win:d3d11",
-  ]
-}
+#static_library("azer_angle11") {
+#  sources = [
+#    "angle/display.cc",
+#    "angle/display.h",
+#    "angle/renderer.cc",
+#    "angle/renderer.h",
+#    "angle/swap_chain.cc",
+#    "angle/swap_chain.h",
+#    "angle/api.cc",
+#    "angle/api.h",
+#    "angle/precompile.h",
+#    # "angle/surface.cc",
+#    # "angle/surface.h",
+#  ]
+#  deps = [
+#    "//third_party/angle:libGLESv2",
+#    "//third_party/angle:libGLESv2_d3d11",
+#    "//third_party/angle:libEGL",
+#  ]
+#
+#  configs += [
+#    "//third_party/angle:angle_libGLESv2_config"
+#    "//build/config/win:d3d11",
+#  ]
+#}
 
 shared_library("d3d11_render_system") {
   sources = [
@@ -63,7 +64,6 @@ shared_library("d3d11_render_system") {
     "//base:base",
     "//azer/render:render",
     "//third_party/angle:libGLESv2",
-    ":azer_angle11",
   ]
   defines = ["BUILD_AZER_RENDER_SYSTEM"]
   configs += [
