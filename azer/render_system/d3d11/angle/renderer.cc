@@ -23,7 +23,8 @@ static const DXGI_FORMAT DepthStencilFormats[] =
 }
 
 AzerRenderer::AzerRenderer(egl::Display *display, HDC hDc, D3D11RenderSystem* rs) 
-    : rx::Renderer11(display, hDc) {
+    : rx::Renderer11(display, hDc)
+    , render_system_(rs) {
   mDevice = rs->GetDevice();
   mDeviceContext = rs->GetContext();
   mFeatureLevel = rs->feature_level();
@@ -290,6 +291,7 @@ EGLint AzerRenderer::initialize() {
 rx::SwapChain *AzerRenderer::createSwapChain(HWND window, HANDLE shareHandle,
                                              GLenum backBufferFormat,
                                              GLenum depthBufferFormat) {
-  return NULL;
+  return new AzerSwapChain(this, window, shareHandle, backBufferFormat,
+                           depthBufferFormat);
 }
 }  // namespace azer

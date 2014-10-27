@@ -6,6 +6,7 @@
 #include "azer/ui/window/window_host.h"
 #include "libGLESv2/renderer/d3d11/Renderer11.h"
 #include "libEGL/Display.h"
+#include "EGL/eglext.h"
 
 namespace azer {
 /// esCreateWindow flag - RGB color buffer
@@ -32,6 +33,29 @@ bool InitializeDisplay(D3D11RenderSystem* rs, HWND hWnd, EGLDisplay* display,
   return true;
 }
 
+namespace {
+EGLDisplay eglDisplay;
+EGLContext eglContext;
+EGLSurface eglSurface;
+
+EGLint configAttribList[] = {
+  EGL_RED_SIZE,       8,
+  EGL_GREEN_SIZE,     8,
+  EGL_BLUE_SIZE,      8,
+  EGL_ALPHA_SIZE,     8,
+  EGL_DEPTH_SIZE,     24,
+  EGL_STENCIL_SIZE,   8,
+  EGL_SAMPLE_BUFFERS, 1,
+  EGL_NONE
+};
+
+EGLint surfaceAttribList[] = {
+  EGL_POST_SUB_BUFFER_SUPPORTED_NV, EGL_TRUE,
+  EGL_NONE, EGL_NONE
+};
+
+}
+
 bool InitAngle(RenderSystem* rrs, WindowHost* host) {
   D3D11RenderSystem* rs = (D3D11RenderSystem*)rrs;
 
@@ -43,19 +67,6 @@ bool InitAngle(RenderSystem* rrs, WindowHost* host) {
   EGLSurface surface;
   EGLConfig config;
   EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
-
-  GLuint flags = ES_WINDOW_RGB;
-  EGLint configAttribList[] =
-  {
-    EGL_RED_SIZE,       5,
-    EGL_GREEN_SIZE,     6,
-    EGL_BLUE_SIZE,      5,
-    EGL_ALPHA_SIZE,     (flags & ES_WINDOW_ALPHA) ? 8 : EGL_DONT_CARE,
-    EGL_DEPTH_SIZE,     (flags & ES_WINDOW_DEPTH) ? 8 : EGL_DONT_CARE,
-    EGL_STENCIL_SIZE,   (flags & ES_WINDOW_STENCIL) ? 8 : EGL_DONT_CARE,
-    EGL_SAMPLE_BUFFERS, (flags & ES_WINDOW_MULTISAMPLE) ? 1 : 0,
-    EGL_NONE
-  };
 
   /**
    * 与 egl 的实现的主要区别在于 display 的创建及初始化
@@ -76,11 +87,28 @@ bool InitAngle(RenderSystem* rrs, WindowHost* host) {
     return false;
   }
 
+  // Create a surface
+  surface = eglCreateWindowSurface(display, config, (EGLNativeWindowType)hWnd,
+                                   surfaceAttribList);
+  if ( surface == EGL_NO_SURFACE )
+  {
+    return EGL_FALSE;
+  }
+
+
   context = eglCreateContext(display, config, EGL_NO_CONTEXT, contextAttribs);
   if (context == EGL_NO_CONTEXT) {
     return EGL_FALSE;
   }
-  
+
+  // Make the context current
+  if (!eglMakeCurrent(display, surface, surface, context)) {
+    return EGL_FALSE;
+  }
+
+  eglDisplay = display;
+  eglSurface = surface;
+  eglContext = context;
   return true;
 }
 

@@ -18,6 +18,17 @@ class AzerSwapChain : public rx::SwapChain11 {
   AzerSwapChain(rx::Renderer11 *renderer, HWND window, HANDLE shareHandle,
                 GLenum backBufferFormat, GLenum depthBufferFormat);
   ~AzerSwapChain();
+
+  virtual EGLint reset(EGLint backbufferWidth, EGLint backbufferHeight, EGLint swapInterval);
+  virtual EGLint swapRect(EGLint x, EGLint y, EGLint width, EGLint height);
+  virtual void recreate();
+
+  virtual ID3D11Texture2D *getOffscreenTexture();
+  virtual ID3D11RenderTargetView *getRenderTarget();
+  virtual ID3D11ShaderResourceView *getRenderTargetShaderResource();
+
+  virtual ID3D11Texture2D *getDepthStencilTexture();
+  virtual ID3D11DepthStencilView *getDepthStencil();
  private:
   SwapChainPtr swap_chain_;
   DISALLOW_COPY_AND_ASSIGN(AzerSwapChain);
