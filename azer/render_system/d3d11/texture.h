@@ -29,9 +29,10 @@ class D3D11Texture: public Texture {
   void SetPSSampler(int index, D3D11Renderer* renderer);
 
   bool Initialized() const { return NULL != resource_;}
-  ID3D11Resource* GetResource() { return resource_; }
-
   void Attach(ID3D11Texture2D* tex) { resource_ = tex;}
+
+  ID3D11ShaderResourceView* GetResourceView() { return view_;}
+  ID3D11Resource* GetResource() { return resource_;}
  protected:
   virtual void InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) = 0;
   virtual void InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) = 0;
