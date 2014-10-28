@@ -156,15 +156,23 @@ config("no_incremental_linking") {
 config("d3d9") {
   include_dirs = ["$d3dsdk_path/include"]
   lib_dirs = ["$d3dsdk_path/Lib/x86"]
-  libs =  ["d3d9.lib", "d3dx9.lib", "dxguid.lib"]
+  libs = ["dxguid.lib", "d3d9.lib"]
+  if (is_debug) {
+    libs +=  ["d3dx9d.lib"]
+  } else {
+    libs +=  ["d3dx9.lib"]
+  }
 }
 
 config("d3d11") {
   include_dirs = ["$d3dsdk_path/include"]
   lib_dirs = ["$d3dsdk_path/Lib/x86"]
-  libs =  ["d3d11.lib", "d3dx11.lib", "d3dx10.lib", "dxguid.lib",
-    "d3dcompiler.lib"
-  ]
+  libs = ["dxguid.lib", "d3dcompiler.lib", "d3d11.lib"]
+  if (is_debug) {
+    libs +=  ["d3dx11.lib", "d3dx10.lib", ]
+  } else {
+    libs +=  ["d3dx11d.lib", "d3dx10d.lib", ]
+  }
 }
 
 config("opengl32") {

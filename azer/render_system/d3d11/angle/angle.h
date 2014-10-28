@@ -29,6 +29,7 @@ AZER_D3D11RS_EXPORT bool InitAngle(window::NativeWindowHandle handle, bool pbuff
                                    Context* context);
 AZER_D3D11RS_EXPORT void UninitializeAngle(Context* ctx);
 
+AZER_D3D11RS_EXPORT TexturePtr GetSurfaceTexture(Context* ctx);
 AZER_D3D11RS_EXPORT TexturePtr GetSurfaceTexture(void* surface, Context* ctx);
 AZER_D3D11RS_EXPORT TexturePtr GetCurrentFramebufferTexture(Context* ctx);
 AZER_D3D11RS_EXPORT TexturePtr GetFramebufferTexture(void* framebuffer, Context* ctx);

@@ -103,6 +103,10 @@ bool InitAngle(window::NativeWindowHandle handle, bool pbuffer,
 void UninitializeAngle(Context* ctx) {
 }
 
+TexturePtr GetSurfaceTexture(Context* ctx) {
+  return GetSurfaceTexture(ctx->surface, ctx);
+}
+
 TexturePtr GetSurfaceTexture(void* sur, Context* context) {
   D3D11RenderSystem* rs = (D3D11RenderSystem*)RenderSystem::Current();
   ID3D11Texture2D* resource = NULL;
