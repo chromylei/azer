@@ -3,6 +3,7 @@
 #include "azer/render_system/d3d11/texture.h"
 #include "azer/render_system/d3d11/util.h"
 #include "azer/render_system/d3d11/render_system.h"
+#include "azer/render_system/d3d11/enum_transform.h"
 
 #include "EGL/egl.h"
 #include "EGL/eglext.h"
@@ -12,9 +13,9 @@ PFNEGLQUERYSURFACEPOINTERANGLEPROC eglQuerySurfacePointerANGLE;
 namespace azer {
 namespace angle {
 EGLint configAttribList[] = {
-  EGL_RED_SIZE,       5,
-  EGL_GREEN_SIZE,     6,
-  EGL_BLUE_SIZE,      5,
+  EGL_RED_SIZE,       8,
+  EGL_GREEN_SIZE,     8,
+  EGL_BLUE_SIZE,      8,
   EGL_ALPHA_SIZE,     8,
   EGL_DEPTH_SIZE,     EGL_DONT_CARE,
   EGL_STENCIL_SIZE,   EGL_DONT_CARE,
@@ -130,6 +131,7 @@ TexturePtr GetSurface(int64 sur) {
   Texture::Options opt;
   opt.width = desc.Width;
   opt.height = desc.Height;
+  opt.format = TranslateD3DFormat(desc.Format);
   TexturePtr ptr(new D3D11Texture2DShared(opt, shared_tex, rs));
   // SAFE_RELEASE(resource);
   return ptr;

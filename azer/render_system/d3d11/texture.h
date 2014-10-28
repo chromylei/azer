@@ -59,7 +59,7 @@ class D3D11Texture2D : public D3D11Texture {
   }
 
   virtual bool InitFromImage(const Image* image) OVERRIDE;
- private:
+ protected:
   virtual void InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;
   virtual void InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) OVERRIDE;
   friend class D3D11RenderTarget;
@@ -67,19 +67,19 @@ class D3D11Texture2D : public D3D11Texture {
   DISALLOW_COPY_AND_ASSIGN(D3D11Texture2D);
 };
 
-class D3D11Texture2DShared : public D3D11Texture {
+class D3D11Texture2DShared : public D3D11Texture2D {
  public:
   D3D11Texture2DShared(const Texture::Options& opt, ID3D11Texture2D* tex,
                        D3D11RenderSystem* rs)
-      : D3D11Texture(opt, rs) {
+      : D3D11Texture2D(opt, rs) {
     Attach(tex);
+    tex->GetDesc(&tex_desc_);
+    InitResourceView();
   }
 
   virtual ~D3D11Texture2DShared() {}
  private:
   virtual bool InitFromImage(const Image* image) { return false;}
-  virtual void InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) {}
-  virtual void InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) {}
   DISALLOW_COPY_AND_ASSIGN(D3D11Texture2DShared);
 };
 
@@ -87,8 +87,8 @@ class D3D11TextureCubeMap : public D3D11Texture {
  public:
   D3D11TextureCubeMap(const Texture::Options& opt, D3D11RenderSystem* rs)
       : D3D11Texture(opt, rs) {
+    
   }
-
   virtual bool InitFromImage(const Image* image) OVERRIDE;
  private:
   virtual void InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;

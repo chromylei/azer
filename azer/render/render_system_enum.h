@@ -54,6 +54,11 @@ enum DataFormat {
   kRGBA32,            // all element are uint32
   kRGBAn32,           // all element are uint32
   kRGBAf,             // all element are float
+  kBGRA8,
+  kBGRAn8,
+  kBGRA32,
+  kBGRAn32,
+  kBGRAnf,
   kDepth24Stencil8,
   kRGBA = kRGBAf,
 };

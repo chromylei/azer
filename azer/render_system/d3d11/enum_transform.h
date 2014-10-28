@@ -44,6 +44,7 @@ inline DXGI_FORMAT TranslateFormat(DataFormat type) {
   switch (type) {
     case kRGBAn8: return DXGI_FORMAT_R8G8B8A8_UNORM;
     case kRGBAf: return DXGI_FORMAT_R32G32B32A32_FLOAT;
+    case kBGRAn8: return DXGI_FORMAT_B8G8R8A8_UNORM;
     case kDepth24Stencil8: return DXGI_FORMAT_D24_UNORM_S8_UINT;
     case kScalar: return DXGI_FORMAT_D32_FLOAT;
     case kVec2: return DXGI_FORMAT_R32G32_FLOAT;
@@ -73,6 +74,7 @@ inline DXGI_FORMAT TranslateFormat(DataFormat type) {
 
 inline DataFormat TranslateD3DFormat(DXGI_FORMAT type) {
   switch (type) {
+    case DXGI_FORMAT_B8G8R8A8_UNORM: return kBGRAn8;
     case DXGI_FORMAT_R8G8B8A8_UNORM: return kRGBAn8;
     case DXGI_FORMAT_R32G32B32A32_UINT: return kRGBAn32;
     case DXGI_FORMAT_R32G32B32A32_FLOAT: return kRGBAf;

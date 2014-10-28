@@ -82,7 +82,7 @@ bool D3D11Texture::InitResourceView() {
   ID3D11Device* d3d_device = render_system_->GetDevice();
   InitResourceDesc(&res_view_desc_);
   HRESULT hr = d3d_device->CreateShaderResourceView(resource_, &res_view_desc_,
-                                            &view_);
+                                                    &view_);
   HRESULT_HANDLE(hr, ERROR, "CreateResourceView failed for texture");
   return SetSamplerState(options_.sampler);
 }
