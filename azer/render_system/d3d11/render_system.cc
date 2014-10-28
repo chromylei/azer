@@ -22,6 +22,7 @@
 #include "azer/render_system/d3d11/technique.h"
 #include "azer/render_system/d3d11/texture.h"
 #include "azer/render_system/d3d11/vertex_buffer.h"
+#include "azer/render_system/d3d11/angle/angle.h"
 
 namespace azer {
 
@@ -38,6 +39,12 @@ bool D3D11RenderSystem::Init(WindowHost* window) {
   swap_chain_.reset(new D3D11SwapChain(this, window));
   swap_chain_->Init();
   GetDefaultRenderer()->Use();
+
+  /*
+  if (!angle::InitAngle(window->Handle())) {
+    return false;
+  }
+  */
   return true;
 }
 

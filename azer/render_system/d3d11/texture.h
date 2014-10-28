@@ -30,6 +30,7 @@ class D3D11Texture: public Texture {
 
   bool Initialized() const { return NULL != resource_;}
   void Attach(ID3D11Texture2D* tex) { resource_ = tex;}
+  void Detach() { resource_ = NULL; }
 
   ID3D11ShaderResourceView* GetResourceView() { return view_;}
   ID3D11Resource* GetResource() { return resource_;}
@@ -64,6 +65,22 @@ class D3D11Texture2D : public D3D11Texture {
   friend class D3D11RenderTarget;
   friend class D3D11DepthBuffer;
   DISALLOW_COPY_AND_ASSIGN(D3D11Texture2D);
+};
+
+class D3D11Texture2DShared : public D3D11Texture {
+ public:
+  D3D11Texture2DShared(const Texture::Options& opt, ID3D11Texture2D* tex,
+                       D3D11RenderSystem* rs)
+      : D3D11Texture(opt, rs) {
+    Attach(tex);
+  }
+
+  virtual ~D3D11Texture2DShared() {}
+ private:
+  virtual bool InitFromImage(const Image* image) { return false;}
+  virtual void InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) {}
+  virtual void InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) {}
+  DISALLOW_COPY_AND_ASSIGN(D3D11Texture2DShared);
 };
 
 class D3D11TextureCubeMap : public D3D11Texture {

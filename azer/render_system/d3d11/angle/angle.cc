@@ -1,10 +1,16 @@
 
 #include "azer/render_system/d3d11/angle/angle.h"
+#include "azer/render_system/d3d11/texture.h"
+#include "azer/render_system/d3d11/util.h"
+#include "azer/render_system/d3d11/render_system.h"
 
 #include "EGL/egl.h"
 #include "EGL/eglext.h"
 
+PFNEGLQUERYSURFACEPOINTERANGLEPROC eglQuerySurfacePointerANGLE;
+
 namespace azer {
+namespace angle {
 EGLint configAttribList[] = {
   EGL_RED_SIZE,       5,
   EGL_GREEN_SIZE,     6,
@@ -81,9 +87,52 @@ bool InitAngle(window::NativeWindowHandle handle) {
   eglSurface = surface;
   eglContext = context;
 
+  eglQuerySurfacePointerANGLE =
+      (PFNEGLQUERYSURFACEPOINTERANGLEPROC)eglGetProcAddress("eglQuerySurfacePointerANGLE");
+  if (eglQuerySurfacePointerANGLE == NULL) {
+    return false;
+  }
+
   return true;
 }
 
 void UninitializeAngle() {
 }
+
+TexturePtr GetSurface() {
+  return GetSurface((int64)eglSurface);
+}
+
+TexturePtr GetSurface(int64 sur) {
+  D3D11RenderSystem* rs = (D3D11RenderSystem*)RenderSystem::Current();
+  ID3D11Texture2D* resource = NULL;
+  EGLint config = EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE;
+  EGLSurface surface = (EGLSurface)sur;
+  if (EGL_FALSE == eglQuerySurfacePointerANGLE(eglDisplay,
+                                               surface,
+                                               config,
+                                               (void**)&resource)) {
+    SAFE_RELEASE(resource);
+    return TexturePtr();
+  }
+
+  ID3D11Texture2D* shared_tex = NULL;
+  ID3D11Device* d3d_device = rs->GetDevice();
+  HRESULT hr = d3d_device->OpenSharedResource(resource, __uuidof(ID3D11Texture2D),
+                                              (void**)&shared_tex);
+  if (FAILED(hr)) {
+    SAFE_RELEASE(shared_tex);
+    TexturePtr();
+  }
+
+  D3D11_TEXTURE2D_DESC desc;
+  shared_tex->GetDesc(&desc);
+  Texture::Options opt;
+  opt.width = desc.Width;
+  opt.height = desc.Height;
+  TexturePtr ptr(new D3D11Texture2DShared(opt, shared_tex, rs));
+  // SAFE_RELEASE(resource);
+  return ptr;
+}
+}  // namespace angle
 }  // namespace azer

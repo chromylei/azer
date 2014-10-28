@@ -4,8 +4,6 @@
 #include <memory>
 
 #include <d3d11.h>
-#include <d3dx11.h>
-#include <d3dx10.h>
 
 #include "base/basictypes.h"
 #include "azer/render_system/d3d11/hr_msg.h"
