@@ -4,6 +4,7 @@
 #include "azer/render_system/d3d11/util.h"
 #include "azer/render_system/d3d11/render_system.h"
 #include "azer/render_system/d3d11/enum_transform.h"
+#include "azer/ui/window/window_host.h"
 
 #include "EGL/egl.h"
 #include "EGL/eglext.h"
@@ -23,8 +24,45 @@ EGLint configAttribList[] = {
   EGL_NONE
 };
 
-bool InitAngle(window::NativeWindowHandle handle, bool pbuffer,
-               Context* angle_context) {
+RendererPtr CreateRenderer(RenderSystem* rs, Context* ctx) {
+  Texture::Options options;
+  options.width = ctx->width;
+  options.height = ctx->height;
+  options.format = azer::kBGRAn8;
+  options.target = (azer::Texture::BindTarget)
+      (azer::Texture::kRenderTarget | azer::Texture::kShaderResource);
+  return RendererPtr(rs->CreateRenderer(options));
+}
+
+TexturePtr CreatePBufferTexture(RenderSystem* rs, Context* ctx) {
+  D3D11RenderSystem* d3d11rs = (D3D11RenderSystem*)rs;
+  Texture::Options options;
+  options.width = ctx->width;
+  options.height = ctx->height;
+  options.format = azer::kRGBAn8;
+  options.target = (azer::Texture::BindTarget)
+      (azer::Texture::kRenderTarget | azer::Texture::kShaderResource);
+  options.sampler.sample_level = 1;
+  options.usage = GraphicBuffer::kDefault;
+
+  std::unique_ptr<D3D11Texture2D> tex(new D3D11Texture2D(options, d3d11rs));
+  if (!tex->Init(NULL, 1)) {
+    return TexturePtr();
+  }
+
+  ID3D11Resource* resource = tex->GetResource();
+  ID3D11Texture2D* shared_tex = NULL;
+  ID3D11Device* d3d_device = d3d11rs->GetDevice();
+  HRESULT hr = d3d_device->OpenSharedResource(resource, __uuidof(ID3D11Texture2D),
+    (void**)&shared_tex);
+  if (FAILED(hr)) {
+    SAFE_RELEASE(shared_tex);
+    TexturePtr();
+  }
+  return TexturePtr(tex.release());
+}
+
+bool Init(RenderSystem* rs, Context* ctx) {
   EGLint numConfigs;
   EGLint majorVersion;
   EGLint minorVersion;
@@ -34,7 +72,8 @@ bool InitAngle(window::NativeWindowHandle handle, bool pbuffer,
   EGLConfig config;
   EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
 
-  EGLNativeWindowType hWnd = (EGLNativeWindowType)handle;
+  WindowHost* host = rs->GetRenderWindowHost();
+  EGLNativeWindowType hWnd = (EGLNativeWindowType)host->Handle();
 
   display = eglGetDisplay(GetDC(hWnd));
   if (display == EGL_NO_DISPLAY) {
@@ -56,21 +95,24 @@ bool InitAngle(window::NativeWindowHandle handle, bool pbuffer,
     return false;
   }
 
-  if (pbuffer) {
-    EGLint surfaceAttribList[] =  {
-      EGL_WIDTH,   800,
-      EGL_HEIGHT,  600,
-      EGL_NONE, EGL_NONE
-    };
-    surface = eglCreatePbufferSurface(display, config, surfaceAttribList);
-  } else {
-    EGLint surfaceAttribList[] = {
-      EGL_POST_SUB_BUFFER_SUPPORTED_NV, EGL_TRUE,
-      EGL_NONE, EGL_NONE
-    };
-    surface = eglCreateWindowSurface(display, config,
-                                     (EGLNativeWindowType)hWnd, surfaceAttribList);
-  }
+  ctx->renderer = CreateRenderer(rs, ctx);
+  ctx->tex = ctx->renderer->GetRenderTarget()->GetTexture();
+  ctx->tex = CreatePBufferTexture(rs, ctx);
+  D3D11Texture* texture = (D3D11Texture*)ctx->tex.get();
+
+  EGLint surfaceAttribList[] =  {
+    EGL_WIDTH,   -1,
+    EGL_HEIGHT,  -1,
+    EGL_NONE, EGL_NONE
+  };
+  surfaceAttribList[1] = ctx->width;
+  surfaceAttribList[3] = ctx->height;
+  EGLClientBuffer egl_buffer = (EGLClientBuffer)(texture->GetResource());
+  surface = eglCreatePbufferFromClientBuffer(display,
+                                             EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE,
+                                             egl_buffer,
+                                             config,
+                                             surfaceAttribList);
   if (surface == EGL_NO_SURFACE) {
     LOG(ERROR) << "Failed to create Surface";
     return false;
@@ -87,9 +129,9 @@ bool InitAngle(window::NativeWindowHandle handle, bool pbuffer,
     return EGL_FALSE;
   }
 
-  angle_context->display = display;
-  angle_context->surface = surface;
-  angle_context->context = context;
+  ctx->display = display;
+  ctx->surface = surface;
+  ctx->context = context;
 
   eglQuerySurfacePointerANGLE =
       (PFNEGLQUERYSURFACEPOINTERANGLEPROC)eglGetProcAddress("eglQuerySurfacePointerANGLE");
