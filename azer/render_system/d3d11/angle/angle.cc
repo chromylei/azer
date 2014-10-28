@@ -6,18 +6,19 @@
 
 namespace azer {
 EGLint configAttribList[] = {
-  EGL_RED_SIZE,       8,
-  EGL_GREEN_SIZE,     8,
-  EGL_BLUE_SIZE,      8,
+  EGL_RED_SIZE,       5,
+  EGL_GREEN_SIZE,     6,
+  EGL_BLUE_SIZE,      5,
   EGL_ALPHA_SIZE,     8,
-  EGL_DEPTH_SIZE,     24,
-  EGL_STENCIL_SIZE,   8,
-  EGL_SAMPLE_BUFFERS, 1,
+  EGL_DEPTH_SIZE,     EGL_DONT_CARE,
+  EGL_STENCIL_SIZE,   EGL_DONT_CARE,
+  EGL_SAMPLE_BUFFERS, 0,
   EGL_NONE
 };
 
 EGLint surfaceAttribList[] =  {
-  EGL_POST_SUB_BUFFER_SUPPORTED_NV, EGL_TRUE,
+  EGL_WIDTH,   800,
+  EGL_HEIGHT,  600,
   EGL_NONE, EGL_NONE
 };
 
@@ -81,5 +82,8 @@ bool InitAngle(window::NativeWindowHandle handle) {
   eglContext = context;
 
   return true;
+}
+
+void UninitializeAngle() {
 }
 }  // namespace azer

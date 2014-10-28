@@ -5,4 +5,5 @@
 
 namespace azer {
 bool InitAngle(window::NativeWindowHandle handle);
+void UninitializeAngle();
 }  // namespace azer
