@@ -8,6 +8,7 @@
 #include "azer/render_system/d3d11/texture.h"
 
 class GrContext;
+struct GrGLInterface;
 class SkGpuDevice;
 class SkCanvas;
 
@@ -61,8 +62,12 @@ class AZER_D3D11RS_EXPORT Context {
   CanvasPtr CreateCanvas(int width, int height);
   CanvasPtr GetDefault();
   angle::Context* GetAngleContext();
+
+  GrContext* GetGrContext() { return gr_context_;}
+  const GrGLInterface* GetGrGLInterface() { return interface_;}
  private:
   GrContext* gr_context_;
+  const GrGLInterface* interface_;
   SkAzerANGLEGrContext* helper_;
   int32 width_;
   int32 height_;

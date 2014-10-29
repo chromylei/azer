@@ -21,6 +21,7 @@ source_set("azer_angle11") {
     "//build/config/win:d3d11",
   ]
   defines = ["BUILD_D3D11_AZER_RENDER_SYSTEM", "SK_ANGLE"]
+  include_dirs = ["//third_party/skia/src/gpu", ]
 }
 
 shared_library("d3d11_render_system") {

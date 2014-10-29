@@ -9,6 +9,9 @@
 #include "SkImageEncoder.h"
 #include "gl/GrGLInterface.h"
 #include "gl/SkGLContextHelper.h"
+#include "gl/GrGLFunctions.h"
+#include "gl/GrGLDefines.h"
+#include "gl/GrGLUtil.h"
 
 #include "azer/render_system/d3d11/texture.h"
 #include "azer/render_system/d3d11/angle/grcontext.h"
@@ -54,7 +57,19 @@ bool Device::Init(Context* ctx, Canvas* canvas) {
 bool Device::InitForDefault(Context* ctx, Canvas* canvas) {
   // skia/tests/SkGpuDevice.cpp
   GrContext* context = ctx->gr_context_;
-  GrRenderTarget* target = context->getRenderTarget();
+  const GrGLInterface* intf = ctx->GetGrGLInterface();
+  GrBackendRenderTargetDesc desc;
+  GrGLint buffer;
+  GR_GL_GetIntegerv(intf, GR_GL_FRAMEBUFFER_BINDING, &buffer);
+  desc.fWidth = 800;
+  desc.fHeight = 600;
+  desc.fConfig = kSkia8888_GrPixelConfig;
+  desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
+  desc.fSampleCnt = 1;
+  desc.fStencilBits = 8;
+
+  
+  GrRenderTarget* target = context->wrapBackendRenderTarget(desc);
   gr_device_.reset(new SkGpuDevice(context, target));
   if (gr_device_.get() == NULL) {
     LOG(ERROR) << "Failed to create SkGpuDevice";
@@ -126,6 +141,7 @@ bool Canvas::Save(const ::base::FilePath& path) {
 // class Context
 Context::Context(int width, int height)
     : gr_context_(NULL)
+    , interface_(NULL)
     , helper_(NULL)
     , width_(width)
     , height_(height) {
@@ -151,14 +167,14 @@ bool Context::Init() {
     return false;
   }
 
-  SkAutoTUnref<const GrGLInterface> glInterface(SkRef(glctx->gl()));
-  glInterface.reset(GrGLInterfaceRemoveNVPR(glInterface));
-  if (!glInterface) {
+  interface_ = glctx->gl();
+  interface_ = GrGLInterfaceRemoveNVPR(interface_);
+  if (!interface_) {
     return false;
   }
 
   glctx->makeCurrent();
-  GrBackendContext p3dctx = reinterpret_cast<GrBackendContext>(glInterface.get());
+  GrBackendContext p3dctx = reinterpret_cast<GrBackendContext>(interface_);
   gr_context_ = GrContext::Create(kOpenGL_GrBackend, p3dctx);
   if (!gr_context_) {
     return false;
@@ -178,7 +194,7 @@ CanvasPtr Context::CreateCanvas(int width, int height) {
 
 CanvasPtr Context::GetDefault() {
   std::unique_ptr<Canvas> ptr(new Canvas(width_, height_));
-  if (ptr->Init(this, false)) {
+  if (ptr->Init(this, true)) {
     return CanvasPtr(ptr.release());
   } else {
     return CanvasPtr();
