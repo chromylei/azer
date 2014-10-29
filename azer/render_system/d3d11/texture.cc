@@ -254,38 +254,6 @@ void D3D11Texture2DShared::ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) {
   desc->MiscFlags      = D3D11_RESOURCE_MISC_SHARED;
 }
 
-D3D11Texture2DShared* D3D11Texture2DShared::Create(ID3D11Resource* resource,
-                                                   D3D11RenderSystem* rs) {
-  ID3D11Texture2D* shared_tex = NULL;
-  ID3D11Device* d3d_device = rs->GetDevice();
-  HRESULT hr = d3d_device->OpenSharedResource(resource, __uuidof(ID3D11Texture2D),
-                                              (void**)&shared_tex);
-  if (FAILED(hr)) {
-    SAFE_RELEASE(shared_tex);
-    return NULL;
-  }
-
-  D3D11_TEXTURE2D_DESC desc;
-  shared_tex->GetDesc(&desc);
-  Texture::Options opt;
-  opt.width = desc.Width;
-  opt.height = desc.Height;
-  opt.format = TranslateD3DFormat(desc.Format);
-  std::unique_ptr<D3D11Texture2DShared> ptr(new D3D11Texture2DShared(opt, rs));
-  ptr->Attach(shared_tex);
-  if (ptr->GetResource()) {
-    return ptr.release();
-  } else {
-    return NULL;
-  }
-}
-
-void D3D11Texture2DShared::Attach(ID3D11Texture2D* tex) {
-  D3D11Texture::Attach(tex);
-  tex->GetDesc(&tex_desc_);
-  InitResourceView();
-}
-
 bool D3D11Texture2DShared::InitSharedResource() {
   CHECK(NULL == shared_handle_);
   HRESULT hr;
@@ -322,5 +290,41 @@ bool D3D11Texture2DShared::Init(const D3D11_SUBRESOURCE_DATA* data, int num) {
   }
 
   return InitSharedResource();
+}
+
+D3D11Texture2DExtern* D3D11Texture2DExtern::Create(ID3D11Resource* resource,
+                                                   D3D11RenderSystem* rs) {
+  ID3D11Texture2D* shared_tex = NULL;
+  ID3D11Device* d3d_device = rs->GetDevice();
+  HRESULT hr = d3d_device->OpenSharedResource(resource, __uuidof(ID3D11Texture2D),
+                                              (void**)&shared_tex);
+  if (FAILED(hr)) {
+    SAFE_RELEASE(shared_tex);
+    return NULL;
+  }
+
+  D3D11_TEXTURE2D_DESC desc;
+  shared_tex->GetDesc(&desc);
+  Texture::Options opt;
+  opt.width = desc.Width;
+  opt.height = desc.Height;
+  opt.format = TranslateD3DFormat(desc.Format);
+  std::unique_ptr<D3D11Texture2DExtern> ptr(new D3D11Texture2DExtern(opt, rs));
+  ptr->Attach(shared_tex);
+  if (ptr->GetResource()) {
+    return ptr.release();
+  } else {
+    return NULL;
+  }
+}
+
+void D3D11Texture2DExtern::Attach(ID3D11Texture2D* tex) {
+  D3D11Texture::Attach(tex);
+  tex->GetDesc(&tex_desc_);
+  InitResourceView();
+}
+
+void D3D11Texture2DExtern::ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) {
+  desc->MiscFlags      = D3D11_RESOURCE_MISC_SHARED;
 }
 }  // namespace azer

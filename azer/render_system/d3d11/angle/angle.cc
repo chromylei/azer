@@ -150,7 +150,7 @@ TexturePtr GetSurfaceTexture(void* sur, Context* context) {
     return TexturePtr();
   }
   
-  return TexturePtr(D3D11Texture2DShared::Create(resource, rs));
+  return TexturePtr(D3D11Texture2DExtern::Create(resource, rs));
 }
 
 TexturePtr GetFramebufferTexture(void* framebuffer, Context* ctx) {

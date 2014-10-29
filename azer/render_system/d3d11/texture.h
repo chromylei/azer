@@ -74,16 +74,11 @@ class D3D11Texture2DShared : public D3D11Texture2D {
   D3D11Texture2DShared(const Texture::Options& opt, D3D11RenderSystem* rs);
   virtual ~D3D11Texture2DShared();
 
-  // create from other device's resources
-  static D3D11Texture2DShared* Create(ID3D11Resource* resource,
-                                      D3D11RenderSystem* rs);
-
   // create a resource for other device using
   virtual bool Init(const D3D11_SUBRESOURCE_DATA* data, int num);
   ID3D11Resource* GetSharedResource();
   HANDLE GetSharedHanle();
  protected:
-  void Attach(ID3D11Texture2D* tex);
   virtual void ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;
   virtual bool InitFromImage(const Image* image) { return false;}
 
@@ -91,6 +86,21 @@ class D3D11Texture2DShared : public D3D11Texture2D {
   HANDLE shared_handle_;
   ID3D11Resource* shared_resource_;
   DISALLOW_COPY_AND_ASSIGN(D3D11Texture2DShared);
+};
+
+class D3D11Texture2DExtern : public D3D11Texture2D {
+ public:
+  D3D11Texture2DExtern(const Texture::Options& opt, D3D11RenderSystem* rs)
+      : D3D11Texture2D(opt, rs) {}
+
+  // create from other device's resources
+  static D3D11Texture2DExtern* Create(ID3D11Resource* resource,
+                                      D3D11RenderSystem* rs);
+ private:
+  void Attach(ID3D11Texture2D* tex);
+  virtual void ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;
+  virtual bool InitFromImage(const Image* image) { return false;}
+  DISALLOW_COPY_AND_ASSIGN(D3D11Texture2DExtern);
 };
 
 class D3D11TextureCubeMap : public D3D11Texture {
