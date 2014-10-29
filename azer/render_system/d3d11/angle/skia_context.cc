@@ -117,7 +117,7 @@ bool Canvas::Save(const ::base::FilePath& path) {
   SkImageEncoder::Type type = ImageType(ext);
   std::string pathstr = ::base::WideToUTF8(path.value());
   SkBitmap bitmap;
-bitmap.setConfig(SkBitmap::kARGB_8888_Config, width(), height());
+  bitmap.setConfig(SkBitmap::kARGB_8888_Config, width(), height());
   bitmap.allocPixels();
   device_->GetCanvas()->readPixels(&bitmap, 0, 0);
   return SkImageEncoder::EncodeFile(pathstr.c_str(), bitmap, type, 100);
@@ -143,8 +143,8 @@ Context::~Context() {
 
 bool Context::Init() {
   // code reference: skia/include/gpu/GrContextFactory.h
-  SkGLContextHelper* glctx = new SkAzerANGLEGrContext(width(), height());
-  helper_ = glctx;
+  helper_ = new SkAzerANGLEGrContext(width(), height());
+  SkGLContextHelper* glctx = helper_;
   static const int kBogusSize = 1;
   if (!glctx->init(kBogusSize, kBogusSize)) {
     LOG(ERROR) << "Failed to init GrContext";
@@ -187,6 +187,11 @@ CanvasPtr Context::GetDefault() {
 
 void Context::resize(int width, int height) {
   CHECK(false);
+}
+
+angle::Context* Context::GetAngleContext() {
+  DCHECK(helper_ != NULL);
+  return helper_->GetAngleContext();
 }
 }  // namespace skia
 }  // namespace azer

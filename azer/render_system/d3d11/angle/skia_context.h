@@ -10,13 +10,19 @@
 class GrContext;
 class SkGpuDevice;
 class SkCanvas;
-class SkGLContextHelper;
 
 namespace azer {
+
+namespace angle {
+struct Context;
+}  // namespace
+  
 namespace skia {
 
 class Context;
 class Device;
+class SkAzerANGLEGrContext;
+
 class AZER_D3D11RS_EXPORT Canvas {
  public:
   Canvas(int width, int height);
@@ -54,9 +60,10 @@ class AZER_D3D11RS_EXPORT Context {
 
   CanvasPtr CreateCanvas(int width, int height);
   CanvasPtr GetDefault();
+  angle::Context* GetAngleContext();
  private:
   GrContext* gr_context_;
-  SkGLContextHelper* helper_;
+  SkAzerANGLEGrContext* helper_;
   int32 width_;
   int32 height_;
   friend class Device;

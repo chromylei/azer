@@ -2,6 +2,7 @@
 
 #include "azer/render_system/d3d11/export.h"
 #include "azer/render_system/d3d11/angle/skia_context.h"
+#include "azer/render_system/d3d11/angle/angle.h"
 
 
 namespace azer {

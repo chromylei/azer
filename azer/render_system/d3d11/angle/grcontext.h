@@ -17,6 +17,8 @@ class SkAzerANGLEGrContext : public SkGLContextHelper {
 
   virtual void makeCurrent() const OVERRIDE;
   virtual void swapBuffers() const OVERRIDE;
+
+  angle::Context* GetAngleContext() { return &context_;}
  protected:
   virtual const GrGLInterface* createGLContext() OVERRIDE;
   virtual void destroyGLContext() OVERRIDE;
