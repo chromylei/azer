@@ -7,6 +7,6 @@
 namespace azer {
 namespace skia {
 
-AZER_D3D11RS_EXPORT Context* Init();
+AZER_D3D11RS_EXPORT Context* Init(int width, int height);
 }  // namespace skia
 }  // namespace azer

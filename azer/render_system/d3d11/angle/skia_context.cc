@@ -22,6 +22,7 @@ class Device {
   ~Device() {}
 
   bool Init(Context* ctx, Canvas* canvas);
+  bool InitForDefault(Context* ctx, Canvas* canvas);
 
   SkCanvas* GetCanvas() { return sk_canvas_.get();}
   SkGpuDevice* GetDevice() { return gr_device_.get();}
@@ -50,6 +51,24 @@ bool Device::Init(Context* ctx, Canvas* canvas) {
   return true;
 }
 
+bool Device::InitForDefault(Context* ctx, Canvas* canvas) {
+  // skia/tests/SkGpuDevice.cpp
+  GrContext* context = ctx->gr_context_;
+  GrRenderTarget* target = context->getRenderTarget();
+  gr_device_.reset(new SkGpuDevice(context, target));
+  if (gr_device_.get() == NULL) {
+    LOG(ERROR) << "Failed to create SkGpuDevice";
+    return false;
+  }
+
+  sk_canvas_.reset(new SkCanvas(gr_device_.get()));
+  if (sk_canvas_.get() == NULL) {
+    LOG(ERROR) << "Failed to create SkCanvas";
+    return false;
+  }
+  return true;
+}
+
 // class Canvas
 Canvas::Canvas(int width, int height)
     : width_(width)
@@ -61,9 +80,13 @@ Canvas::~Canvas() {
   if (device_) { delete device_;}
 }
 
-bool Canvas::Init(Context* ctx) {
+bool Canvas::Init(Context* ctx, bool is_default) {
   device_ = new Device();
-  return device_->Init(ctx, this);
+  if (is_default) {
+    return device_->InitForDefault(ctx, this);
+  } else {
+    return device_->Init(ctx, this);
+  }
 }
 
 SkCanvas* Canvas::GetCanvas() {
@@ -101,9 +124,11 @@ bitmap.setConfig(SkBitmap::kARGB_8888_Config, width(), height());
 }
 
 // class Context
-Context::Context()
+Context::Context(int width, int height)
     : gr_context_(NULL)
-    , helper_(NULL) {
+    , helper_(NULL)
+    , width_(width)
+    , height_(height) {
 }
 
 Context::~Context() {
@@ -118,7 +143,7 @@ Context::~Context() {
 
 bool Context::Init() {
   // code reference: skia/include/gpu/GrContextFactory.h
-  SkGLContextHelper* glctx = new SkAzerANGLEGrContext();
+  SkGLContextHelper* glctx = new SkAzerANGLEGrContext(width(), height());
   helper_ = glctx;
   static const int kBogusSize = 1;
   if (!glctx->init(kBogusSize, kBogusSize)) {
@@ -144,11 +169,24 @@ bool Context::Init() {
 
 CanvasPtr Context::CreateCanvas(int width, int height) {
   std::unique_ptr<Canvas> ptr(new Canvas(width, height));
-  if (ptr->Init(this)) {
+  if (ptr->Init(this, false)) {
     return CanvasPtr(ptr.release());
   } else {
     return CanvasPtr();
   }
+}
+
+CanvasPtr Context::GetDefault() {
+  std::unique_ptr<Canvas> ptr(new Canvas(width_, height_));
+  if (ptr->Init(this, false)) {
+    return CanvasPtr(ptr.release());
+  } else {
+    return CanvasPtr();
+  }
+}
+
+void Context::resize(int width, int height) {
+  CHECK(false);
 }
 }  // namespace skia
 }  // namespace azer

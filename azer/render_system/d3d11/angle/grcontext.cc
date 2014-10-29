@@ -9,7 +9,10 @@
 
 namespace azer {
 namespace skia {
-SkAzerANGLEGrContext::SkAzerANGLEGrContext() {
+SkAzerANGLEGrContext::SkAzerANGLEGrContext(int width, int height)
+    : width_(width), height_(height) {
+  DCHECK_GT(width_, 0);
+  DCHECK_GT(height_, 0);
 }
 
 SkAzerANGLEGrContext::~SkAzerANGLEGrContext() {
@@ -18,8 +21,8 @@ SkAzerANGLEGrContext::~SkAzerANGLEGrContext() {
 
 const GrGLInterface* SkAzerANGLEGrContext::createGLContext() {
   RenderSystem* rs = RenderSystem::Current();
-  context_.width = 1;
-  context_.height = 1;
+  context_.width = width_;
+  context_.height = height_;
   if (!angle::Init(rs, &context_)) {
     return NULL;
   }
