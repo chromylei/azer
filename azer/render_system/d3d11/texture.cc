@@ -235,7 +235,91 @@ void D3D11TextureCubeMap::InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc
   res_view_desc_.TextureCube.MostDetailedMip = 0;
 }
 
+D3D11Texture2DShared::D3D11Texture2DShared(const Texture::Options& opt,
+                                           D3D11RenderSystem* rs)
+    : D3D11Texture2D(opt, rs)
+    , shared_handle_(NULL) {
+  DCHECK(opt.target & azer::Texture::kRenderTarget);
+  DCHECK_EQ(opt.usage, GraphicBuffer::kDefault);
+}
+
+D3D11Texture2DShared::~D3D11Texture2DShared() {
+  if (shared_handle_ != NULL) {
+    // Close(shared_handle_);
+  }
+}
+
 void D3D11Texture2DShared::ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) {
   desc->MiscFlags      = D3D11_RESOURCE_MISC_SHARED;
+}
+
+D3D11Texture2DShared* D3D11Texture2DShared::Create(ID3D11Resource* resource,
+                                                   D3D11RenderSystem* rs) {
+  ID3D11Texture2D* shared_tex = NULL;
+  ID3D11Device* d3d_device = rs->GetDevice();
+  HRESULT hr = d3d_device->OpenSharedResource(resource, __uuidof(ID3D11Texture2D),
+                                              (void**)&shared_tex);
+  if (FAILED(hr)) {
+    SAFE_RELEASE(shared_tex);
+    return NULL;
+  }
+
+  D3D11_TEXTURE2D_DESC desc;
+  shared_tex->GetDesc(&desc);
+  Texture::Options opt;
+  opt.width = desc.Width;
+  opt.height = desc.Height;
+  opt.format = TranslateD3DFormat(desc.Format);
+  std::unique_ptr<D3D11Texture2DShared> ptr(new D3D11Texture2DShared(opt, rs));
+  ptr->Attach(shared_tex);
+  if (ptr->GetResource()) {
+    return ptr.release();
+  } else {
+    return NULL;
+  }
+}
+
+void D3D11Texture2DShared::Attach(ID3D11Texture2D* tex) {
+  D3D11Texture::Attach(tex);
+  tex->GetDesc(&tex_desc_);
+  InitResourceView();
+}
+
+bool D3D11Texture2DShared::InitSharedResource() {
+  CHECK(NULL == shared_handle_);
+  HRESULT hr;
+  IDXGIResource* dxgi_res = NULL;
+  ID3D11Resource* resource = GetResource();
+  hr = resource->QueryInterface(__uuidof(IDXGIResource), (void**)&dxgi_res);
+  if (FAILED(hr)) {
+    LOG(ERROR) << "Failed to get IDXGIResource";
+    return false;
+  }
+
+  hr = dxgi_res->GetSharedHandle(&shared_handle_);
+  SAFE_RELEASE(dxgi_res);
+  if (FAILED(hr)) {
+    return false;
+  }
+
+  ID3D11Texture2D* shared_tex = NULL;
+  ID3D11Device* d3d_device = render_system_->GetDevice();
+  hr = d3d_device->OpenSharedResource(shared_handle_,
+                                      __uuidof(ID3D11Texture2D),
+                                      (void**)&shared_resource_);
+  if (FAILED(hr)) {
+    SAFE_RELEASE(shared_resource_);
+    return false;
+  }
+
+  return true;
+}
+
+bool D3D11Texture2DShared::Init(const D3D11_SUBRESOURCE_DATA* data, int num) {
+  if (!D3D11Texture::Init(data, num)) {
+    return false;
+  }
+
+  return InitSharedResource();
 }
 }  // namespace azer

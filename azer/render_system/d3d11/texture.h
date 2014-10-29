@@ -17,7 +17,7 @@ class D3D11Texture: public Texture {
   D3D11Texture(const Texture::Options& opt, D3D11RenderSystem* rs);
 
   virtual ~D3D11Texture();
-  bool Init(const D3D11_SUBRESOURCE_DATA* data, int num);
+  virtual bool Init(const D3D11_SUBRESOURCE_DATA* data, int num);
   virtual void GenerateMips(int level) OVERRIDE;
   virtual bool SetSamplerState(const SamplerState& sampler_state) OVERRIDE;
 
@@ -67,23 +67,29 @@ class D3D11Texture2D : public D3D11Texture {
   DISALLOW_COPY_AND_ASSIGN(D3D11Texture2D);
 };
 
+// for shared resource with other D3DDevice
+// here, is use to create texture for ANGLE using
 class D3D11Texture2DShared : public D3D11Texture2D {
  public:
-  D3D11Texture2DShared(const Texture::Options& opt, ID3D11Texture2D* tex,
-                       D3D11RenderSystem* rs)
-      : D3D11Texture2D(opt, rs) {
-    Attach(tex);
-    tex->GetDesc(&tex_desc_);
-    tex_desc_.MiscFlags = D3D11_RESOURCE_MISC_SHARED;
-    InitResourceView();
-  }
-
   D3D11Texture2DShared(const Texture::Options& opt, D3D11RenderSystem* rs);
+  virtual ~D3D11Texture2DShared();
 
-  virtual ~D3D11Texture2DShared() {}
+  // create from other device's resources
+  static D3D11Texture2DShared* Create(ID3D11Resource* resource,
+                                      D3D11RenderSystem* rs);
+
+  // create a resource for other device using
+  virtual bool Init(const D3D11_SUBRESOURCE_DATA* data, int num);
+  ID3D11Resource* GetSharedResource();
+  HANDLE GetSharedHanle();
  protected:
+  void Attach(ID3D11Texture2D* tex);
   virtual void ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;
   virtual bool InitFromImage(const Image* image) { return false;}
+
+  bool InitSharedResource();
+  HANDLE shared_handle_;
+  ID3D11Resource* shared_resource_;
   DISALLOW_COPY_AND_ASSIGN(D3D11Texture2DShared);
 };
 
@@ -118,4 +124,14 @@ inline D3D11Texture::~D3D11Texture() {
   SAFE_RELEASE(sampler_state_);
 }
 
+
+inline ID3D11Resource* D3D11Texture2DShared::GetSharedResource() {
+  DCHECK(shared_resource_ != NULL);
+  return shared_resource_;
+}
+
+inline HANDLE D3D11Texture2DShared::GetSharedHanle() {
+  DCHECK(shared_handle_ != NULL);
+  return shared_handle_;
+}
 }  // namespace azer

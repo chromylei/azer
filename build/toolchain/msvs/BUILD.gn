@@ -17,7 +17,7 @@ copy_command = "$python_path gyp-win-tool recursive-mirror \$in \$out"
 toolchain("32") {
   lib_prefix = ""
   lib_dir_prefix="/LIBPATH:"
-  cc_command = "ninja -t msvc -e environment.x86 -- cl.exe /nologo /showIncludes /FC @\$out.rsp /c \$in /Fo\$out /Fd\$pdbname"
+  cc_command = "ninja -t msvc -e environment.x86 -- cl.exe /nologo /showIncludes /FC @\$out.rsp /c \$in /Fo\$out /Fd\$pdbname "
 
   tool("cc") {
     command = cc_command

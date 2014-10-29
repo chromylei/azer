@@ -17,7 +17,6 @@ struct Context {
   int width;
   int height;
   TexturePtr tex;
-  RendererPtr renderer;
 
   Context()
       : display(NULL)

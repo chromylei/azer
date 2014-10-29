@@ -24,18 +24,8 @@ EGLint configAttribList[] = {
   EGL_NONE
 };
 
-RendererPtr CreateRenderer(RenderSystem* rs, Context* ctx) {
-  Texture::Options options;
-  options.width = ctx->width;
-  options.height = ctx->height;
-  options.format = azer::kBGRAn8;
-  options.target = (azer::Texture::BindTarget)
-      (azer::Texture::kRenderTarget | azer::Texture::kShaderResource);
-  return RendererPtr(rs->CreateRenderer(options));
-}
-
-TexturePtr CreatePBufferTexture(RenderSystem* rs, Context* ctx) {
-  D3D11RenderSystem* d3d11rs = (D3D11RenderSystem*)rs;
+D3D11Texture2DShared* CreatePBufferTexture(RenderSystem* rrs, Context* ctx) {
+  D3D11RenderSystem* rs = (D3D11RenderSystem*)rrs;
   Texture::Options options;
   options.width = ctx->width;
   options.height = ctx->height;
@@ -45,21 +35,13 @@ TexturePtr CreatePBufferTexture(RenderSystem* rs, Context* ctx) {
   options.sampler.sample_level = 1;
   options.usage = GraphicBuffer::kDefault;
 
-  std::unique_ptr<D3D11Texture2D> tex(new D3D11Texture2D(options, d3d11rs));
-  if (!tex->Init(NULL, 0)) {
-    return TexturePtr();
+  std::unique_ptr<D3D11Texture2DShared> tex(new D3D11Texture2DShared(options, rs));
+  if (!tex->Init(NULL, 1)) {
+    return NULL;
   }
 
-  ID3D11Resource* resource = tex->GetResource();
-  ID3D11Texture2D* shared_tex = NULL;
-  ID3D11Device* d3d_device = d3d11rs->GetDevice();
-  HRESULT hr = d3d_device->OpenSharedResource(resource, __uuidof(ID3D11Texture2D),
-    (void**)&shared_tex);
-  if (FAILED(hr)) {
-    SAFE_RELEASE(shared_tex);
-    TexturePtr();
-  }
-  return TexturePtr(tex.release());
+  // ID3D11Resource* resource = tex->CreateSharedResource();
+  return tex.release();
 }
 
 bool Init(RenderSystem* rs, Context* ctx) {
@@ -95,11 +77,8 @@ bool Init(RenderSystem* rs, Context* ctx) {
     return false;
   }
 
-  ctx->renderer = CreateRenderer(rs, ctx);
-  ctx->tex = ctx->renderer->GetRenderTarget()->GetTexture();
-  ctx->tex = CreatePBufferTexture(rs, ctx);
-  D3D11Texture* texture = (D3D11Texture*)ctx->tex.get();
-
+  D3D11Texture2DShared* shared = CreatePBufferTexture(rs, ctx);
+  ctx->tex.reset(shared);
   EGLint surfaceAttribList[] =  {
     EGL_WIDTH,   -1,
     EGL_HEIGHT,  -1,
@@ -107,7 +86,7 @@ bool Init(RenderSystem* rs, Context* ctx) {
   };
   surfaceAttribList[1] = ctx->width;
   surfaceAttribList[3] = ctx->height;
-  EGLClientBuffer egl_buffer = (EGLClientBuffer)(texture->GetResource());
+  EGLClientBuffer egl_buffer = (EGLClientBuffer)(shared->GetSharedHanle());
   surface = eglCreatePbufferFromClientBuffer(display,
                                              EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE,
                                              egl_buffer,
@@ -161,25 +140,8 @@ TexturePtr GetSurfaceTexture(void* sur, Context* context) {
     SAFE_RELEASE(resource);
     return TexturePtr();
   }
-
-  ID3D11Texture2D* shared_tex = NULL;
-  ID3D11Device* d3d_device = rs->GetDevice();
-  HRESULT hr = d3d_device->OpenSharedResource(resource, __uuidof(ID3D11Texture2D),
-                                              (void**)&shared_tex);
-  if (FAILED(hr)) {
-    SAFE_RELEASE(shared_tex);
-    TexturePtr();
-  }
-
-  D3D11_TEXTURE2D_DESC desc;
-  shared_tex->GetDesc(&desc);
-  Texture::Options opt;
-  opt.width = desc.Width;
-  opt.height = desc.Height;
-  opt.format = TranslateD3DFormat(desc.Format);
-  TexturePtr ptr(new D3D11Texture2DShared(opt, shared_tex, rs));
-  // SAFE_RELEASE(resource);
-  return ptr;
+  
+  return TexturePtr(D3D11Texture2DShared::Create(resource, rs));
 }
 
 TexturePtr GetFramebufferTexture(void* framebuffer, Context* ctx) {
