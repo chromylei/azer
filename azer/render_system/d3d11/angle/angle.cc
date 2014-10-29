@@ -46,7 +46,7 @@ TexturePtr CreatePBufferTexture(RenderSystem* rs, Context* ctx) {
   options.usage = GraphicBuffer::kDefault;
 
   std::unique_ptr<D3D11Texture2D> tex(new D3D11Texture2D(options, d3d11rs));
-  if (!tex->Init(NULL, 1)) {
+  if (!tex->Init(NULL, 0)) {
     return TexturePtr();
   }
 

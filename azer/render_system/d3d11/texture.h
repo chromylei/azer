@@ -35,7 +35,7 @@ class D3D11Texture: public Texture {
   ID3D11ShaderResourceView* GetResourceView() { return view_;}
   ID3D11Resource* GetResource() { return resource_;}
  protected:
-  virtual void InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) = 0;
+  virtual void ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) = 0;
   virtual void InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) = 0;
   bool InitResourceView();
 
@@ -60,7 +60,7 @@ class D3D11Texture2D : public D3D11Texture {
 
   virtual bool InitFromImage(const Image* image) OVERRIDE;
  protected:
-  virtual void InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;
+  virtual void ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;
   virtual void InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) OVERRIDE;
   friend class D3D11RenderTarget;
   friend class D3D11DepthBuffer;
@@ -74,11 +74,15 @@ class D3D11Texture2DShared : public D3D11Texture2D {
       : D3D11Texture2D(opt, rs) {
     Attach(tex);
     tex->GetDesc(&tex_desc_);
+    tex_desc_.MiscFlags = D3D11_RESOURCE_MISC_SHARED;
     InitResourceView();
   }
 
+  D3D11Texture2DShared(const Texture::Options& opt, D3D11RenderSystem* rs);
+
   virtual ~D3D11Texture2DShared() {}
- private:
+ protected:
+  virtual void ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;
   virtual bool InitFromImage(const Image* image) { return false;}
   DISALLOW_COPY_AND_ASSIGN(D3D11Texture2DShared);
 };
@@ -90,8 +94,8 @@ class D3D11TextureCubeMap : public D3D11Texture {
     
   }
   virtual bool InitFromImage(const Image* image) OVERRIDE;
- private:
-  virtual void InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;
+ protected:
+  virtual void ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;
   virtual void InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) OVERRIDE;
   DISALLOW_COPY_AND_ASSIGN(D3D11TextureCubeMap);
 };

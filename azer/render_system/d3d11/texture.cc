@@ -22,7 +22,6 @@ bool D3D11Texture::Init(const D3D11_SUBRESOURCE_DATA* data, int num) {
   HRESULT hr;
   DCHECK(NULL == resource_);
   ID3D11Device* d3d_device = render_system_->GetDevice();
-
   ZeroMemory(&tex_desc_, sizeof(D3D11_TEXTURE2D_DESC));
   tex_desc_.Width     = options_.width;
   tex_desc_.Height    = options_.height;
@@ -35,7 +34,7 @@ bool D3D11Texture::Init(const D3D11_SUBRESOURCE_DATA* data, int num) {
   tex_desc_.BindFlags      = TranslateBindTarget(options_.target);
   tex_desc_.CPUAccessFlags = TranslateCPUAccess(options_.cpu_access);
   tex_desc_.MiscFlags      = 0;
-  InitTextureDesc(&tex_desc_);
+  ModifyTextureDesc(&tex_desc_);
 
   ID3D11Texture2D* tex = NULL;
   hr = d3d_device->CreateTexture2D(&tex_desc_, data, &tex);
@@ -166,7 +165,7 @@ void D3D11Texture::unmap() {
 }
 
 // class D3D11Texture2D
-void D3D11Texture2D::InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) {
+void D3D11Texture2D::ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) {
 }
 
 bool D3D11Texture2D::InitFromImage(const Image* image) {
@@ -198,7 +197,7 @@ void D3D11Texture2D::InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc) {
   desc->Texture2D.MostDetailedMip = 0;
 }
 
-void D3D11TextureCubeMap::InitTextureDesc(D3D11_TEXTURE2D_DESC* desc) {
+void D3D11TextureCubeMap::ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) {
   desc->MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 } 
 
@@ -236,4 +235,7 @@ void D3D11TextureCubeMap::InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc
   res_view_desc_.TextureCube.MostDetailedMip = 0;
 }
 
+void D3D11Texture2DShared::ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) {
+  desc->MiscFlags      = D3D11_RESOURCE_MISC_SHARED;
+}
 }  // namespace azer
