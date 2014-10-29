@@ -29,7 +29,7 @@ D3D11Texture2DShared* CreatePBufferTexture(RenderSystem* rrs, Context* ctx) {
   Texture::Options options;
   options.width = ctx->width;
   options.height = ctx->height;
-  options.format = azer::kRGBAn8;
+  options.format = azer::kBGRAn8;
   options.target = (azer::Texture::BindTarget)
       (azer::Texture::kRenderTarget | azer::Texture::kShaderResource);
   options.sampler.sample_level = 1;
@@ -56,7 +56,6 @@ bool Init(RenderSystem* rs, Context* ctx) {
 
   WindowHost* host = rs->GetRenderWindowHost();
   EGLNativeWindowType hWnd = (EGLNativeWindowType)host->Handle();
-
   display = eglGetDisplay(GetDC(hWnd));
   if (display == EGL_NO_DISPLAY) {
     return false;
@@ -121,7 +120,17 @@ bool Init(RenderSystem* rs, Context* ctx) {
   return true;
 }
 
-void UninitializeAngle(Context* ctx) {
+void Destroy(Context* ctx) {
+  if (ctx->display) {
+    eglMakeCurrent((EGLDisplay)ctx->display, 0, 0, 0);
+    if (ctx->context) {
+      eglDestroyContext((EGLDisplay)ctx->display, (EGLContext)ctx->context);
+    }
+
+    if (ctx->surface) {
+      eglDestroySurface((EGLDisplay)ctx->display, (EGLSurface)ctx->surface);
+    }
+  }
 }
 
 TexturePtr GetSurfaceTexture(Context* ctx) {

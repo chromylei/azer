@@ -235,6 +235,7 @@ void D3D11TextureCubeMap::InitResourceDesc(D3D11_SHADER_RESOURCE_VIEW_DESC* desc
   res_view_desc_.TextureCube.MostDetailedMip = 0;
 }
 
+// reference: MSDN, Surface Sharing Between Windows Graphics APIs
 D3D11Texture2DShared::D3D11Texture2DShared(const Texture::Options& opt,
                                            D3D11RenderSystem* rs)
     : D3D11Texture2D(opt, rs)
