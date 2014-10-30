@@ -20,31 +20,25 @@ namespace azer {
 namespace skia {
 
 
-bool AzerSkDevice::Init2(Context* ctx, Canvas* canvas) {
+bool AzerSkDevice::Init(Context* ctx, Canvas* canvas) {
   gltex_.reset(new AzerSkTexture(canvas->width(), canvas->height(), ctx));
   if (!gltex_->Init()) {
     return false;
   }
 
-  GrTexture* gtex = GetTexture(gltex_->texid(), ctx, canvas);
-  if (!gtex) {
+  GrTexture* grtex = GetTexture(gltex_->texid(), ctx, canvas);
+  if (!grtex) {
     return false;
   }
 
+  /*
   tex_.reset(ctx->GetAzerEGLInterface()->CreateTexture(gltex_->texid()));
   if (!tex_.get()) {
     return false;
   }
+  */
 
-  return true;
-}
-
-bool AzerSkDevice::Init(Context* ctx, Canvas* canvas) {
-  // skia/tests/SkGpuDevice.cpp
-  GrContext* context = ctx->gr_context_;
-  SkImageInfo info = SkImageInfo::Make(canvas->width(), canvas->height(),
-                                       kBGRA_8888_SkColorType, kOpaque_SkAlphaType);
-  gr_device_.reset(SkGpuDevice::Create(context, info, 0));
+  gr_device_.reset(SkGpuDevice::Create(grtex));
   if (gr_device_.get() == NULL) {
     LOG(ERROR) << "Failed to create SkGpuDevice";
     return false;
@@ -63,8 +57,8 @@ GrTexture* AzerSkDevice::GetTexture(GrGLuint texid, Context* ctx, Canvas* canvas
   GrBackendTextureDesc desc;
   desc.fFlags = kRenderTarget_GrBackendTextureFlag;
   desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
-  desc.fWidth = ctx->width();
-  desc.fHeight = ctx->height();
+  desc.fWidth = canvas->width();
+  desc.fHeight = canvas->height();
   desc.fConfig = kSkia8888_GrPixelConfig;
   desc.fSampleCnt = 0;
   desc.fTextureHandle = texid;
@@ -94,16 +88,6 @@ bool AzerSkDevice::InitFromTexture(GrTexture* tex, GrContext* context) {
     return false;
   }
   return true;
-}
-
-bool AzerSkDevice::InitForDefault(Context* ctx, Canvas* canvas) {
-  GrContext* context = ctx->gr_context_;
-  GrTexture* tex = GetCurrentColorTexture(ctx, canvas);
-  if (tex == NULL) {
-    return false;
-  }
-
-  return InitFromTexture(tex, context);
 }
 
 }  // namespace skia

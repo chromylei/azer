@@ -25,7 +25,7 @@ class AZER_EXPORT Canvas {
   ~Canvas();
 
   TexturePtr& GetTexture() { return texture_;}
-  bool Init(Context* context, bool is_default = false);
+  bool Init(Context* context);
 
   int width() const { return width_;}
   int height() const { return height_;}
@@ -45,17 +45,12 @@ typedef std::shared_ptr<Canvas> CanvasPtr;
 
 class AZER_EXPORT Context {
  public:
-  Context(int width, int height);
+  Context();
   ~Context();
 
   bool Init();
-  void resize(int width, int height);
-
-  int width() const { return width_;}
-  int height() const { return height_;}
 
   CanvasPtr CreateCanvas(int width, int height);
-  CanvasPtr GetDefault();
 
   AzerEGLContext* GetAzerEGLContext();
   AzerEGLInterface* GetAzerEGLInterface();
@@ -66,8 +61,6 @@ class AZER_EXPORT Context {
   GrContext* gr_context_;
   const GrGLInterface* interface_;
   AzerSkiaGrContext* helper_;
-  int32 width_;
-  int32 height_;
   friend class AzerSkDevice;
   DISALLOW_COPY_AND_ASSIGN(Context);
 };

@@ -32,14 +32,9 @@ Canvas::~Canvas() {
   if (device_) { delete device_;}
 }
 
-bool Canvas::Init(Context* ctx, bool is_default) {
+bool Canvas::Init(Context* ctx) {
   device_ = new AzerSkDevice();
-  if (is_default) {
-    // return device_->InitForDefault(ctx, this);
-    return device_->Init2(ctx, this);
-  } else {
-    return device_->Init(ctx, this);
-  }
+  return device_->Init(ctx, this);
 }
 
 SkCanvas* Canvas::GetCanvas() {
@@ -77,12 +72,10 @@ bool Canvas::Save(const ::base::FilePath& path) {
 }
 
 // class Context
-Context::Context(int width, int height)
+Context::Context()
     : gr_context_(NULL)
     , interface_(NULL)
-    , helper_(NULL)
-    , width_(width)
-    , height_(height) {
+    , helper_(NULL) {
 }
 
 Context::~Context() {
@@ -97,7 +90,7 @@ Context::~Context() {
 
 bool Context::Init() {
   // code reference: skia/include/gpu/GrContextFactory.h
-  helper_ = new AzerSkiaGrContext(width(), height());
+  helper_ = new AzerSkiaGrContext(1, 1);
   SkGLContextHelper* glctx = helper_;
   static const int kBogusSize = 1;
   if (!glctx->init(kBogusSize, kBogusSize)) {
@@ -123,25 +116,11 @@ bool Context::Init() {
 
 CanvasPtr Context::CreateCanvas(int width, int height) {
   std::unique_ptr<Canvas> ptr(new Canvas(width, height));
-  if (ptr->Init(this, false)) {
+  if (ptr->Init(this)) {
     return CanvasPtr(ptr.release());
   } else {
     return CanvasPtr();
   }
-}
-
-CanvasPtr Context::GetDefault() {
-  std::unique_ptr<Canvas> ptr(new Canvas(width_, height_));
-  if (ptr->Init(this, true)) {
-    return CanvasPtr(ptr.release());
-  } else {
-    return CanvasPtr();
-  }
-  return CanvasPtr();
-}
-
-void Context::resize(int width, int height) {
-  CHECK(false);
 }
 
 AzerEGLContext* Context::GetAzerEGLContext() {

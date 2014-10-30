@@ -18,8 +18,6 @@ class AzerSkDevice {
   ~AzerSkDevice() {}
 
   bool Init(Context* ctx, Canvas* canvas);
-  bool InitForDefault(Context* ctx, Canvas* canvas);
-  bool Init2(Context* ctx, Canvas* canvas);
   bool InitFromTexture(GrTexture* tex, GrContext* context);
 
   SkCanvas* GetCanvas() { return sk_canvas_.get();}

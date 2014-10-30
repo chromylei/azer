@@ -6,6 +6,6 @@
 namespace azer {
 namespace skia {
 
-AZER_EXPORT Context* Init(int width, int height);
+AZER_EXPORT Context* Init();
 }  // namespace skia
 }  // namespace azer

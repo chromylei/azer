@@ -5,8 +5,8 @@
 namespace azer {
 namespace skia {
 
-Context* Init(int width, int height) {
-  std::unique_ptr<Context> ctx(new Context(width, height));
+Context* Init() {
+  std::unique_ptr<Context> ctx(new Context());
   if (ctx->Init()) {
     return ctx.release();;
   } else {
