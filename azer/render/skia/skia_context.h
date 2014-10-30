@@ -4,8 +4,8 @@
 
 #include "base/basictypes.h"
 #include "base/files/file_path.h"
-#include "azer/render_system/d3d11/export.h"
-#include "azer/render_system/d3d11/texture.h"
+#include "azer/render/render_system.h"
+#include "azer/render/glcontext.h"
 
 class GrContext;
 struct GrGLInterface;
@@ -13,18 +13,13 @@ class SkGpuDevice;
 class SkCanvas;
 
 namespace azer {
-
-namespace angle {
-struct Context;
-}  // namespace
-  
 namespace skia {
 
 class Context;
 class Device;
 class SkAzerANGLEGrContext;
 
-class AZER_D3D11RS_EXPORT Canvas {
+class AZER_EXPORT Canvas {
  public:
   Canvas(int width, int height);
   ~Canvas();
@@ -48,7 +43,7 @@ class AZER_D3D11RS_EXPORT Canvas {
 
 typedef std::shared_ptr<Canvas> CanvasPtr;
 
-class AZER_D3D11RS_EXPORT Context {
+class AZER_EXPORT Context {
  public:
   Context(int width, int height);
   ~Context();
@@ -61,7 +56,7 @@ class AZER_D3D11RS_EXPORT Context {
 
   CanvasPtr CreateCanvas(int width, int height);
   CanvasPtr GetDefault();
-  angle::Context* GetAngleContext();
+  AzerGLContext* GetAngleContext();
 
   GrContext* GetGrContext() { return gr_context_;}
   const GrGLInterface* GetGrGLInterface() { return interface_;}

@@ -2,17 +2,11 @@ source_set("azer_angle11") {
   sources = [
     "angle/angle.cc",
     "angle/angle.h",
-    "angle/skia.cc",
-    "angle/skia.h",
-    "angle/skia_context.cc",
-    "angle/skia_context.h",
-    "angle/grcontext.cc",
-    "angle/grcontext.h",
+    "angle/angletex.cc",
   ]
   deps = [
     "//third_party/angle:libGLESv2",
     "//third_party/angle:libEGL",
-    "//third_party/skia/gn:skia"
     "//azer/render:render",
   ]
 
@@ -20,8 +14,7 @@ source_set("azer_angle11") {
     "//third_party/angle:angle_libGLESv2_config"
     "//build/config/win:d3d11",
   ]
-  defines = ["BUILD_D3D11_AZER_RENDER_SYSTEM", "SK_ANGLE"]
-  include_dirs = ["//third_party/skia/src/gpu", ]
+  defines = ["BUILD_D3D11_AZER_RENDER_SYSTEM"]
 }
 
 shared_library("d3d11_render_system") {

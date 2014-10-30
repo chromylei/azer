@@ -19,6 +19,7 @@
 
 namespace azer {
 namespace skia {
+
 class Device {
  public:
   Device(){}
@@ -26,14 +27,26 @@ class Device {
 
   bool Init(Context* ctx, Canvas* canvas);
   bool InitForDefault(Context* ctx, Canvas* canvas);
+  bool Init2(Context* ctx, Canvas* canvas);
+  bool InitFromTexture(GrTexture* tex, GrContext* context);
 
   SkCanvas* GetCanvas() { return sk_canvas_.get();}
   SkGpuDevice* GetDevice() { return gr_device_.get();}
  private:
+  GrTexture* GetCurrentColorTexture(Context* context, Canvas* canvas);
   std::unique_ptr<SkGpuDevice> gr_device_;
   std::unique_ptr<SkCanvas> sk_canvas_;
+  angle::AngleTexture angle_tex_;
   DISALLOW_COPY_AND_ASSIGN(Device);
 };
+
+bool Device::Init2(Context* ctx, Canvas* canvas) {
+  if (!angle_tex_.Init(canvas->width(), canvas->height())) {
+    return false;
+  }
+
+  return true;
+}
 
 bool Device::Init(Context* ctx, Canvas* canvas) {
   // skia/tests/SkGpuDevice.cpp
@@ -54,24 +67,28 @@ bool Device::Init(Context* ctx, Canvas* canvas) {
   return true;
 }
 
-bool Device::InitForDefault(Context* ctx, Canvas* canvas) {
+GrTexture* Device::GetCurrentColorTexture(Context* ctx, Canvas* canvas) {
   // skia/tests/SkGpuDevice.cpp
-  /*
   GrContext* context = ctx->gr_context_;
   const GrGLInterface* intf = ctx->GetGrGLInterface();
   GrBackendTextureDesc desc;
   GrGLint buffer;
-  GR_GL_GetIntegerv(intf, GR_GL_FRAMEBUFFER_BINDING, &buffer);
-  desc.fWidth = 800;
-  desc.fHeight = 600;
-  desc.fConfig = kSkia8888_GrPixelConfig;
+  GR_GL_GetIntegerv(intf, GR_GL_COLOR_ATTACHMENT0, &buffer);
+  desc.fFlags = kRenderTarget_GrBackendTextureFlag;
   desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
-  desc.fSampleCnt = 1;
-  desc.fStencilBits = 8;
+  desc.fWidth = ctx->width();
+  desc.fHeight = ctx->height();
+  desc.fConfig = kSkia8888_GrPixelConfig;
+  desc.fSampleCnt = 0;
   desc.fTextureHandle = buffer;
 
-  GrRenderTarget* target = context->wrapBackendTexture(desc);
-  gr_device_.reset(new SkGpuDevice(context, target));
+  return context->wrapBackendTexture(desc);
+}
+
+bool Device::InitFromTexture(GrTexture* tex, GrContext* context) {
+  DCHECK(tex != NULL);
+  DCHECK(context != NULL);
+  gr_device_.reset(new SkGpuDevice(context, tex));
   if (gr_device_.get() == NULL) {
     LOG(ERROR) << "Failed to create SkGpuDevice";
     return false;
@@ -83,8 +100,16 @@ bool Device::InitForDefault(Context* ctx, Canvas* canvas) {
     return false;
   }
   return true;
-  */
-  return true;
+}
+
+bool Device::InitForDefault(Context* ctx, Canvas* canvas) {
+  GrContext* context = ctx->gr_context_;
+  GrTexture* tex = GetCurrentColorTexture(ctx, canvas);
+  if (tex == NULL) {
+    return false;
+  }
+
+  return InitFromTexture(tex, context);
 }
 
 // class Canvas
@@ -101,7 +126,7 @@ Canvas::~Canvas() {
 bool Canvas::Init(Context* ctx, bool is_default) {
   device_ = new Device();
   if (is_default) {
-    return device_->InitForDefault(ctx, this);
+    return device_->Init2(ctx, this);
   } else {
     return device_->Init(ctx, this);
   }
@@ -196,6 +221,7 @@ CanvasPtr Context::CreateCanvas(int width, int height) {
 }
 
 CanvasPtr Context::GetDefault() {
+  angle::GetSurfaceTexture(GetAngleContext()->surface, GetAngleContext());
   std::unique_ptr<Canvas> ptr(new Canvas(width_, height_));
   if (ptr->Init(this, true)) {
     return CanvasPtr(ptr.release());

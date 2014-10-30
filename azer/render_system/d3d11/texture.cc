@@ -246,7 +246,7 @@ D3D11Texture2DShared::D3D11Texture2DShared(const Texture::Options& opt,
 
 D3D11Texture2DShared::~D3D11Texture2DShared() {
   if (shared_handle_ != NULL) {
-    // Close(shared_handle_);
+    // CloseHandle(shared_handle_);
   }
 }
 

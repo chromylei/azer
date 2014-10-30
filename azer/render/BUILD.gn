@@ -10,6 +10,24 @@ static_library("azer_devil_util") {
   ]
 }
 
+source_set("azer_skia") {
+  sources = [
+    "skia/skia.cc",
+    "skia/skia.h",
+    "skia/skia_context.cc",
+    "skia/skia_context.h",
+    "skia/grcontext.cc",
+    "skia/grcontext.h",
+  ]
+  deps = [
+    "//third_party/skia/gn:skia"
+  ]
+
+  configs += ["//build/config/win:d3d11",]
+  defines = ["BUILD_AZER_RENDER", "SK_ANGLE"]
+  include_dirs = ["//third_party/skia/src/gpu", ]
+}
+
 shared_library("render") {
   sources = [
     "../animation/bone.cc",

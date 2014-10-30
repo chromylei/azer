@@ -6,38 +6,39 @@
 #include "azer/render_system/d3d11/export.h"
 #include "azer/render/render_target.h"
 #include "azer/render/renderer.h"
+#include "azer/render/glcontext.h"
 #include "azer/render/render_system.h"
 
 namespace azer {
 namespace angle {
-struct Context {
-  void* display;
-  void* context;
-  void* surface;
-  void* user_data;
-  int width;
-  int height;
-  TexturePtr tex;
-  DataFormat colorbuf_format;
-  DataFormat depthbuf_format;
-  Context()
-      : display(NULL)
-      , context(NULL)
-      , surface(NULL)
-      , user_data(NULL)
-      , width(0)
-      , height(0)
-      , colorbuf_format(kBGRAn8)
-      , depthbuf_format(kDepth24Stencil8) {
-  }
+
+class AngleTexture {
+ public:
+  AngleTexture();
+  ~AngleTexture();
+  bool Init(int width, int height);
+  TexturePtr GetTexture() { return texture_;}
+
+  int64 texid() { return tex_;}
+  int64 fbid() { return fb_;}
+
+  // helper function set openGL Context
+  void useGL();
+  void resetGL();
+ private:
+  int64 tex_;
+  int64 fb_;
+  TexturePtr texture_;
+  DISALLOW_COPY_AND_ASSIGN(AngleTexture);
 };
 
-AZER_D3D11RS_EXPORT bool Init(RenderSystem* rs, Context* context);
-AZER_D3D11RS_EXPORT void Destroy(Context* ctx);
+AZER_D3D11RS_EXPORT bool Init(RenderSystem* rs, AzerGLContext* context);
+AZER_D3D11RS_EXPORT void Destroy(AzerGLContext* ctx);
 
-AZER_D3D11RS_EXPORT TexturePtr GetSurfaceTexture(Context* ctx);
-AZER_D3D11RS_EXPORT TexturePtr GetSurfaceTexture(void* surface, Context* ctx);
-AZER_D3D11RS_EXPORT TexturePtr GetCurrentFramebufferTexture(Context* ctx);
-AZER_D3D11RS_EXPORT TexturePtr GetFramebufferTexture(void* framebuffer, Context* ctx);
+AZER_D3D11RS_EXPORT TexturePtr GetSurfaceTexture(AzerGLContext* ctx);
+AZER_D3D11RS_EXPORT TexturePtr GetSurfaceTexture(void* surface, AzerGLContext* ctx);
+AZER_D3D11RS_EXPORT TexturePtr GetCurrentFramebufferTexture(AzerGLContext* ctx);
+AZER_D3D11RS_EXPORT TexturePtr GetFramebufferTexture(void* framebuffer,
+                                                     AzerGLContext* ctx);
 }  // namespace angle
 }  // namespace azer

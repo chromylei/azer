@@ -15,10 +15,10 @@ namespace azer {
 namespace angle {
 namespace {
 const int kMaxEGLAttrNum = 256;
-void InitDeviceConfigAttr(Context* context, EGLint* buf, int size);
+void InitDeviceConfigAttr(AzerGLContext* context, EGLint* buf, int size);
 }  // namespace
 
-D3D11Texture2DShared* CreatePBufferTexture(RenderSystem* rrs, Context* ctx) {
+D3D11Texture2DShared* CreatePBufferTexture(RenderSystem* rrs, AzerGLContext* ctx) {
   D3D11RenderSystem* rs = (D3D11RenderSystem*)rrs;
   Texture::Options options;
   options.width = ctx->width;
@@ -38,7 +38,7 @@ D3D11Texture2DShared* CreatePBufferTexture(RenderSystem* rrs, Context* ctx) {
   return tex.release();
 }
 
-bool Init(RenderSystem* rs, Context* ctx) {
+bool Init(RenderSystem* rs, AzerGLContext* ctx) {
   EGLint numConfigs;
   EGLint majorVersion;
   EGLint minorVersion;
@@ -116,7 +116,7 @@ bool Init(RenderSystem* rs, Context* ctx) {
   return true;
 }
 
-void Destroy(Context* ctx) {
+void Destroy(AzerGLContext* ctx) {
   if (ctx->display) {
     eglMakeCurrent((EGLDisplay)ctx->display, 0, 0, 0);
     if (ctx->context) {
@@ -129,11 +129,11 @@ void Destroy(Context* ctx) {
   }
 }
 
-TexturePtr GetSurfaceTexture(Context* ctx) {
+TexturePtr GetSurfaceTexture(AzerGLContext* ctx) {
   return GetSurfaceTexture(ctx->surface, ctx);
 }
 
-TexturePtr GetSurfaceTexture(void* sur, Context* context) {
+TexturePtr GetSurfaceTexture(void* sur, AzerGLContext* context) {
   D3D11RenderSystem* rs = (D3D11RenderSystem*)RenderSystem::Current();
   ID3D11Texture2D* resource = NULL;
   EGLint config = EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE;
@@ -149,11 +149,11 @@ TexturePtr GetSurfaceTexture(void* sur, Context* context) {
   return TexturePtr(D3D11Texture2DExtern::Create(resource, rs));
 }
 
-TexturePtr GetFramebufferTexture(void* framebuffer, Context* ctx) {
+TexturePtr GetFramebufferTexture(void* framebuffer, AzerGLContext* ctx) {
   return TexturePtr();
 }
 
-TexturePtr GetCurrentFramebufferTexture(Context* ctx) {
+TexturePtr GetCurrentFramebufferTexture(AzerGLContext* ctx) {
   EGLSurface surface = eglGetCurrentSurface(EGL_DRAW);
   if (surface == EGL_NO_SURFACE) {
     return TexturePtr();
@@ -163,7 +163,7 @@ TexturePtr GetCurrentFramebufferTexture(Context* ctx) {
 }
 
 namespace {
-void InitDeviceConfigAttr(Context* context, EGLint* buf, int size) {
+void InitDeviceConfigAttr(AzerGLContext* context, EGLint* buf, int size) {
   CHECK_GT(size, 64);
   EGLint* cur = buf;
   if (context->colorbuf_format == kBGRAn8
