@@ -14,14 +14,24 @@
 #include "gl/GrGLUtil.h"
 
 #include "azer/render/glcontext.h"
+#include "azer/render/texture.h"
 
 namespace azer {
 namespace skia {
 
 
 bool AzerSkDevice::Init2(Context* ctx, Canvas* canvas) {
-  tex_.reset(ctx->GetAzerEGLInterface()->CreateTexture(
-      canvas->width(), canvas->height()));
+  gltex_.reset(new AzerSkTexture(canvas->width(), canvas->height(), ctx));
+  if (!gltex_->Init()) {
+    return false;
+  }
+
+  GrTexture* gtex = GetTexture(gltex_->texid(), ctx, canvas);
+  if (!gtex) {
+    return false;
+  }
+
+  tex_.reset(ctx->GetAzerEGLInterface()->CreateTexture(gltex_->texid()));
   if (!tex_.get()) {
     return false;
   }
@@ -48,22 +58,25 @@ bool AzerSkDevice::Init(Context* ctx, Canvas* canvas) {
   return true;
 }
 
-GrTexture* AzerSkDevice::GetCurrentColorTexture(Context* ctx, Canvas* canvas) {
-  // skia/tests/SkGpuDevice.cpp
+GrTexture* AzerSkDevice::GetTexture(GrGLuint texid, Context* ctx, Canvas* canvas) {
   GrContext* context = ctx->gr_context_;
-  const GrGLInterface* intf = ctx->GetGrGLInterface();
   GrBackendTextureDesc desc;
-  GrGLint buffer;
-  GR_GL_GetIntegerv(intf, GR_GL_COLOR_ATTACHMENT0, &buffer);
   desc.fFlags = kRenderTarget_GrBackendTextureFlag;
   desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
   desc.fWidth = ctx->width();
   desc.fHeight = ctx->height();
   desc.fConfig = kSkia8888_GrPixelConfig;
   desc.fSampleCnt = 0;
-  desc.fTextureHandle = buffer;
-
+  desc.fTextureHandle = texid;
   return context->wrapBackendTexture(desc);
+}
+
+GrTexture* AzerSkDevice::GetCurrentColorTexture(Context* ctx, Canvas* canvas) {
+  // skia/tests/SkGpuDevice.cpp
+  const GrGLInterface* intf = ctx->GetGrGLInterface();
+  GrGLint buffer;
+  GR_GL_GetIntegerv(intf, GR_GL_COLOR_ATTACHMENT0, &buffer);
+  return GetTexture(buffer, ctx, canvas);
 }
 
 bool AzerSkDevice::InitFromTexture(GrTexture* tex, GrContext* context) {

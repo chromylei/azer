@@ -35,7 +35,8 @@ Canvas::~Canvas() {
 bool Canvas::Init(Context* ctx, bool is_default) {
   device_ = new AzerSkDevice();
   if (is_default) {
-    return device_->InitForDefault(ctx, this);
+    // return device_->InitForDefault(ctx, this);
+    return device_->Init2(ctx, this);
   } else {
     return device_->Init(ctx, this);
   }
@@ -130,15 +131,12 @@ CanvasPtr Context::CreateCanvas(int width, int height) {
 }
 
 CanvasPtr Context::GetDefault() {
-  /*
-  angle::GetSurfaceTexture(GetAngleContext()->surface, GetAngleContext());
   std::unique_ptr<Canvas> ptr(new Canvas(width_, height_));
   if (ptr->Init(this, true)) {
     return CanvasPtr(ptr.release());
   } else {
     return CanvasPtr();
   }
-  */
   return CanvasPtr();
 }
 

@@ -20,6 +20,8 @@ source_set("azer_skia") {
     "skia/grcontext.h",
     "skia/device.cc",
     "skia/device.h",
+    "skia/texture.cc",
+    "skia/texture.h",
   ]
   deps = [
     "//third_party/skia/gn:skia"

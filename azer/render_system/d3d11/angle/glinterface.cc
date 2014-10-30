@@ -1,15 +1,19 @@
 #include "azer/render_system/d3d11/angle/glinterface.h"
 
+
 #include "EGL/egl.h"
 #include "EGL/eglext.h"
+#include "GLES2/gl2.h"
 #include "azer/render_system/d3d11/angle/angle.h"
-#include "azer/render_system/d3d11/angle/texture.h"
 
 
 namespace azer {
 bool ANGLEGLInterface::Init(AzerEGLContext* context) {
   RenderSystem* rs = RenderSystem::Current();
-  return angle::Init(rs, context);
+  if (! angle::Init(rs, context)) {
+    return false;
+  }
+  return true;
 }
 
 bool ANGLEGLInterface::MakeCurrent(const AzerEGLContext* ctx) {
@@ -23,12 +27,7 @@ void ANGLEGLInterface::Destroy(AzerEGLContext* context) {
   angle::Destroy(context);
 }
 
-AzerGLTexture* ANGLEGLInterface::CreateTexture(int width, int height) {
-  std::unique_ptr<angle::AngleTexture> ptr(new angle::AngleTexture(width, height));
-  if (ptr->Init()) {
-    return ptr.release();;
-  }
-
+Texture* ANGLEGLInterface::CreateTexture(uint32 gltexid) {
   return NULL;
 }
 }  // namespace

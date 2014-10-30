@@ -4,6 +4,7 @@
 #include "azer/render/texture.h"
 
 namespace azer {
+
 struct AzerEGLContext {
   void* display;
   void* context;
@@ -56,6 +57,6 @@ class AzerEGLInterface {
   virtual bool Init(AzerEGLContext* context) = 0;
   virtual bool MakeCurrent(const AzerEGLContext* context) = 0;
   virtual void Destroy(AzerEGLContext* context) = 0;
-  virtual AzerGLTexture* CreateTexture(int width, int height) = 0;
+  virtual Texture* CreateTexture(uint32 gltexid)  = 0;
 };
 }  // namespace azer
