@@ -18,15 +18,12 @@ class AzerSkDevice {
   ~AzerSkDevice() {}
 
   bool Init(Context* ctx, Canvas* canvas);
-  bool InitFromTexture(GrTexture* tex, GrContext* context);
 
   SkCanvas* GetCanvas() { return sk_canvas_.get();}
   SkGpuDevice* GetDevice() { return gr_device_.get();}
   GrTexture* GetGrTex() { return grtex_;}
  private:
   GrTexture* CreateTex(Context* context, Canvas* canvas);
-  // GrRenderTarget* GetRenderTarget(GrGLuint texid, Context* context, Canvas* canvas);
-  // GrTexture* GetTexture(GrGLuint texid, Context* context, Canvas* canvas);
   std::unique_ptr<SkGpuDevice> gr_device_;
   std::unique_ptr<SkCanvas> sk_canvas_;
   GrTexture* grtex_;

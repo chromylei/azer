@@ -29,13 +29,6 @@ void ANGLEGLInterface::Destroy(AzerEGLContext* context) {
   angle::Destroy(context);
 }
 
-Texture* ANGLEGLInterface::CreateTexture(uint32 framebuffer) {
-  D3D11RenderSystem* rs = render_system_;
-  HANDLE handle = 0;
-  glGetFramebufferShareD3DTex(GL_DRAW_FRAMEBUFFER_ANGLE, framebuffer, &handle);
-  return D3D11Texture2DExtern::Create(handle, rs);
-}
-
 Texture* ANGLEGLInterface::GetShareTextureFromTex(uint32 texid) {
   D3D11RenderSystem* rs = render_system_;
   HANDLE handle = 0;

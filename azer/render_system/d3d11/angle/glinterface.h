@@ -14,7 +14,6 @@ class ANGLEGLInterface : public AzerEGLInterface {
   virtual bool Init(AzerEGLContext* context) OVERRIDE;
   virtual bool MakeCurrent(const AzerEGLContext* context) OVERRIDE;
   virtual void Destroy(AzerEGLContext* context) OVERRIDE;
-  virtual Texture* CreateTexture(uint32 gltexid) OVERRIDE;
   virtual Texture* GetShareTextureFromTex(uint32 texid) OVERRIDE;
  private:
   D3D11RenderSystem* render_system_;
