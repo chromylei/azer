@@ -1,29 +1,31 @@
-#include "azer/render_system/d3d11/angle/grcontext.h"
+#include "azer/render/skia/grcontext.h"
 
-#include "EGL/egl.h"
 #include "gl/GrGLInterface.h"
-
-#include "azer/render_system/d3d11/angle/angle.h"
 #include "azer/render/render_system.h"
+#include "azer/render/glcontext.h"
 #include "base/logging.h"
 
 namespace azer {
 namespace skia {
-SkAzerANGLEGrContext::SkAzerANGLEGrContext(int width, int height)
+AzerSkiaGrContext::AzerSkiaGrContext(int width, int height)
     : width_(width), height_(height) {
   DCHECK_GT(width_, 0);
   DCHECK_GT(height_, 0);
 }
 
-SkAzerANGLEGrContext::~SkAzerANGLEGrContext() {
+AzerSkiaGrContext::~AzerSkiaGrContext() {
   destroyGLContext();
 }
 
-const GrGLInterface* SkAzerANGLEGrContext::createGLContext() {
+const GrGLInterface* AzerSkiaGrContext::createGLContext() {
   RenderSystem* rs = RenderSystem::Current();
   context_.width = width_;
   context_.height = height_;
-  if (!angle::Init(rs, &context_)) {
+  agl_interface_ = rs->GetEGLInterface();
+  if (!agl_interface_) {
+    return NULL;
+  }
+  if (!agl_interface_->Init(&context_)) {
     return NULL;
   }
 
@@ -36,20 +38,20 @@ const GrGLInterface* SkAzerANGLEGrContext::createGLContext() {
   return GrGLInterfaceRemoveNVPR(grinterface.get());
 }
 
-void SkAzerANGLEGrContext::destroyGLContext() {
-  angle::Destroy(&context_);
+void AzerSkiaGrContext::destroyGLContext() {
+  if (agl_interface_) {
+    agl_interface_->Destroy(&context_);
+  }
 }
 
-void SkAzerANGLEGrContext::makeCurrent() const {
-  EGLContext context = (EGLContext)context_.context;
-  EGLDisplay display = (EGLDisplay)context_.display;
-  EGLSurface surface = (EGLSurface)context_.surface;
-  if (!eglMakeCurrent(display, surface, surface, context)) {
+void AzerSkiaGrContext::makeCurrent() const {
+  DCHECK(agl_interface_ != NULL);
+  if (!agl_interface_->MakeCurrent(&context_)) {
     LOG(INFO) << "cannot set context!";
   }
 }
 
-void SkAzerANGLEGrContext::swapBuffers() const {
+void AzerSkiaGrContext::swapBuffers() const {
 /*
   EGLContext context = (EGLContext)context_.context;
   EGLDisplay display = (EGLDisplay)context_.display;

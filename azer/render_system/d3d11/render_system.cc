@@ -23,6 +23,7 @@
 #include "azer/render_system/d3d11/texture.h"
 #include "azer/render_system/d3d11/vertex_buffer.h"
 #include "azer/render_system/d3d11/angle/angle.h"
+#include "azer/render_system/d3d11/angle/glinterface.h"
 
 namespace azer {
 
@@ -237,5 +238,8 @@ Renderer* D3D11RenderSystem::CreateDeferredRenderer(const Texture::Options& opt)
   }
 }
 
+AzerEGLInterface* D3D11RenderSystem::GetEGLInterface() {
+  return new ANGLEGLInterface();
+}
 }  // namespace azer
 

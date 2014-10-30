@@ -1,5 +1,5 @@
-#include "azer/render_system/d3d11/angle/skia.h"
-#include "azer/render_system/d3d11/angle/skia_context.h"
+#include "azer/render/skia/skia.h"
+#include "azer/render/skia/context.h"
 
 
 namespace azer {

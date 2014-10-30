@@ -54,6 +54,8 @@ class D3D11RenderSystem : public RenderSystem {
 
   virtual void Present() OVERRIDE;
 
+  virtual AzerEGLInterface* GetEGLInterface() OVERRIDE;
+
   /**
    * direct3d relevent
    */

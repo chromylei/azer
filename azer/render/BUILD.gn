@@ -14,10 +14,12 @@ source_set("azer_skia") {
   sources = [
     "skia/skia.cc",
     "skia/skia.h",
-    "skia/skia_context.cc",
-    "skia/skia_context.h",
+    "skia/context.cc",
+    "skia/context.h",
     "skia/grcontext.cc",
     "skia/grcontext.h",
+    "skia/device.cc",
+    "skia/device.h",
   ]
   deps = [
     "//third_party/skia/gn:skia"
@@ -127,6 +129,7 @@ shared_library("render") {
     "//ui/gfx:gfx",
     "//base:base",
     ":azer_devil_util",
+    ":azer_skia",
   ]
 
   defines = ["BUILD_AZER_RENDER"]

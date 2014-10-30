@@ -7,17 +7,17 @@
 #include "azer/render/render_system.h"
 #include "azer/render/glcontext.h"
 
-class GrContext;
 struct GrGLInterface;
+class GrContext;
 class SkGpuDevice;
 class SkCanvas;
 
 namespace azer {
 namespace skia {
 
+class AzerSkiaGrContext;
 class Context;
-class Device;
-class SkAzerANGLEGrContext;
+class AzerSkDevice;
 
 class AZER_EXPORT Canvas {
  public:
@@ -36,7 +36,7 @@ class AZER_EXPORT Canvas {
   TexturePtr texture_;
   int32 width_;
   int32 height_;
-  Device* device_;
+  AzerSkDevice* device_;
   friend class Context;
   DISALLOW_COPY_AND_ASSIGN(Canvas);
 };
@@ -56,17 +56,19 @@ class AZER_EXPORT Context {
 
   CanvasPtr CreateCanvas(int width, int height);
   CanvasPtr GetDefault();
-  AzerGLContext* GetAngleContext();
+
+  AzerEGLContext* GetAzerEGLContext();
+  AzerEGLInterface* GetAzerEGLInterface();
 
   GrContext* GetGrContext() { return gr_context_;}
   const GrGLInterface* GetGrGLInterface() { return interface_;}
  private:
   GrContext* gr_context_;
   const GrGLInterface* interface_;
-  SkAzerANGLEGrContext* helper_;
+  AzerSkiaGrContext* helper_;
   int32 width_;
   int32 height_;
-  friend class Device;
+  friend class AzerSkDevice;
   DISALLOW_COPY_AND_ASSIGN(Context);
 };
 

@@ -1,34 +1,34 @@
 #pragma once
 
 #include "gl/SkGLContextHelper.h"
-#include "gl/SkANGLEGLContext.h"
-
 #include "base/basictypes.h"
-#include "azer/render_system/d3d11/export.h"
-#include "azer/render_system/d3d11/angle/angle.h"
-
+#include "azer/render/render_system.h"
+#include "azer/render/glcontext.h"
 
 struct GrGLInterface;
 
 namespace azer {
 namespace skia {
-class SkAzerANGLEGrContext : public SkGLContextHelper {
+
+class AzerSkiaGrContext : public SkGLContextHelper {
  public:
-  SkAzerANGLEGrContext(int width, int height);
-  virtual ~SkAzerANGLEGrContext();
+  AzerSkiaGrContext(int width, int height);
+  virtual ~AzerSkiaGrContext();
 
   virtual void makeCurrent() const OVERRIDE;
   virtual void swapBuffers() const OVERRIDE;
 
-  angle::Context* GetAngleContext() { return &context_;}
+  AzerEGLContext* GetAzerEGLContext() { return &context_;}
+  AzerEGLInterface* GetAzerEGLInterface() { return agl_interface_;}
  protected:
   virtual const GrGLInterface* createGLContext() OVERRIDE;
   virtual void destroyGLContext() OVERRIDE;
  private:
   // AutoContextRestore auto_restore_;
-  angle::Context context_;
+  AzerEGLContext context_;
+  AzerEGLInterface* agl_interface_;
   int width_, height_;
-  DISALLOW_COPY_AND_ASSIGN(SkAzerANGLEGrContext);
+  DISALLOW_COPY_AND_ASSIGN(AzerSkiaGrContext);
 };
 }  // namespace skia
 }  // namespace azer

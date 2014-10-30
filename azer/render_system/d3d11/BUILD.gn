@@ -2,7 +2,9 @@ source_set("azer_angle11") {
   sources = [
     "angle/angle.cc",
     "angle/angle.h",
-    "angle/angletex.cc",
+    "angle/texture.cc",
+    "angle/texture.h",
+    "angle/glinterface.cc",
   ]
   deps = [
     "//third_party/angle:libGLESv2",

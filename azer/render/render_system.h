@@ -21,6 +21,7 @@ class VertexBuffer;
 class RenderTarget;
 class DepthRenderTarget;
 class Image;
+class AzerEGLInterface;
 
 typedef std::shared_ptr<IndicesData> IndicesDataPtr;
 
@@ -69,6 +70,9 @@ class AZER_EXPORT RenderSystem {
   virtual Overlay* CreateOverlay(const gfx::RectF& rect) = 0;
 
   virtual void Present() = 0;
+
+  // 
+  virtual AzerEGLInterface* GetEGLInterface() = 0;
 
   const RenderSystemCapability& capability() const {
     return capability_;
