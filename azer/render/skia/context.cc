@@ -22,24 +22,34 @@ namespace azer {
 namespace skia {
 
 // class Canvas
-Canvas::Canvas(int width, int height)
+Canvas::Canvas(int width, int height, Context* ctx)
     : width_(width)
     , height_(height)
-    , device_(NULL) {
+    , device_(NULL)
+    , context_(ctx) {
 }
 
 Canvas::~Canvas() {
   if (device_) { delete device_;}
 }
 
-bool Canvas::Init(Context* ctx) {
+bool Canvas::Init() {
   device_ = new AzerSkDevice();
-  return device_->Init(ctx, this);
+  return device_->Init(context_, this);
 }
 
 SkCanvas* Canvas::GetCanvas() {
   DCHECK(device_ != NULL);
   return device_->GetCanvas();
+}
+
+TexturePtr& Canvas::GetTexture() {
+  if (!texture_.get()) {
+    GrTexture* tex = device_->GetGrTex();
+    texture_.reset(context_->GetAzerEGLInterface()->
+               GetShareTextureFromTex(tex->getTextureHandle()));
+  }
+  return texture_;
 }
 
 namespace {
@@ -90,7 +100,7 @@ Context::~Context() {
 
 bool Context::Init() {
   // code reference: skia/include/gpu/GrContextFactory.h
-  helper_ = new AzerSkiaGrContext(1, 1);
+  helper_ = new AzerSkiaGrContext(300, 300);
   SkGLContextHelper* glctx = helper_;
   static const int kBogusSize = 1;
   if (!glctx->init(kBogusSize, kBogusSize)) {
@@ -115,8 +125,8 @@ bool Context::Init() {
 }
 
 CanvasPtr Context::CreateCanvas(int width, int height) {
-  std::unique_ptr<Canvas> ptr(new Canvas(width, height));
-  if (ptr->Init(this)) {
+  std::unique_ptr<Canvas> ptr(new Canvas(width, height, this));
+  if (ptr->Init()) {
     return CanvasPtr(ptr.release());
   } else {
     return CanvasPtr();

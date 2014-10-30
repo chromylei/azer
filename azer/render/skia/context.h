@@ -21,11 +21,11 @@ class AzerSkDevice;
 
 class AZER_EXPORT Canvas {
  public:
-  Canvas(int width, int height);
+  Canvas(int width, int height, Context* context);
   ~Canvas();
 
-  TexturePtr& GetTexture() { return texture_;}
-  bool Init(Context* context);
+  TexturePtr& GetTexture();
+  bool Init();
 
   int width() const { return width_;}
   int height() const { return height_;}
@@ -37,6 +37,7 @@ class AZER_EXPORT Canvas {
   int32 width_;
   int32 height_;
   AzerSkDevice* device_;
+  Context* context_;
   friend class Context;
   DISALLOW_COPY_AND_ASSIGN(Canvas);
 };

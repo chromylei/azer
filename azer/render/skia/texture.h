@@ -21,6 +21,7 @@ class AzerSkTexture {
 
   bool Init();
   uint32 texid() const { return texid_;}
+  uint32 fbid() const { return fb_;}
  private:
   int width_;
   int height_;

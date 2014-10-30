@@ -94,8 +94,7 @@ class D3D11Texture2DExtern : public D3D11Texture2D {
       : D3D11Texture2D(opt, rs) {}
 
   // create from other device's resources
-  static D3D11Texture2DExtern* Create(ID3D11Resource* resource,
-                                      D3D11RenderSystem* rs);
+  static D3D11Texture2DExtern* Create(HANDLE handle, D3D11RenderSystem* rs);
  private:
   void Attach(ID3D11Texture2D* tex);
   virtual void ModifyTextureDesc(D3D11_TEXTURE2D_DESC* desc) OVERRIDE;

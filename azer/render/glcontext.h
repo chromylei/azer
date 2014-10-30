@@ -57,6 +57,7 @@ class AzerEGLInterface {
   virtual bool Init(AzerEGLContext* context) = 0;
   virtual bool MakeCurrent(const AzerEGLContext* context) = 0;
   virtual void Destroy(AzerEGLContext* context) = 0;
-  virtual Texture* CreateTexture(uint32 gltexid)  = 0;
+  virtual Texture* CreateTexture(uint32 framebuffer)  = 0;
+  virtual Texture* GetShareTextureFromTex(uint32 texid)  = 0;
 };
 }  // namespace azer

@@ -1,9 +1,9 @@
 #include "azer/render/skia/context.h"
 
 #include "azer/render/glcontext.h"
-#include "azer/render/skia/texture.h"
 
 struct GrGLInterface;
+class GrRenderTarget;
 class GrContext;
 class GrTexture;
 class SkGpuDevice;
@@ -22,13 +22,14 @@ class AzerSkDevice {
 
   SkCanvas* GetCanvas() { return sk_canvas_.get();}
   SkGpuDevice* GetDevice() { return gr_device_.get();}
+  GrTexture* GetGrTex() { return grtex_;}
  private:
-  GrTexture* GetTexture(GrGLuint texid, Context* context, Canvas* canvas);
-  GrTexture* GetCurrentColorTexture(Context* context, Canvas* canvas);
+  GrTexture* CreateTex(Context* context, Canvas* canvas);
+  // GrRenderTarget* GetRenderTarget(GrGLuint texid, Context* context, Canvas* canvas);
+  // GrTexture* GetTexture(GrGLuint texid, Context* context, Canvas* canvas);
   std::unique_ptr<SkGpuDevice> gr_device_;
   std::unique_ptr<SkCanvas> sk_canvas_;
-  TexturePtr tex_;
-  std::unique_ptr<AzerSkTexture> gltex_;
+  GrTexture* grtex_;
   DISALLOW_COPY_AND_ASSIGN(AzerSkDevice);
 };
 

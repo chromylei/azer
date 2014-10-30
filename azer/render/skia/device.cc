@@ -19,26 +19,11 @@
 namespace azer {
 namespace skia {
 
-
 bool AzerSkDevice::Init(Context* ctx, Canvas* canvas) {
-  gltex_.reset(new AzerSkTexture(canvas->width(), canvas->height(), ctx));
-  if (!gltex_->Init()) {
-    return false;
-  }
-
-  GrTexture* grtex = GetTexture(gltex_->texid(), ctx, canvas);
-  if (!grtex) {
-    return false;
-  }
-
-  /*
-  tex_.reset(ctx->GetAzerEGLInterface()->CreateTexture(gltex_->texid()));
-  if (!tex_.get()) {
-    return false;
-  }
-  */
-
-  gr_device_.reset(SkGpuDevice::Create(grtex));
+  GrContext* context = ctx->gr_context_;
+  grtex_ = CreateTex(ctx, canvas);
+  // tex_.reset(ctx->GetAzerEGLInterface()->CreateTexture(gltex_->fbid()));
+  gr_device_.reset(SkGpuDevice::Create(grtex_));
   if (gr_device_.get() == NULL) {
     LOG(ERROR) << "Failed to create SkGpuDevice";
     return false;
@@ -49,9 +34,22 @@ bool AzerSkDevice::Init(Context* ctx, Canvas* canvas) {
     LOG(ERROR) << "Failed to create SkCanvas";
     return false;
   }
+
   return true;
 }
 
+GrTexture* AzerSkDevice::CreateTex(Context* ctx, Canvas* canvas) {
+  GrContext* context = ctx->gr_context_;
+  GrTextureDesc desc;
+  desc.fConfig = kSkia8888_GrPixelConfig;
+  desc.fFlags = kRenderTarget_GrTextureFlagBit;
+  desc.fWidth = canvas->height();
+  desc.fHeight = canvas->height();
+  desc.fSampleCnt = 0;
+  return context->createUncachedTexture(desc, NULL, 0);
+}
+
+/*
 GrTexture* AzerSkDevice::GetTexture(GrGLuint texid, Context* ctx, Canvas* canvas) {
   GrContext* context = ctx->gr_context_;
   GrBackendTextureDesc desc;
@@ -65,13 +63,21 @@ GrTexture* AzerSkDevice::GetTexture(GrGLuint texid, Context* ctx, Canvas* canvas
   return context->wrapBackendTexture(desc);
 }
 
-GrTexture* AzerSkDevice::GetCurrentColorTexture(Context* ctx, Canvas* canvas) {
-  // skia/tests/SkGpuDevice.cpp
-  const GrGLInterface* intf = ctx->GetGrGLInterface();
-  GrGLint buffer;
-  GR_GL_GetIntegerv(intf, GR_GL_COLOR_ATTACHMENT0, &buffer);
-  return GetTexture(buffer, ctx, canvas);
+GrRenderTarget* AzerSkDevice::GetRenderTarget(GrGLuint fbid, Context* ctx,
+                                              Canvas* canvas) {
+  GrContext* context = ctx->gr_context_;
+  GrBackendRenderTargetDesc desc;
+  desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
+  desc.fWidth = canvas->width();
+  desc.fHeight = canvas->height();
+  desc.fConfig = kSkia8888_GrPixelConfig;
+  desc.fSampleCnt = 0;
+  desc.fRenderTargetHandle = 0;
+  GrRenderTarget* target = context->wrapBackendRenderTarget(desc);
+  context->setRenderTarget(target);
+  return target;
 }
+*/
 
 bool AzerSkDevice::InitFromTexture(GrTexture* tex, GrContext* context) {
   DCHECK(tex != NULL);

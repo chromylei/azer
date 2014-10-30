@@ -292,11 +292,11 @@ bool D3D11Texture2DShared::Init(const D3D11_SUBRESOURCE_DATA* data, int num) {
   return InitSharedResource();
 }
 
-D3D11Texture2DExtern* D3D11Texture2DExtern::Create(ID3D11Resource* resource,
+D3D11Texture2DExtern* D3D11Texture2DExtern::Create(HANDLE handle,
                                                    D3D11RenderSystem* rs) {
   ID3D11Texture2D* shared_tex = NULL;
   ID3D11Device* d3d_device = rs->GetDevice();
-  HRESULT hr = d3d_device->OpenSharedResource(resource, __uuidof(ID3D11Texture2D),
+  HRESULT hr = d3d_device->OpenSharedResource(handle, __uuidof(ID3D11Texture2D),
                                               (void**)&shared_tex);
   if (FAILED(hr)) {
     SAFE_RELEASE(shared_tex);

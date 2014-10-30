@@ -239,7 +239,7 @@ Renderer* D3D11RenderSystem::CreateDeferredRenderer(const Texture::Options& opt)
 }
 
 AzerEGLInterface* D3D11RenderSystem::GetEGLInterface() {
-  return new ANGLEGLInterface();
+  return new ANGLEGLInterface(this);
 }
 }  // namespace azer
 
