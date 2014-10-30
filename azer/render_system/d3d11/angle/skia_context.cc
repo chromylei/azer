@@ -56,9 +56,10 @@ bool Device::Init(Context* ctx, Canvas* canvas) {
 
 bool Device::InitForDefault(Context* ctx, Canvas* canvas) {
   // skia/tests/SkGpuDevice.cpp
+  /*
   GrContext* context = ctx->gr_context_;
   const GrGLInterface* intf = ctx->GetGrGLInterface();
-  GrBackendRenderTargetDesc desc;
+  GrBackendTextureDesc desc;
   GrGLint buffer;
   GR_GL_GetIntegerv(intf, GR_GL_FRAMEBUFFER_BINDING, &buffer);
   desc.fWidth = 800;
@@ -67,9 +68,9 @@ bool Device::InitForDefault(Context* ctx, Canvas* canvas) {
   desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
   desc.fSampleCnt = 1;
   desc.fStencilBits = 8;
+  desc.fTextureHandle = buffer;
 
-  
-  GrRenderTarget* target = context->wrapBackendRenderTarget(desc);
+  GrRenderTarget* target = context->wrapBackendTexture(desc);
   gr_device_.reset(new SkGpuDevice(context, target));
   if (gr_device_.get() == NULL) {
     LOG(ERROR) << "Failed to create SkGpuDevice";
@@ -81,6 +82,8 @@ bool Device::InitForDefault(Context* ctx, Canvas* canvas) {
     LOG(ERROR) << "Failed to create SkCanvas";
     return false;
   }
+  return true;
+  */
   return true;
 }
 

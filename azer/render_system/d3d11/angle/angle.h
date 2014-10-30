@@ -6,6 +6,7 @@
 #include "azer/render_system/d3d11/export.h"
 #include "azer/render/render_target.h"
 #include "azer/render/renderer.h"
+#include "azer/render/render_system.h"
 
 namespace azer {
 namespace angle {
@@ -17,14 +18,17 @@ struct Context {
   int width;
   int height;
   TexturePtr tex;
-
+  DataFormat colorbuf_format;
+  DataFormat depthbuf_format;
   Context()
       : display(NULL)
       , context(NULL)
       , surface(NULL)
       , user_data(NULL)
       , width(0)
-      , height(0) {
+      , height(0)
+      , colorbuf_format(kBGRAn8)
+      , depthbuf_format(kDepth24Stencil8) {
   }
 };
 
