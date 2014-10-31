@@ -110,7 +110,8 @@ shared_library("render") {
     "util/shader_array.h",
     "util/image.cc",
     "util/image.h",
-    "../ui/window/handle.h"
+    "../ui/widget/context.h",
+    "../ui/window/handle.h",
     "../ui/window/message_loop_win.cc",
     "../ui/window/message_loop.h",
     "../ui/window/native_event_handler.h",
