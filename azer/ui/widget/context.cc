@@ -5,29 +5,31 @@
 #include "base/logging.h"
 #include "azer/render/glcontext.h"
 #include "azer/render/skia/context.h"
+#include "azer/render/skia/skia.h"
+#include "azer/render/skia/canvas.h"
+#include "azer/ui/window/window_host.h"
 #include "azer/ui/widget/root_window.h"
 #include "ui/gfx/geometry/rect.h"
 
 namespace azer {
 namespace ui {
 Context::Context(RenderSystem* rs)
-    : render_system_(rs)
-    , skia_context_(NULL) {
+    : render_system_(rs) {
 }
 
 Context* Context::Create(RenderSystem* rs) {
   std::unique_ptr<Context> ptr(new Context(rs));
   if (ptr->Init()) {
-    return ptr->release();
+    return ptr.release();
   } else {
     return NULL;
   }
 }
 
 bool Context::Init() {
-  DCHECK(NULL == skia_context_);
-  skia_context_ = skia::Init();
-  if (!skia_context_) {
+  DCHECK(NULL == sk_context_.get());
+  sk_context_.reset(skia::Init());
+  if (!sk_context_) {
     LOG(ERROR) << "failed to initialize skia.";
     return false;
   }
@@ -38,22 +40,39 @@ bool Context::Init() {
     LOG(ERROR) << "failed to create overlay";
     return false;
   }
+  overlay_effect_.reset(CreateOverlayEffect());
+  overlay_->SetEffect(overlay_effect_);
 
-  root_.reset(RootWindow::Create(render_system_));
+  WindowHost* host = render_system_->GetRenderWindowHost();
+  int width = host->GetMetrics().width;
+  int height = host->GetMetrics().height;
+  canvas_ = sk_context_->CreateCanvas(width, height);
+  if (!canvas_.get()) {
+    LOG(ERROR) << "Failed to init canvas.";
+    return false;
+  }
+
+  root_.reset(new RootWindow(this));
+  if (!root_->Init()) {
+    return false;
+  }
   return true;
 }
 
 void Context::SetOverlayEffect(EffectPtr& ptr) {
-  ptr->SetTexture();
+  OverlayEffect* effect = (OverlayEffect*)ptr.get();
+  effect->SetTexture(canvas_->GetTexture());
 }
 
 void Context::Render(azer::Renderer* renderer) {
+  DCHECK(root_.get() != NULL);
   DCHECK(overlay_.get() != NULL);
-  UseEffect(overlay_->GetEffect());
+  root_->Redraw(false);
+  SetOverlayEffect(overlay_->GetEffect());
   overlay_->Render(renderer);
 }
 
-OverlayEffect* Context::CreateOverlayEffect() {
+Effect* Context::CreateOverlayEffect() {
   return overlay_->CreateDefaultEffect();
 }
 }  // namespace ui

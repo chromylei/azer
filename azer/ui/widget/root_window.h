@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma once
+
 #include "base/basictypes.h"
 #include "azer/ui/widget/widget.h"
 
@@ -8,33 +10,24 @@ class Canvas;
 }
 
 namespace azer {
-
 class WindowHost;
 class RenderSystem;
+namespace ui {
 
-class AZER_WIDGET_EXPORT RootWindow : public Widget {
+class Context;
+
+class AZER_EXPORT RootWindow : public Widget {
  public:
-  virtual ~RootWindow() {}
-  static RootWindow* Create(RenderSystem* rs);
-
-  virtual void Render();
-  void Redraw() { this->Redraw(NULL);}
-  
-
-  RenderSystem* GetRenderSystem() { return render_system_;}
-  WindowHost* host() { return host_;}
- protected:
-  
-  RootWindow(RenderSystem* rs)
-      : Widget(gfx::Rect())
-      , render_system_(rs) {
+  RootWindow(Context* context)
+      : Widget(context) {
   }
 
-  virtual void Redraw(gfx::Canvas* canvas);
+  virtual ~RootWindow() {}
 
-  RenderSystem* render_system_;
-  WindowHost* host_;
   bool Init();
+  virtual void Redraw(bool force) OVERRIDE;
+ protected:
   DISALLOW_COPY_AND_ASSIGN(RootWindow);
 };
+}  // namespace ui
 }  // namespace azer

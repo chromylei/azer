@@ -1,21 +1,15 @@
-#include "azer/ui/widget/pannel.h"
-#include "azer/render/surface.h"
+#include "azer/ui/widget/panel.h"
+#include "azer/ui/widget/context.h"
 
-#include "third_party/skia/include/core/SkColor.h"
+#include "azer/render/skia/canvas.h"
 
 namespace azer {
-Panel::Panel()
-    : render_system_(NULL)
-    , color_(SkColorSetARGBInline(64, 84, 84, 84)) {
+namespace ui {
+Panel::Panel(Context* context)
+    : Widget(context) {
 }
 
-void Pannel::Create(const azer::Rect& rect, RenderSystem* render_system) {
-  DCHECK(render_system != NULL);
-  DCHECK(render_system_ == NULL && canvas_.get() == NULL && spirte_ == NULL);
+void Panel::Redraw(bool force) {
 }
-
-/**
- */
-void Pannel::Render() {
-}
+}  // namespace ui {
 }  // namespace azer

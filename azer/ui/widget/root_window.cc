@@ -1,52 +1,51 @@
 #include "azer/ui/widget/root_window.h"
+#include "azer/ui/widget/context.h"
 
-#include "azer/render/render_system.h"
-#include "azer/ui/window/window_host.h"
-#include "ui/gfx/canvas.h"
-#include "ui/gfx/font.h"
-#include "ui/gfx/font_list.h"
+#include "SkCanvas.h"
+#include "SkGraphics.h"
+#include "SkTemplates.h"
+#include "SkString.h"
 
 namespace azer {
+namespace ui {
+void RootWindow::Redraw(bool force) {
+  if (force || surface_dirty_) {
+    Widget* widget = last_child();
+    while (widget) {
+      // DCHECK(widget->HasSurface());
+      widget->Redraw(force);
+      widget = widget->prev_sibling();
+    }
 
-RootWindow* RootWindow::Create(RenderSystem* rs) {
-  std::unique_ptr<RootWindow> rwin(new RootWindow(rs));
-  if (rwin->Init()) {
-    return rwin.release();
-  } else {
-    return NULL;
+    SkCanvas* canvas = context_->GetCanvas()->GetSkCanvas();
+    canvas->clear(SkColorSetARGB(0,0,0,0));
+    SkString text("Hello, Skia World");
+    SkPaint paint;
+    paint.setARGB(255, 0, 0, 0);
+    paint.setAntiAlias(true);
+    paint.setTextSize(SkIntToScalar(30));
+    SkScalar width = 800;
+    SkScalar height = 600;
+    canvas->drawARGB(255, 255, 255, 255);
+    SkScalar x = 80, y = 60;
+    canvas->drawText(text.c_str(), text.size(), x, y, paint);
+    paint.setStyle(SkPaint::kStroke_Style);
+    paint.setStrokeWidth(10);
+
+    SkRect rect;
+    paint.setARGB(255, 0, 0, 0);
+    rect.set(50, 100, 200, 200);
+    canvas->drawRoundRect(rect, 20, 20, paint);
+
+    canvas->drawLine(10, 300, 300, 300, paint);
+    canvas->drawCircle(100, 400, 50, paint);
+    canvas->flush();
+    // surface_dirty_ = false;
   }
 }
 
 bool RootWindow::Init() {
-  host_ = render_system_->GetRenderWindowHost();
-  rect_ = std::move(host_->GetClientBounds());
-  rect_.Offset(-rect_.x(), -rect_.y());
-
-  gfx::FontList::SetDefaultFontDescription("Droid Sans serif, Sans serif, 14px");
   return true;
 }
-
-void RootWindow::Render() {
-  /*
-   * render in reverse order
-   */
-  Widget* widget = last_child();
-  while (widget) {
-    // DCHECK(widget->HasSurface());
-    widget->Render();
-    widget = widget->prev_sibling();
-  }
-}
-
-void RootWindow::Redraw(gfx::Canvas* canvas) {
-  /*
-   * render in reverse order
-   */
-  Widget* widget = last_child();
-  while (widget) {
-    // DCHECK(widget->HasSurface());
-    widget->Redraw(NULL);
-    widget = widget->prev_sibling();
-  }
-}
+}  // namespace ui
 }  // namespace azer

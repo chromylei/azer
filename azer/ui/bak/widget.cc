@@ -1,17 +1,22 @@
 #include "azer/ui/widget/widget.h"
-#include "azer/ui/widget/context.h"
+
+#include "base/logging.h"
+#include "ui/gfx/canvas.h"
 
 namespace azer {
-namespace ui {
-Widget::Widget(Context* context)
-    : context_(context)
-    , surface_dirty_(true) {
+Widget::~Widget() {
+  Widget* child = first_child();
+  while (child) {
+    Widget* next = child->next_sibling();
+    delete child;
+    child = next;
+  }
 }
 
 gfx::Point Widget::ConvertPointToSurface(const gfx::Point& org_pt) {
   gfx::Point pt = org_pt;
   Widget* widget = this;
-  while (widget) {
+  while (widget && !widget->HasSurface()) {
     gfx::Point norg = std::move(widget->origin());
     pt.Offset(norg.x(), norg.y());
     widget = widget->parent();
@@ -27,9 +32,6 @@ gfx::Rect Widget::ConvertRectToSurface(const gfx::Rect& rc) {
   return r;
 }
 
-void Widget::Hide() {
+void Widget::Sort() {
 }
-void Widget::Show() {
-}
-}  // namespace ui
 }  // namespace azer

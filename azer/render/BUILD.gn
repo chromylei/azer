@@ -14,6 +14,8 @@ source_set("azer_skia") {
   sources = [
     "skia/skia.cc",
     "skia/skia.h",
+    "skia/canvas.cc",
+    "skia/canvas.h",
     "skia/context.cc",
     "skia/context.h",
     "skia/grcontext.cc",
@@ -21,6 +23,25 @@ source_set("azer_skia") {
     "skia/device.cc",
     "skia/device.h",
   ]
+  deps = [
+    "//third_party/skia/gn:skia"
+  ]
+
+  configs += ["//build/config/win:d3d11",]
+  defines = ["BUILD_AZER_RENDER", "SK_ANGLE"]
+  include_dirs = ["//third_party/skia/src/gpu", ]
+}
+
+source_set("azer_ui_widget") {
+  sources = [
+    "../ui/widget/widget.cc",
+    "../ui/widget/widget.h",
+    "../ui/widget/panel.cc",
+    "../ui/widget/panel.h",
+    "../ui/widget/root_window.cc",
+    "../ui/widget/root_window.h",
+  ]
+
   deps = [
     "//third_party/skia/gn:skia"
   ]
@@ -110,6 +131,8 @@ shared_library("render") {
     "util/shader_array.h",
     "util/image.cc",
     "util/image.h",
+    "../ui/widget/coordinate_transform.h",
+    "../ui/widget/context.cc",
     "../ui/widget/context.h",
     "../ui/window/handle.h",
     "../ui/window/message_loop_win.cc",
@@ -131,6 +154,7 @@ shared_library("render") {
     "//base:base",
     ":azer_devil_util",
     ":azer_skia",
+    ":azer_ui_widget",
   ]
 
   defines = ["BUILD_AZER_RENDER"]

@@ -6,6 +6,7 @@
 #include "base/files/file_path.h"
 #include "azer/render/render_system.h"
 #include "azer/render/glcontext.h"
+#include "azer/render/skia/canvas.h"
 
 struct GrGLInterface;
 class GrContext;
@@ -18,31 +19,6 @@ namespace skia {
 class AzerSkiaGrContext;
 class Context;
 class AzerSkDevice;
-
-class AZER_EXPORT Canvas {
- public:
-  Canvas(int width, int height, Context* context);
-  ~Canvas();
-
-  TexturePtr& GetTexture();
-  bool Init();
-
-  int width() const { return width_;}
-  int height() const { return height_;}
-
-  bool Save(const ::base::FilePath& path);
-  SkCanvas* GetCanvas();
- private:
-  TexturePtr texture_;
-  int32 width_;
-  int32 height_;
-  AzerSkDevice* device_;
-  Context* context_;
-  friend class Context;
-  DISALLOW_COPY_AND_ASSIGN(Canvas);
-};
-
-typedef std::shared_ptr<Canvas> CanvasPtr;
 
 class AZER_EXPORT Context {
  public:
