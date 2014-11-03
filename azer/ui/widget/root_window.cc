@@ -8,13 +8,14 @@
 
 namespace azer {
 namespace ui {
+
+const float RootWindow::kMinDrawInterval = 0.00;
 void RootWindow::Redraw(bool force) {
   ::base::TimeTicks now = ::base::TimeTicks::HighResNow();
   ::base::TimeDelta delta = now - prev_draw_;
-  if (delta.InSecondsF() > 0.03) {
+  if (delta.InSecondsF() > kMinDrawInterval) {
     Widget* widget = last_child();
     while (widget) {
-      // DCHECK(widget->HasSurface());
       widget->Redraw(force);
       widget = widget->prev_sibling();
     }
@@ -41,13 +42,13 @@ void RootWindow::Redraw(bool force) {
 
     canvas->drawLine(10, 300, 300, 300, paint);
     canvas->drawCircle(100, 400, 50, paint);
-    // canvas->flush();
-    // surface_dirty_ = false;
     prev_draw_ = ::base::TimeTicks::HighResNow();
+    canvas->flush();
   }
 }
 
 bool RootWindow::Init() {
+  Redraw(true);
   return true;
 }
 }  // namespace ui

@@ -28,6 +28,7 @@ class AZER_EXPORT RootWindow : public Widget {
   bool Init();
   virtual void Redraw(bool force) OVERRIDE;
  protected:
+  const static float kMinDrawInterval;
   base::TimeTicks prev_draw_;
   DISALLOW_COPY_AND_ASSIGN(RootWindow);
 };

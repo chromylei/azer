@@ -83,5 +83,11 @@ void Context::flush() {
   gr_context_->resetContext();
   gr_context_->flush();
 }
+
+void Context::wait() {
+  DCHECK(gr_context_ != NULL);
+  gr_context_->resetContext();
+  GR_GL_CALL(interface_, Finish());
+}
 }  // namespace skia
 }  // namespace azer

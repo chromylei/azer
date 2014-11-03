@@ -34,10 +34,14 @@ source_set("azer_skia") {
 
 source_set("azer_ui_widget") {
   sources = [
+    "../ui/widget/canvas.cc",
+    "../ui/widget/canvas.h",
     "../ui/widget/widget.cc",
     "../ui/widget/widget.h",
     "../ui/widget/panel.cc",
     "../ui/widget/panel.h",
+    "../ui/widget/theme.cc",
+    "../ui/widget/theme.h",
     "../ui/widget/root_window.cc",
     "../ui/widget/root_window.h",
   ]
