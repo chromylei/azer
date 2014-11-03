@@ -5,8 +5,8 @@
 
 namespace azer {
 namespace ui {
-Panel::Panel(Context* context)
-    : Widget(context) {
+Panel::Panel(const gfx::Rect& rect, Widget* parent)
+    : Control(rect, parent) {
 }
 
 void Panel::Redraw(bool force) {

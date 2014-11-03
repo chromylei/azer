@@ -8,6 +8,12 @@ Widget::Widget(Context* context)
     , surface_dirty_(true) {
 }
 
+Widget::Widget(const gfx::Rect& rect, Context* context)
+    : context_(context)
+    , rect_(rect)
+    , surface_dirty_(true) {
+}
+
 gfx::Point Widget::ConvertPointToSurface(const gfx::Point& org_pt) {
   gfx::Point pt = org_pt;
   Widget* widget = this;

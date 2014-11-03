@@ -11,6 +11,10 @@
 #include "azer/ui/widget/root_window.h"
 #include "base/logging.h"
 
+namespace gfx {
+class Canvas;
+}  // namespace gfx
+
 namespace azer {
 
 namespace skia {
@@ -20,18 +24,23 @@ class Canvas;
 
 
 namespace ui {
+class Theme;
 class RootWindow;
 
 class AZER_EXPORT Context {
  public:
-  virtual ~Context() {}
+  virtual ~Context();
   static Context* Create(RenderSystem* rs);
 
   virtual void Render(azer::Renderer* renderer);
   OverlayPtr& GetOverlay();
   EffectPtr& GetOverlayEffect();
-  skia::Canvas* GetCanvas();
   RootWindow* GetRootWindow();
+
+  Theme* GetTheme() { return theme_;}
+
+  skia::Canvas* GetSkCanvas();
+  gfx::Canvas* GetCanvas();
  protected:
   Context(RenderSystem* rs);
   virtual bool Init();
@@ -45,14 +54,21 @@ class AZER_EXPORT Context {
   EffectPtr overlay_effect_;
   std::unique_ptr<skia::Context> sk_context_;
   std::unique_ptr<RootWindow> root_;
-  skia::CanvasPtr canvas_;
+  skia::CanvasPtr ccanvas_;
+  gfx::Canvas* canvas_;
+  Theme* theme_;
  private:
   DISALLOW_COPY_AND_ASSIGN(Context);
 };
 
-inline skia::Canvas* Context::GetCanvas() {
-  DCHECK(NULL != canvas_.get());
-  return canvas_.get();
+inline skia::Canvas* Context::GetSkCanvas() {
+  DCHECK(NULL != ccanvas_.get());
+  return ccanvas_.get();
+}
+
+inline gfx::Canvas* Context::GetCanvas() {
+  DCHECK(NULL != canvas_);
+  return canvas_;
 }
 
 inline OverlayPtr& Context::GetOverlay() {

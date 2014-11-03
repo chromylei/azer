@@ -36,14 +36,21 @@ source_set("azer_ui_widget") {
   sources = [
     "../ui/widget/canvas.cc",
     "../ui/widget/canvas.h",
-    "../ui/widget/widget.cc",
-    "../ui/widget/widget.h",
+    "../ui/widget/control.cc",
+    "../ui/widget/control.h",
+    "../ui/widget/coordinate_transform.h",
+    "../ui/widget/context.cc",
+    "../ui/widget/context.h",
+    "../ui/widget/label.cc",
+    "../ui/widget/label.h",
     "../ui/widget/panel.cc",
     "../ui/widget/panel.h",
     "../ui/widget/theme.cc",
     "../ui/widget/theme.h",
     "../ui/widget/root_window.cc",
     "../ui/widget/root_window.h",
+    "../ui/widget/widget.cc",
+    "../ui/widget/widget.h",
   ]
 
   deps = [
@@ -135,9 +142,6 @@ shared_library("render") {
     "util/shader_array.h",
     "util/image.cc",
     "util/image.h",
-    "../ui/widget/coordinate_transform.h",
-    "../ui/widget/context.cc",
-    "../ui/widget/context.h",
     "../ui/window/handle.h",
     "../ui/window/message_loop_win.cc",
     "../ui/window/message_loop.h",

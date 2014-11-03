@@ -9,12 +9,26 @@
 #include "azer/render/skia/canvas.h"
 #include "azer/ui/window/window_host.h"
 #include "azer/ui/widget/root_window.h"
+#include "azer/ui/widget/theme.h"
 #include "ui/gfx/geometry/rect.h"
+#include "ui/gfx/canvas.h"
 
 namespace azer {
 namespace ui {
 Context::Context(RenderSystem* rs)
-    : render_system_(rs) {
+    : render_system_(rs)
+    , theme_(NULL)
+    , canvas_(NULL) {
+}
+
+Context::~Context() {
+  if (canvas_) {
+    delete canvas_;
+  }
+
+  if (theme_) {
+    delete theme_;
+  }
 }
 
 Context* Context::Create(RenderSystem* rs) {
@@ -46,8 +60,8 @@ bool Context::Init() {
   WindowHost* host = render_system_->GetWindowHost();
   int width = host->GetMetrics().width;
   int height = host->GetMetrics().height;
-  canvas_ = sk_context_->CreateCanvas(width, height);
-  if (!canvas_.get()) {
+  ccanvas_ = sk_context_->CreateCanvas(width, height);
+  if (!ccanvas_.get()) {
     LOG(ERROR) << "Failed to init canvas.";
     return false;
   }
@@ -56,12 +70,14 @@ bool Context::Init() {
   if (!root_->Init()) {
     return false;
   }
+
+  canvas_ = gfx::Canvas::CreateCanvasWithoutScaling(ccanvas_->GetSkCanvas(), 1.0f);
   return true;
 }
 
 void Context::SetOverlayEffect(EffectPtr& ptr) {
   OverlayEffect* effect = (OverlayEffect*)ptr.get();
-  effect->SetTexture(canvas_->GetTexture());
+  effect->SetTexture(ccanvas_->GetTexture());
 }
 
 void Context::Render(azer::Renderer* renderer) {
