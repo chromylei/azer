@@ -67,7 +67,9 @@ void Context::SetOverlayEffect(EffectPtr& ptr) {
 void Context::Render(azer::Renderer* renderer) {
   DCHECK(root_.get() != NULL);
   DCHECK(overlay_.get() != NULL);
+  DCHECK(sk_context_.get() != NULL);
   root_->Redraw(false);
+  sk_context_->flush();
   SetOverlayEffect(overlay_->GetEffect());
   overlay_->Render(renderer);
 }

@@ -26,6 +26,7 @@ class AZER_EXPORT Context {
   ~Context();
 
   bool Init();
+  void flush();
 
   CanvasPtr CreateCanvas(int width, int height);
 

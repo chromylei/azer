@@ -60,9 +60,48 @@ OverlayEffect* D3D11Overlay::CreateDefaultEffect() {
 }
 
 bool D3D11Overlay::Init(azer::RenderSystem* rs) {
-  if (!Overlay::InitVertex(rs)) {
+  if (!InitVertex(rs)) {
     return false;
   }
+  return true;
+}
+
+const VertexDesc::Desc D3D11Overlay::kVertexDesc[] = {
+  {"POSITION", 0, kVec4},
+  {"TEXCOORD", 0, kVec2},
+};
+
+const int D3D11Overlay::kVertexDescNum = arraysize(D3D11Overlay::kVertexDesc);
+
+bool D3D11Overlay::InitVertex(RenderSystem* rs) {
+  // create vertex buffer
+  vertex_desc_ptr_.reset(new VertexDesc(kVertexDesc, kVertexDescNum));
+  VertexData data(vertex_desc_ptr_, kVertexNum);
+  Vertex* ptr = (Vertex*)data.pointer();
+  ptr->position = azer::Vector4(rect_.x(), rect_.bottom(), 0.0f, 1.0f);
+  ptr->texcoord = azer::Vector2(0.0f, 1.0f);
+  ptr++;
+  ptr->position = azer::Vector4(rect_.x(), rect_.y(), 0.0f, 1.0f);
+  ptr->texcoord = azer::Vector2(0.0f, 0.0f);
+  ptr++;
+  ptr->position = azer::Vector4(rect_.right(), rect_.bottom(), 0.0f, 1.0f);
+  ptr->texcoord = azer::Vector2(1.0f, 1.0f);
+  ptr++;
+
+  ptr->position = azer::Vector4(rect_.right(), rect_.bottom(), 0.0f, 1.0f);
+  ptr->texcoord = azer::Vector2(1.0f, 1.0f);
+  ptr++;
+  ptr->position = azer::Vector4(rect_.x(), rect_.y(), 0.0f, 1.0f);
+  ptr->texcoord = azer::Vector2(0.0f, 0.0f);
+  ptr++;
+  ptr->position = azer::Vector4(rect_.right(), rect_.y(), 0.0f, 1.0f);
+  ptr->texcoord = azer::Vector2(1.0f, 0.0f);
+
+  vb_ptr_.reset(rs->CreateVertexBuffer(VertexBuffer::Options(), &data));
+  if (!vb_ptr_.get()) {
+    return false;
+  }
+
   return true;
 }
 }  // namespace azer

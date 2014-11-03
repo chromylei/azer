@@ -24,6 +24,8 @@ class AZER_EXPORT Canvas {
   int width() const { return width_;}
   int height() const { return height_;}
 
+  void flush();
+
   bool Save(const ::base::FilePath& path);
   SkCanvas* GetSkCanvas();
  private:

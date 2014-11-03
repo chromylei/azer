@@ -79,5 +79,7 @@ bool Canvas::Save(const ::base::FilePath& path) {
   return SkImageEncoder::EncodeFile(pathstr.c_str(), bitmap, type, 100);
 }
 
+void Canvas::flush() {
+}
 }  // namespace skia
 }  // namespace azer

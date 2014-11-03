@@ -30,8 +30,12 @@ class D3D11Overlay : public Overlay {
       , render_system_(rs) {}
   virtual ~D3D11Overlay() {}
   virtual OverlayEffect* CreateDefaultEffect();
+
+  static const int kVertexDescNum;
+  static const azer::VertexDesc::Desc kVertexDesc[];
  protected:
   bool Init(azer::RenderSystem* rs);
+  bool InitVertex(RenderSystem* rs);
   D3D11RenderSystem* render_system_;
   friend class D3D11RenderSystem;
   DISALLOW_COPY_AND_ASSIGN(D3D11Overlay);

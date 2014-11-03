@@ -49,9 +49,6 @@ class AZER_EXPORT Overlay {
    * };
    */
   VertexDescPtr GetVertexDesc() { return vertex_desc_ptr_;}
-
-  static const int kVertexDescNum;
-  static const azer::VertexDesc::Desc kVertexDesc[];
  protected:
   struct Vertex {
     azer::Vector4 position;
@@ -61,8 +58,6 @@ class AZER_EXPORT Overlay {
         , texcoord(in_texcoord){}
     Vertex() {}
   };
-
-  bool InitVertex(RenderSystem* rs);
 
   gfx::RectF rect_;
   VertexBufferPtr vb_ptr_;

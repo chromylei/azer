@@ -77,5 +77,10 @@ AzerEGLInterface* Context::GetAzerEGLInterface() {
   DCHECK(helper_ != NULL);
   return helper_->GetAzerEGLInterface();
 }
+
+void Context::flush() {
+  DCHECK(gr_context_ != NULL);
+  gr_context_->flush();
+}
 }  // namespace skia
 }  // namespace azer
