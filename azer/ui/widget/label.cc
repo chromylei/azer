@@ -21,17 +21,19 @@ void Label::Redraw(bool force) {
       | gfx::Canvas::NO_ELLIPSIS
       | gfx::Canvas::NO_SUBPIXEL_RENDERING;
 
-  gfx::Canvas* canvas = GetContext()->GetCanvas();
+  gfx::Rect rect(0, 0, rect_.width(), rect_.height());
+  Canvas* canvas = canvas_;
   Theme* theme = Theme::Current();
   uint32 bcolor = (uint32)SkColorSetARGBInline(0, 0, 0, 0);
-  uint32 fcolor = (uint32)SkColorSetARGBInline(255, 128, 128, 128);
+  uint32 fcolor = (uint32)SkColorSetARGBInline(255, 192, 192, 192);
+  canvas->FillRect(rect, SkColorSetARGBInline(64, 64, 64, 128));
   canvas->DrawStringRectWithFlags(text_,
                                   theme->label_font(),
                                   fcolor,
-                                  rect_,
+                                  rect,
                                   default_label_draw_flags);
   canvas->FillRect(rect_, (SkColor)bcolor);
-  canvas->Save();
+  canvas->flush();
 }
 }  // namespace ui
 }  // namespace azer

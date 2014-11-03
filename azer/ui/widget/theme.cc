@@ -25,7 +25,7 @@ DefaultTheme::~DefaultTheme() {
 
 bool DefaultTheme::Init() {
   gfx::FontList::SetDefaultFontDescription("Droid Sans serif, Sans serif, 14px");
-  label_font_ = new gfx::FontList("Courier New, 14px");
+  label_font_ = new gfx::FontList("Arial, 14px");
   return true;
 }
 }  // namespace ui

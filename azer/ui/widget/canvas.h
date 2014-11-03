@@ -2,11 +2,14 @@
 
 #include "azer/base/render_export.h"
 #include "azer/ui/widget/widget.h"
+#include "azer/base/string.h"
 #include "base/basictypes.h"
 
 #include "ui/gfx/canvas.h"
+#include "ui/gfx/font_list.h"
 #include "ui/gfx/geometry/rect.h"
 #include "ui/gfx/geometry/point.h"
+
 
 namespace azer {
 namespace ui {
@@ -15,10 +18,8 @@ class Widget;
 
 /**
  * Canvas
- * 在 ui 框架下，所有的 control 实际上最终结果显示在一个 texture 上
- * 但针对于每一个 control 他们的绘制坐标系又是以自己的坐标系为参考的
- * 此类的功能就是提供一个以本窗口坐标系的 canvas 对象
- *
+ * Canvas help draw control on local coordinate system, but not
+ * surface coordinate system.
  */
 class AZER_EXPORT Canvas {
  public:
@@ -74,6 +75,15 @@ class AZER_EXPORT Canvas {
   // Draws the given rectangle with rounded corners of |radius| using the
   // given |paint| parameters.
   void DrawRoundRect(const gfx::Rect& rect, int radius, const SkPaint& paint);
+
+  // Draws text with the specified color, fonts and location. The last argument
+  // specifies flags for how the text should be rendered. It can be one of
+  // TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT or TEXT_ALIGN_LEFT.
+  void DrawStringRectWithFlags(const base::string16& text,
+                               const gfx::FontList& font_list,
+                               SkColor color,
+                               const gfx::Rect& display_rect,
+                               int flags);
  private:
   Widget* widget_;
   gfx::Canvas* canvas_;
@@ -137,16 +147,25 @@ inline void Canvas::DrawRoundRect(const gfx::Rect& rect, int radius,
   canvas_->DrawRoundRect(TransRect(rect), radius, paint);
 }
 
+inline void Canvas::DrawStringRectWithFlags(const base::string16& text,
+                                            const gfx::FontList& font_list,
+                                            SkColor color,
+                                            const gfx::Rect& display_rect,
+                                            int flags) {
+  canvas_->DrawStringRectWithFlags(text, font_list, color,
+                                   TransRect(display_rect), flags);
+}
+
 inline void Canvas::flush() {
   canvas_->Save();
 }
 
 inline gfx::Rect Canvas::TransRect(const gfx::Rect& r) {
-  return gfx::Rect();
+  return widget_->ConvertRectToSurface(r);
 }
 
 inline gfx::Point Canvas::TransPoint(const gfx::Point& pt) {
-  return gfx::Point();
+  return widget_->ConvertPointToSurface(pt);
 }
 }  // namespace ui
 }  // namespace azer

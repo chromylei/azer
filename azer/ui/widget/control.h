@@ -21,10 +21,7 @@ class AZER_EXPORT Control : public Widget {
   virtual void Redraw(bool force) = 0;
 
   Widget* parent() { return parent_;}
- private:
-  void CalcAbsoluteRect();
-
-  Canvas* canvas_;
+ protected:
   Widget* parent_;
   gfx::Rect absolute_rect_;
   DISALLOW_COPY_AND_ASSIGN(Control);

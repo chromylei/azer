@@ -8,10 +8,10 @@
 namespace azer {
 namespace ui {
 
+class Canvas;
 class Context;
 class AZER_EXPORT Widget : public TreeNode<Widget> {
  public:
-  Widget(Context* context);
   Widget(const gfx::Rect& rect, Context* context);
   virtual ~Widget() {}
 
@@ -30,12 +30,18 @@ class AZER_EXPORT Widget : public TreeNode<Widget> {
   gfx::Point ConvertPointToSurface(const gfx::Point& pt);
   gfx::Rect ConvertRectToSurface(const gfx::Rect& rc);
 
+  Canvas* GetCanvas() { return canvas_;}
   Context* GetContext() { return context_;}
  protected:
+  Widget(Context* context);  // root
+
   gfx::Rect rect_;
   bool visible_;
   bool surface_dirty_;
   Context* context_;
+  Canvas* canvas_;
+
+  friend class RootWindow;
  private:
   DISALLOW_COPY_AND_ASSIGN(Widget);
 };

@@ -1,4 +1,6 @@
 #include "azer/ui/widget/widget.h"
+
+#include "azer/ui/widget/canvas.h"
 #include "azer/ui/widget/context.h"
 
 namespace azer {
@@ -12,6 +14,7 @@ Widget::Widget(const gfx::Rect& rect, Context* context)
     : context_(context)
     , rect_(rect)
     , surface_dirty_(true) {
+  canvas_ = new Canvas(this, context->GetCanvas());
 }
 
 gfx::Point Widget::ConvertPointToSurface(const gfx::Point& org_pt) {
