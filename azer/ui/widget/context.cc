@@ -72,6 +72,7 @@ bool Context::Init() {
   }
 
   canvas_ = gfx::Canvas::CreateCanvasWithoutScaling(ccanvas_->GetSkCanvas(), 1.0f);
+  root_->Redraw(true);
   return true;
 }
 
@@ -84,10 +85,14 @@ void Context::Render(azer::Renderer* renderer) {
   DCHECK(root_.get() != NULL);
   DCHECK(overlay_.get() != NULL);
   DCHECK(sk_context_.get() != NULL);
-  root_->Redraw(false);
-  sk_context_->wait();
   SetOverlayEffect(overlay_->GetEffect());
   overlay_->Render(renderer);
+}
+
+void Context::Draw() {
+  DCHECK(root_.get() != NULL);
+  sk_context_->wait();
+  root_->Redraw(false);
 }
 
 Effect* Context::CreateOverlayEffect() {

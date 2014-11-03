@@ -32,7 +32,20 @@ class AZER_EXPORT Context {
   virtual ~Context();
   static Context* Create(RenderSystem* rs);
 
-  virtual void Render(azer::Renderer* renderer);
+  /**
+   * Usually, RenderLoop Look like there
+   * OnRender() {
+   *   context->Draw();
+   *   render scene
+   *   context->Render(renderer);
+   *   render_system_->Present();
+   * }
+   * because, glFinish in context->Draw()
+   * so, put the code as many as posible before it
+   */
+  void Draw();
+  void Render(azer::Renderer* renderer);
+  
   OverlayPtr& GetOverlay();
   EffectPtr& GetOverlayEffect();
   RootWindow* GetRootWindow();

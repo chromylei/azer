@@ -26,7 +26,8 @@ class AZER_EXPORT Canvas {
   Canvas(Widget* widget, gfx::Canvas* canvas);
 
   void reset(const gfx::Rect& rect);
-  void flush();
+  void begin();
+  void end();
 
   // Fills the entire canvas' bitmap (restricted to current clip) with
   // specified |color| using a transfer mode of SkXfermode::kSrcOver_Mode.
@@ -156,8 +157,10 @@ inline void Canvas::DrawStringRectWithFlags(const base::string16& text,
                                    TransRect(display_rect), flags);
 }
 
-inline void Canvas::flush() {
+inline void Canvas::begin() {}
+inline void Canvas::end() {
   canvas_->Save();
+  canvas_->Restore();
 }
 
 inline gfx::Rect Canvas::TransRect(const gfx::Rect& r) {
