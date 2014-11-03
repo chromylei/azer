@@ -57,6 +57,20 @@ bool Context::Init() {
   overlay_effect_.reset(CreateOverlayEffect());
   overlay_->SetEffect(overlay_effect_);
 
+  Blending::Desc blend_desc;
+  blend_desc.src = Blending::kSrcAlpha;
+  blend_desc.dest = Blending::kSrcInvAlpha;
+  blend_desc.oper = Blending::kAdd;
+  blend_desc.src_alpha = Blending::kOne;
+  blend_desc.dest_alpha = Blending::kZero;
+  blend_desc.alpha_oper = Blending::kAdd;
+  blend_desc.mask = Blending::kWriteColor;
+  blending_.reset(render_system_->CreateBlending(blend_desc));
+  if (!blending_.get()) {
+    LOG(ERROR) << "Failed to create blending.";
+    return false;
+  }
+
   WindowHost* host = render_system_->GetWindowHost();
   int width = host->GetMetrics().width;
   int height = host->GetMetrics().height;
@@ -85,8 +99,10 @@ void Context::Render(azer::Renderer* renderer) {
   DCHECK(root_.get() != NULL);
   DCHECK(overlay_.get() != NULL);
   DCHECK(sk_context_.get() != NULL);
+  renderer->UseBlending(blending_.get(), 0);
   SetOverlayEffect(overlay_->GetEffect());
   overlay_->Render(renderer);
+  renderer->ResetBlending();
 }
 
 void Context::Draw() {

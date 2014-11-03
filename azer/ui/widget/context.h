@@ -6,6 +6,7 @@
 #include "azer/base/render_export.h"
 #include "azer/render/overlay.h"
 #include "azer/render/effect.h"
+#include "azer/render/blending.h"
 #include "azer/render/skia/context.h"
 #include "azer/render/skia/canvas.h"
 #include "azer/ui/widget/root_window.h"
@@ -65,6 +66,7 @@ class AZER_EXPORT Context {
   RenderSystem* render_system_;
   OverlayPtr overlay_;
   EffectPtr overlay_effect_;
+  BlendingPtr blending_;
   std::unique_ptr<skia::Context> sk_context_;
   std::unique_ptr<RootWindow> root_;
   skia::CanvasPtr ccanvas_;

@@ -31,7 +31,6 @@ class AZER_EXPORT Theme {
   const gfx::FontList& label_font() const { return *label_font_;}
  protected:
   gfx::FontList* label_font_;
-
   static Theme* theme_;
   DISALLOW_COPY_AND_ASSIGN(Theme);
 };
