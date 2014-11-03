@@ -30,28 +30,52 @@ namespace azer {
 const StringType& D3D11RenderSystem::name_ = AZER_LITERAL("Direct3D11RenderSystem");
 const StringType& D3D11RenderSystem::short_name_ = AZER_LITERAL("d3d11");
 
-D3D11RenderSystem::D3D11RenderSystem() {
+D3D11RenderSystem::D3D11RenderSystem(WindowHost* window)
+    : RenderSystem(window)
+    , d3d_device_(NULL)
+    , d3d_context_(NULL)
+    , dxgi_factory_(NULL) {
 }
 
 D3D11RenderSystem::~D3D11RenderSystem() {
+  SAFE_RELEASE(dxgi_factory_);
+  SAFE_RELEASE(d3d_context_);
+  SAFE_RELEASE(d3d_device_);
 }
 
-bool D3D11RenderSystem::Init(WindowHost* window) {
-  swap_chain_.reset(new D3D11SwapChain(this, window));
-  swap_chain_->Init();
-  GetDefaultRenderer()->Use();
-
-  /*
-  if (!angle::InitAngle(window->Handle())) {
+bool D3D11RenderSystem::Init() {
+  if (!InitD3DDevice()) {
     return false;
   }
-  */
+
+  WindowHost* winhost = GetWindowHost();
+  gfx::Rect rect = std::move(winhost->GetClientBounds());
+  std::unique_ptr<D3D11SwapChain> ptr(new D3D11SwapChain(this));
+  if (!ptr->Init(rect.width(), rect.height())) {
+    return false;
+  }
+
+  swap_chain_.reset(ptr.release());
+  GetDefaultRenderer()->Use();
   return true;
 }
 
-void D3D11RenderSystem::Present() {
+bool D3D11RenderSystem::Present() {
   DCHECK(swap_chain_ != NULL) << "swap_chain cannto be NULL";
-  swap_chain_->Present();
+  if (!swap_chain_->Present()) {
+    LOG(ERROR) << " failed to Present.";
+
+    gfx::Rect rect = std::move(win_host_->GetClientBounds());
+    return swap_chain_->reset(rect.width(), rect.height());
+  }
+
+  return true;
+}
+
+bool D3D11RenderSystem::reset() {
+  DCHECK(swap_chain_ != NULL);
+  gfx::Rect rect = std::move(win_host_->GetClientBounds());
+  return swap_chain_->reset(rect.width(), rect.height());
 }
 
 void D3D11RenderSystem::GetDriverCapability() {
@@ -240,6 +264,51 @@ Renderer* D3D11RenderSystem::CreateDeferredRenderer(const Texture::Options& opt)
 
 AzerEGLInterface* D3D11RenderSystem::GetEGLInterface() {
   return new ANGLEGLInterface(this);
+}
+
+bool D3D11RenderSystem::InitD3DDevice() {
+  HRESULT hr;
+  // Create our SwapChain
+  D3D_FEATURE_LEVEL featureLevels[] = {
+    D3D_FEATURE_LEVEL_11_0,
+    D3D_FEATURE_LEVEL_10_1,
+    D3D_FEATURE_LEVEL_10_0,
+  };
+
+  hr = D3D11CreateDevice(NULL,
+                         D3D_DRIVER_TYPE_HARDWARE,
+                         NULL,
+                         NULL,
+                         featureLevels, arraysize(featureLevels),
+                         D3D11_SDK_VERSION,
+                         &d3d_device_,
+                         &feature_level_,
+                         &d3d_context_);
+  if (FAILED(hr)) {
+    return false;
+  }
+
+  IDXGIDevice *dxgiDevice = NULL; 
+  hr = d3d_device_->QueryInterface(__uuidof(IDXGIDevice), (void**)&dxgiDevice);
+  if (FAILED(hr)) {
+    LOG(ERROR) << "Failed to get Interface: IDXGIDevice";
+    return false;
+  }
+
+  hr = dxgiDevice->GetParent(__uuidof(IDXGIAdapter), (void**)&dxgi_adapter_);
+  if (FAILED(hr)) {
+    LOG(ERROR) << "Failed to get Interface: IDXGIAdapter";
+    return false;
+  }
+
+  hr = dxgi_adapter_->GetParent(__uuidof(IDXGIFactory), (void**)&dxgi_factory_);
+  if (FAILED(hr)) {
+    LOG(ERROR) << "Failed to get Interface: IDXGIFactory";
+    return false;
+  }
+
+  d3d_context_->AddRef();
+  return true;
 }
 }  // namespace azer
 

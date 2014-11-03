@@ -43,7 +43,7 @@ bool Context::Init() {
   overlay_effect_.reset(CreateOverlayEffect());
   overlay_->SetEffect(overlay_effect_);
 
-  WindowHost* host = render_system_->GetRenderWindowHost();
+  WindowHost* host = render_system_->GetWindowHost();
   int width = host->GetMetrics().width;
   int height = host->GetMetrics().height;
   canvas_ = sk_context_->CreateCanvas(width, height);

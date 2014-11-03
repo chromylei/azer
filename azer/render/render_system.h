@@ -27,7 +27,7 @@ typedef std::shared_ptr<IndicesData> IndicesDataPtr;
 
 class AZER_EXPORT RenderSystem {
  public:
-  RenderSystem() : win_host_(NULL) { }
+  RenderSystem(WindowHost* host) : win_host_(host) { }
 
   virtual ~RenderSystem() {}
   virtual const StringType& name() const = 0;
@@ -37,7 +37,6 @@ class AZER_EXPORT RenderSystem {
                                         WindowHost* win);
   static void Release();
   static RenderSystem* Current();
-  virtual bool Init(WindowHost* window) = 0;
 
   virtual Renderer* CreateRenderer(const Texture::Options& opt) = 0;
   virtual Renderer* CreateDeferredRenderer(const Texture::Options& opt) = 0;
@@ -69,7 +68,8 @@ class AZER_EXPORT RenderSystem {
                                        const std::string& program) = 0;
   virtual Overlay* CreateOverlay(const gfx::RectF& rect) = 0;
 
-  virtual void Present() = 0;
+  virtual bool Present() = 0;
+  virtual bool reset() = 0;
 
   // 
   virtual AzerEGLInterface* GetEGLInterface() = 0;
@@ -78,7 +78,7 @@ class AZER_EXPORT RenderSystem {
     return capability_;
   }
 
-  WindowHost* GetRenderWindowHost() const { return win_host_;}
+  WindowHost* GetWindowHost() const { return win_host_;}
   static const int32 kMaxRenderTarget = 256;
 
   Renderer* GetDefaultRenderer() {

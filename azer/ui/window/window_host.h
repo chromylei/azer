@@ -55,6 +55,8 @@ class AZER_EXPORT WindowHost : public window::Window {
   void SetDelegate(Delegate* delegate) {delegate_ = delegate;}
   void Attach(window::NativeWindowHandle handle);
   const Options& GetMetrics() const { return options_;}
+  gfx::Rect GetBounds();
+  gfx::Rect GetClientBounds();
 
   static void MainLoop(WindowHost* mainwnd);
   friend void AZER_EXPORT MainRenderLoop(WindowHost* mainwnd);
@@ -62,6 +64,7 @@ class AZER_EXPORT WindowHost : public window::Window {
   void SetRenderSystem(RenderSystem* rs) { render_system_ = rs;}
   RenderSystem* GetRenderSystem() { return render_system_;}
  private:
+  
   Delegate* delegate_;
   RenderSystem* render_system_;
   Options options_;

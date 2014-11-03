@@ -48,7 +48,7 @@ bool Init(RenderSystem* rs, AzerEGLContext* ctx) {
   EGLConfig config;
   EGLint contextAttribs[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE, EGL_NONE };
 
-  WindowHost* host = rs->GetRenderWindowHost();
+  WindowHost* host = rs->GetWindowHost();
   EGLNativeWindowType hWnd = (EGLNativeWindowType)host->Handle();
   display = eglGetDisplay(GetDC(hWnd));
   if (display == EGL_NO_DISPLAY) {
@@ -81,12 +81,15 @@ bool Init(RenderSystem* rs, AzerEGLContext* ctx) {
   };
   surfaceAttribList[1] = ctx->width;
   surfaceAttribList[3] = ctx->height;
+  /*
   EGLClientBuffer egl_buffer = (EGLClientBuffer)(shared->GetSharedHanle());
   surface = eglCreatePbufferFromClientBuffer(display,
                                              EGL_D3D_TEXTURE_2D_SHARE_HANDLE_ANGLE,
                                              egl_buffer,
                                              config,
                                              surfaceAttribList);
+  */
+  surface = eglCreatePbufferSurface(display, config, surfaceAttribList);
   if (surface == EGL_NO_SURFACE) {
     LOG(ERROR) << "Failed to create Surface";
     return false;

@@ -35,7 +35,7 @@ Context::~Context() {
 
 bool Context::Init() {
   // code reference: skia/include/gpu/GrContextFactory.h
-  helper_ = new AzerSkiaGrContext(300, 300);
+  helper_ = new AzerSkiaGrContext(1, 1);
   SkGLContextHelper* glctx = helper_;
   static const int kBogusSize = 1;
   if (!glctx->init(kBogusSize, kBogusSize)) {

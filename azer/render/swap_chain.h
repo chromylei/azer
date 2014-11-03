@@ -15,23 +15,20 @@ class WindowHost;
 
 class AZER_EXPORT SwapChain {
  public:
-  SwapChain(WindowHost* host) : win_host_(host) {}
+  SwapChain() {}
   virtual ~SwapChain() {}
 
-  virtual bool Init() = 0;
   virtual bool resize(int width, int height) = 0;
   virtual bool reset(int width, int height) = 0;
-  virtual void Present() = 0;
+  virtual bool Present() = 0;
 
   RendererPtr& GetRenderer() { return renderer_;}
   DepthBufferPtr& GetDepthBuffer() { return depth_buffer_;}
   RenderTargetPtr& GetRenderTarget() { return render_target_;}
  protected:
-  WindowHost* win_host_;
   RendererPtr renderer_;
   DepthBufferPtr depth_buffer_;
   RenderTargetPtr render_target_;
-  int width_, height_;
   DISALLOW_COPY_AND_ASSIGN(SwapChain);
 };
 

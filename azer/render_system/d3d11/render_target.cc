@@ -10,13 +10,14 @@
 
 namespace azer {
 
-bool D3D11RenderTarget::InitDefault(const Texture::Options& opt, D3D11SwapChain* sc) {
+bool D3D11RenderTarget::InitDefault(const Texture::Options& opt,
+                                    D3D11SwapChain* sc,
+                                    D3D11RenderSystem* rs) {
   DCHECK(target_ == NULL);
   DCHECK(default_render_target_);
   HRESULT hr;
-
   IDXGISwapChain* swap_chain = sc->GetD3D11SwapChain();
-  ID3D11Device* d3d_device = sc->GetDevice();
+  ID3D11Device* d3d_device = rs->GetDevice();
   ID3D11Texture2D* texture_buffer;
   hr = swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&texture_buffer);
   HRESULT_HANDLE(hr, ERROR, "SwapChain::GetBuffer failed ");

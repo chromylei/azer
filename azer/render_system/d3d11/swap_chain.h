@@ -16,36 +16,21 @@ class D3D11Renderer;
 
 class D3D11SwapChain : public SwapChain {
  public:
-  D3D11SwapChain(D3D11RenderSystem* rs, WindowHost* host);
+  D3D11SwapChain(D3D11RenderSystem* rs);
   virtual ~D3D11SwapChain();
 
-  virtual bool Init() OVERRIDE;
+  bool Init(int width, int height);
   virtual bool reset(int width, int height) OVERRIDE;
   virtual bool resize(int width, int height) OVERRIDE;
-  virtual void Present() OVERRIDE;
-
-  ID3D11Device* GetDevice();
-  ID3D11DeviceContext* GetContext();
+  virtual bool Present() OVERRIDE;
+  
   IDXGISwapChain* GetD3D11SwapChain();
-
-  D3D_FEATURE_LEVEL feature_level() const { return feature_level_; }
  private:
+  Renderer* CreateDefault(int width, int height);
   IDXGISwapChain* swap_chain_;
-  ID3D11Device* d3d_device_;
-  ID3D11DeviceContext* d3d_context_;
-  D3D_FEATURE_LEVEL feature_level_;
   D3D11RenderSystem* render_system_;
   DISALLOW_COPY_AND_ASSIGN(D3D11SwapChain);
 };
-
-inline ID3D11DeviceContext* D3D11SwapChain::GetContext() {
-  DCHECK(NULL != d3d_context_);
-  return d3d_context_;
-}
-inline ID3D11Device* D3D11SwapChain::GetDevice() {
-  DCHECK(NULL != d3d_device_);
-  return d3d_device_;
-}
 
 inline IDXGISwapChain* D3D11SwapChain::GetD3D11SwapChain() {
   DCHECK(NULL != swap_chain_);

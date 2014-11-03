@@ -21,10 +21,10 @@ class D3D11DepthBuffer;
 
 class D3D11RenderSystem : public RenderSystem {
  public:
-  D3D11RenderSystem();
+  D3D11RenderSystem(WindowHost* host);
   ~D3D11RenderSystem();
 
-  virtual bool Init(WindowHost* window);
+  bool Init();
   virtual const StringType& name() const OVERRIDE;
   virtual const StringType& short_name() const OVERRIDE;
 
@@ -52,7 +52,8 @@ class D3D11RenderSystem : public RenderSystem {
   virtual Overlay* CreateOverlay(const gfx::RectF& rect) OVERRIDE;
   virtual Technique* CreateTechnique() OVERRIDE;
 
-  virtual void Present() OVERRIDE;
+  virtual bool Present() OVERRIDE;
+  virtual bool reset() OVERRIDE;
 
   virtual AzerEGLInterface* GetEGLInterface() OVERRIDE;
 
@@ -61,30 +62,40 @@ class D3D11RenderSystem : public RenderSystem {
    */
   ID3D11Device* GetDevice();
   ID3D11DeviceContext* GetContext();
+  IDXGIFactory* GetDxgiFactory();
   void ResetRenderTarget();
   D3D_FEATURE_LEVEL feature_level() const;
  protected:
   void GetDriverCapability();
+  bool InitD3DDevice();
+  bool InitDefaultRenderer();
 
+  ID3D11Device* d3d_device_;
+  ID3D11DeviceContext* d3d_context_;
+  IDXGIFactory* dxgi_factory_;
+  IDXGIAdapter* dxgi_adapter_;
+  D3D_FEATURE_LEVEL feature_level_;
   static const StringType& name_;
   static const StringType& short_name_;
   DISALLOW_COPY_AND_ASSIGN(D3D11RenderSystem);
 };
 
 inline ID3D11DeviceContext* D3D11RenderSystem::GetContext() {
-  DCHECK(NULL != swap_chain_.get());
-  D3D11SwapChain* swap_chain = (D3D11SwapChain*)swap_chain_.get();
-  return swap_chain->GetContext();
+  DCHECK(NULL != d3d_context_);
+  return d3d_context_;
 }
 inline ID3D11Device* D3D11RenderSystem::GetDevice() {
-  DCHECK(NULL != swap_chain_.get());
-  D3D11SwapChain* swap_chain = (D3D11SwapChain*)swap_chain_.get();
-  return swap_chain->GetDevice();
+  DCHECK(NULL != d3d_device_);
+  return d3d_device_;
+}
+
+inline IDXGIFactory* D3D11RenderSystem::GetDxgiFactory() {
+  DCHECK(NULL != dxgi_factory_);
+  return dxgi_factory_;
 }
 
 inline D3D_FEATURE_LEVEL D3D11RenderSystem::feature_level() const {
-  DCHECK(NULL != swap_chain_.get());
-  D3D11SwapChain* swap_chain = (D3D11SwapChain*)swap_chain_.get();
-  return swap_chain->feature_level();
+  DCHECK(NULL != feature_level_);
+  return feature_level_;
 }
 }  // namespace azer

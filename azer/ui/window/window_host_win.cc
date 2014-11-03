@@ -83,10 +83,11 @@ void WindowHost::Init() {
 }
 
 void WindowHost::Attach(window::NativeWindowHandle handle) {
+  DCHECK(::IsWindow((HWND)handle_)) << "Invalid window Handle";
   HWND hwnd = (HWND)handle;
   handle_ = handle;
   RECT r;
-  GetWindowRect((HWND)handle_, &r);
+  CHECK(GetWindowRect((HWND)handle_, &r));
   options_.left = r.left;
   options_.top = r.top;
   options_.width = r.right - r.left;
@@ -111,5 +112,19 @@ void WindowHost::MainLoop(WindowHost* mainwnd) {
   }
 
   mainwnd->OnQuit();
+}
+
+gfx::Rect WindowHost::GetClientBounds() {
+  DCHECK(::IsWindow((HWND)handle_)) << "Invalid window Handle";
+  RECT r;
+  CHECK(::GetClientRect((HWND)handle_, &r));
+  return gfx::Rect(r.left, r.top, r.right - r.left, r.bottom - r.top);
+}
+
+gfx::Rect WindowHost::GetBounds() {
+  DCHECK(::IsWindow((HWND)handle_)) << "Invalid window Handle";
+  RECT r;
+  CHECK(::GetWindowRect((HWND)handle_, &r));
+  return gfx::Rect(r.left, r.top, r.right - r.left, r.bottom - r.top);
 }
 }  // namespace azer

@@ -3,8 +3,8 @@
 
 extern "C" {
 azer::RenderSystem* CreateRenderSystem(azer::WindowHost* win) {
-  std::unique_ptr<azer::RenderSystem> rs(new azer::D3D11RenderSystem);
-  if (rs->Init(win)) {
+  std::unique_ptr<azer::D3D11RenderSystem> rs(new azer::D3D11RenderSystem(win));
+  if (rs->Init()) {
     rs->GetDefaultRenderer()->SetViewport(azer::Renderer::Viewport());
     return rs.release();
   } else {
