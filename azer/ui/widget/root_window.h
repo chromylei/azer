@@ -3,6 +3,7 @@
 #pragma once
 
 #include "base/basictypes.h"
+#include "base/time/time.h"
 #include "azer/ui/widget/widget.h"
 
 namespace gfx {
@@ -27,6 +28,7 @@ class AZER_EXPORT RootWindow : public Widget {
   bool Init();
   virtual void Redraw(bool force) OVERRIDE;
  protected:
+  base::TimeTicks prev_draw_;
   DISALLOW_COPY_AND_ASSIGN(RootWindow);
 };
 }  // namespace ui

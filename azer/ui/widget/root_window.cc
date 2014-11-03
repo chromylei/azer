@@ -9,7 +9,9 @@
 namespace azer {
 namespace ui {
 void RootWindow::Redraw(bool force) {
-  if (force || surface_dirty_) {
+  ::base::TimeTicks now = ::base::TimeTicks::HighResNow();
+  ::base::TimeDelta delta = now - prev_draw_;
+  if (delta.InSecondsF() > 0.03) {
     Widget* widget = last_child();
     while (widget) {
       // DCHECK(widget->HasSurface());
@@ -39,8 +41,9 @@ void RootWindow::Redraw(bool force) {
 
     canvas->drawLine(10, 300, 300, 300, paint);
     canvas->drawCircle(100, 400, 50, paint);
-    canvas->flush();
+    // canvas->flush();
     // surface_dirty_ = false;
+    prev_draw_ = ::base::TimeTicks::HighResNow();
   }
 }
 

@@ -80,6 +80,7 @@ AzerEGLInterface* Context::GetAzerEGLInterface() {
 
 void Context::flush() {
   DCHECK(gr_context_ != NULL);
+  gr_context_->resetContext();
   gr_context_->flush();
 }
 }  // namespace skia
