@@ -30,8 +30,8 @@ class AZER_EXPORT WidgetHost : public Widget {
 
   virtual void OnHide() OVERRIDE;
   virtual void OnShow() OVERRIDE;
-  virtual void OnBoundsChanging() OVERRIDE;
-  virtual void OnBoundsChanged() OVERRIDE;
+  virtual void OnBoundsChanging(const gfx::Rect& newrect) OVERRIDE;
+  virtual void OnBoundsChanged(const gfx::Rect& newrect) OVERRIDE;
  protected:
   const static float kMinDrawInterval;
   base::TimeTicks prev_draw_;
