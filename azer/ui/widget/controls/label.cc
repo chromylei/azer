@@ -25,15 +25,14 @@ void Label::Redraw(bool force) {
   Canvas* canvas = canvas_;
   canvas->begin();
   Theme* theme = Theme::Current();
-  uint32 bcolor = (uint32)SkColorSetARGBInline(0, 0, 0, 0);
-  uint32 fcolor = (uint32)SkColorSetARGBInline(255, 192, 192, 192);
+  const LabelStyle* style = theme->label_style();
   canvas->FillRect(rect, SkColorSetARGBInline(64, 64, 64, 128));
   canvas->DrawStringRectWithFlags(text_,
-                                  theme->label_font(),
-                                  fcolor,
+                                  *style->text_style()->font_list(),
+                                  style->text_style()->fgcolor(),
                                   rect,
                                   default_label_draw_flags);
-  canvas->FillRect(rect_, (SkColor)bcolor);
+  canvas->FillRect(rect_, (SkColor)style->frame_style()->bgcolor());
   canvas->end();
 }
 }  // namespace ui

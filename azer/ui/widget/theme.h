@@ -1,6 +1,8 @@
 #pragma once
 
-#include "azer/base/render_export.h"
+#include "azer/ui/widget/export.h"
+#include "azer/ui/widget/style.h"
+#include "azer/ui/widget/controls/label.h"
 #include "base/basictypes.h"
 
 namespace gfx {
@@ -13,13 +15,13 @@ namespace azer {
 namespace ui {
 
 class Canvas;
-
+class LabelStyle;
 /**
  * class Theme
  * Theme 帮助统一 UI 风格
  */
 
-class AZER_EXPORT Theme {
+class AZER_WIDGET_EXPORT Theme {
  public:
   Theme();
   virtual ~Theme() {}
@@ -28,9 +30,10 @@ class AZER_EXPORT Theme {
   static Theme* Current();
   static void SetTheme(Theme* theme);
 
-  const gfx::FontList& label_font() const { return *label_font_;}
+  const LabelStyle* label_style() const { return &label_style_;}
+  LabelStyle* label_style() { return &label_style_;}
  protected:
-  gfx::FontList* label_font_;
+  LabelStyle label_style_;
   static Theme* theme_;
   DISALLOW_COPY_AND_ASSIGN(Theme);
 };

@@ -15,17 +15,14 @@ void Theme::SetTheme(Theme* theme) {
   theme_ = theme;
 }
 
-Theme::Theme()
-    : label_font_(NULL) {
+Theme::Theme() {
 }
 
 DefaultTheme::~DefaultTheme() {
-  if (label_font_) delete label_font_;
 }
 
 bool DefaultTheme::Init() {
   gfx::FontList::SetDefaultFontDescription("Droid Sans serif, Sans serif, 14px");
-  label_font_ = new gfx::FontList("Arial, Bold 14px");
   return true;
 }
 }  // namespace ui

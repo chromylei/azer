@@ -45,6 +45,8 @@ source_set("azer_ui_widget") {
     "../ui/widget/coordinate_transform.h",
     "../ui/widget/context.cc",
     "../ui/widget/context.h",
+    "../ui/widget/style.cc",
+    "../ui/widget/style.h",
     "../ui/widget/theme.cc",
     "../ui/widget/theme.h",
     "../ui/widget/widget_host.cc",

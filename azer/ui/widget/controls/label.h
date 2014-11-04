@@ -2,12 +2,28 @@
 
 #include "azer/ui/widget/export.h"
 #include "azer/ui/widget/controls/control.h"
+#include "azer/ui/widget/style.h"
 #include "base/basictypes.h"
 #include "azer/base/string.h"
 
 namespace azer {
 namespace ui {
 class Context;
+
+class AZER_WIDGET_EXPORT LabelStyle {
+ public:
+  LabelStyle() {}
+
+  FrameStyle* frame_style() { return &frame_style_;}
+  const FrameStyle* frame_style() const { return &frame_style_;}
+
+  TextStyle* text_style() { return &text_style_;}
+  const TextStyle* text_style() const { return &text_style_;}
+ private:
+  FrameStyle frame_style_;
+  TextStyle text_style_;
+  DISALLOW_COPY_AND_ASSIGN(LabelStyle);
+};
 
 class AZER_WIDGET_EXPORT Label : public Control {
  public:
