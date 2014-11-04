@@ -10,7 +10,7 @@ namespace ui {
 class WidgetManager {
  public:
   int64 allocate_id();
-  void free_id(int64 widget) {
+  void free_id(int64 widget);
   static WidgetManager* GetInstance();
  private:
   WidgetManager();

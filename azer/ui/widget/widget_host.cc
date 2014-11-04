@@ -61,10 +61,10 @@ void WidgetHost::OnHide() {
 void WidgetHost::OnShow() {
 }
 
-void WidgetHost::OnBoundsChanging() {
+void WidgetHost::OnBoundsChanging(const gfx::Rect& r) {
 }
 
-void WidgetHost::OnBoundsChanged() {
+void WidgetHost::OnBoundsChanged(const gfx::Rect& r) {
 }
 }  // namespace ui
 }  // namespace azer

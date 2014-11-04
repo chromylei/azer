@@ -17,6 +17,17 @@ Control::~Control() {
   }
 }
 
+void Control::OnHide() {
+}
+
+void Control::OnShow() {
+}
+
+void Control::OnBoundsChanging(const gfx::Rect& r) {
+}
+
+void Control::OnBoundsChanged(const gfx::Rect& r) {
+}
 }  // namespace ui
 }  // namespace azer
 

@@ -38,8 +38,8 @@ class AZER_WIDGET_EXPORT Widget : public TreeNode<Widget> {
 
   virtual void OnHide() = 0;
   virtual void OnShow() = 0;
-  virtual void OnBoundsChanging() = 0;
-  virtual void OnBoundsChanged() = 0;
+  virtual void OnBoundsChanging(const gfx::Rect& newrect) = 0;
+  virtual void OnBoundsChanged(const gfx::Rect& newrect) = 0;
  protected:
   Widget(Context* context);  // root
 

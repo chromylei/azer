@@ -19,6 +19,11 @@ class AZER_WIDGET_EXPORT Control : public Widget {
   virtual void Redraw(bool force) = 0;
 
   Widget* parent() { return parent_;}
+
+  virtual void OnHide() OVERRIDE;
+  virtual void OnShow() OVERRIDE;
+  virtual void OnBoundsChanging(const gfx::Rect& newrect) OVERRIDE;
+  virtual void OnBoundsChanged(const gfx::Rect& newrect) OVERRIDE;
  protected:
   Widget* parent_;
   gfx::Rect absolute_rect_;
