@@ -4,6 +4,7 @@
 #include "azer/ui/widget/widget.h"
 #include "azer/ui/widget/canvas.h"
 #include "azer/ui/widget/theme.h"
+#include "azer/ui/widget/painter.h"
 
 namespace azer {
 namespace ui {
@@ -23,21 +24,14 @@ void Label::Redraw(bool force) {
 
   gfx::Rect rect(0, 0, rect_.width(), rect_.height());
   Canvas* canvas = canvas_;
-  canvas->begin();
   Theme* theme = Theme::Current();
   const LabelStyle* style = theme->label_style();
-  canvas->FillRect(rect, SkColorSetARGBInline(64, 64, 64, 128));
-  canvas->DrawStringRectWithFlags(text,
-                                  *style->text_style()->font_list(),
-                                  style->text_style()->fgcolor(),
-                                  rect,
-                                  default_label_draw_flags);
-  canvas->FillRect(rect, (SkColor)style->frame_style()->bgcolor());
-
-  const BorderStyle* bstyle = style->frame_style()->border_style();
+  const TextStyle* text_style = style->text_style();
+  const FrameStyle* frame_style = style->frame_style();
   Painter painter;
   painter.begin(canvas);
-  painter.DrawFrame(rect, bstyle);
+  painter.DrawLabelText(rect, text_, text_style, frame_style);
+  painter.DrawFrame(rect, style->frame_style());
   painter.end();
   canvas->end();
 }

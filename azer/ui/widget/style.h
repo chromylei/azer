@@ -22,6 +22,11 @@ struct Margin {
   }
 };
 
+gfx::Rect CalcFrameRect(const gfx::Rect& rc, const Margin& margin);
+gfx::Rect CalcFrameRect(const gfx::Rect& framerc, const Margin& margin);
+gfx::Rect CalcPaddingRect(const gfx::Rect& rc, const Margin& margin,
+                          const Margin& padding);
+
 class AZER_WIDGET_EXPORT ShadowStyle {
  public:
   ShadowStyle();
@@ -51,6 +56,7 @@ class AZER_WIDGET_EXPORT BorderStyle {
   int32 width();  // border width
   Style style() const { return style_;}
   uint32 color() const { return color_;}
+  void set_color(uint32 c) { color_ = c;}
  private:
   Style style_;
   uint32 width_;
@@ -65,11 +71,13 @@ class AZER_WIDGET_EXPORT FrameStyle {
   const BorderStyle* border_style() const { return &border_style_;}
   BorderStyle* border_style() { return &border_style_;}
 
-  void SetBgcolor(uint32 c) { bgcolor_ = c; }
+  void set_bgcolor(uint32 c) { bgcolor_ = c; }
   uint32 bgcolor() const { return bgcolor_;}
 
-  const Margin& margin() { return margin_;}
-  const Margin& padding() { return padding_;}
+  const Margin& margin() const { return margin_;}
+  const Margin& padding() const { return padding_;}
+  void set_margin(const Margin& m) { margin_ = m; }
+  void set_padding(const Margin& p) { padding_ = p; }
  private:
   Margin padding_;
   Margin margin_;

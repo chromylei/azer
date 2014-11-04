@@ -27,5 +27,23 @@ TextStyle::TextStyle()
 void TextStyle::SetFont(const std::string& fontstr) {
   fontlist_ = gfx::FontList(fontstr);
 }
+
+gfx::Rect CalcFrameRect(const gfx::Rect& rect, const Margin& margin) {
+  return gfx::Rect(rect.x() + margin.left,
+                   rect.y() + margin.top,
+                   rect.width() - margin.left - margin.right,
+                   rect.height() - margin.top - margin.bottom);
+}
+
+gfx::Rect CalcPaddingRect(const gfx::Rect& rect, const Margin& margin,
+                          const Margin& padding) {
+  int top = margin.top + padding.top;
+  int left = margin.left + padding.left;
+  int right = margin.right + padding.right;
+  int bottom = margin.bottom + padding.bottom;
+  return gfx::Rect(rect.x() + left, rect.y() + top,
+                   rect.width() - left - right,
+                   rect.height() - top - bottom);
+}
 }  // namespace ui
 }  // namespace azer
