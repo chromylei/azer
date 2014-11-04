@@ -54,5 +54,17 @@ bool WidgetHost::Init() {
   Redraw(true);
   return true;
 }
+
+void WidgetHost::OnHide() {
+}
+
+void WidgetHost::OnShow() {
+}
+
+void WidgetHost::OnBoundsChanging() {
+}
+
+void WidgetHost::OnBoundsChanged() {
+}
 }  // namespace ui
 }  // namespace azer

@@ -17,12 +17,6 @@ Control::~Control() {
   }
 }
 
-void Control::Hide() {
-}
-
-void Control::Show() {
-}
-
 }  // namespace ui
 }  // namespace azer
 

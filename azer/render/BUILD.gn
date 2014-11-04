@@ -49,6 +49,10 @@ source_set("azer_ui_widget") {
     "../ui/widget/theme.h",
     "../ui/widget/widget_host.cc",
     "../ui/widget/widget_host.h",
+    "../ui/widget/widget_manager.cc",
+    "../ui/widget/widget_manager.h",
+    "../ui/widget/widget_property.cc",
+    "../ui/widget/widget_property.h",
     "../ui/widget/widget.cc",
     "../ui/widget/widget.h",
     "../ui/widget/export.h"

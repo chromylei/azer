@@ -16,8 +16,6 @@ class AZER_WIDGET_EXPORT Control : public Widget {
   Control(const gfx::Rect& rect, Widget* parent);
   virtual ~Control();
 
-  virtual void Hide() OVERRIDE;
-  virtual void Show() OVERRIDE;
   virtual void Redraw(bool force) = 0;
 
   Widget* parent() { return parent_;}
