@@ -36,21 +36,22 @@ source_set("azer_ui_widget") {
   sources = [
     "../ui/widget/canvas.cc",
     "../ui/widget/canvas.h",
-    "../ui/widget/control.cc",
-    "../ui/widget/control.h",
+    "../ui/widget/controls/control.cc",
+    "../ui/widget/controls/control.h",
+    "../ui/widget/controls/label.cc",
+    "../ui/widget/controls/label.h",
+    "../ui/widget/controls/panel.cc",
+    "../ui/widget/controls/panel.h",
     "../ui/widget/coordinate_transform.h",
     "../ui/widget/context.cc",
     "../ui/widget/context.h",
-    "../ui/widget/label.cc",
-    "../ui/widget/label.h",
-    "../ui/widget/panel.cc",
-    "../ui/widget/panel.h",
     "../ui/widget/theme.cc",
     "../ui/widget/theme.h",
-    "../ui/widget/root_window.cc",
-    "../ui/widget/root_window.h",
+    "../ui/widget/widget_host.cc",
+    "../ui/widget/widget_host.h",
     "../ui/widget/widget.cc",
     "../ui/widget/widget.h",
+    "../ui/widget/export.h"
   ]
 
   deps = [
@@ -58,7 +59,7 @@ source_set("azer_ui_widget") {
   ]
 
   configs += ["//build/config/win:d3d11",]
-  defines = ["BUILD_AZER_RENDER", "SK_ANGLE"]
+  defines = ["BUILD_AZER_RENDER", "SK_ANGLE", "BUILD_AZER_WIDGET"]
   include_dirs = ["//third_party/skia/src/gpu", ]
 }
 

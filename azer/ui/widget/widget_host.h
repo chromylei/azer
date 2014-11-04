@@ -17,20 +17,20 @@ namespace ui {
 
 class Context;
 
-class AZER_EXPORT RootWindow : public Widget {
+class AZER_EXPORT WidgetHost : public Widget {
  public:
-  RootWindow(Context* context)
+  WidgetHost(Context* context)
       : Widget(context) {
   }
 
-  virtual ~RootWindow() {}
+  virtual ~WidgetHost() {}
 
   bool Init();
   virtual void Redraw(bool force) OVERRIDE;
  protected:
   const static float kMinDrawInterval;
   base::TimeTicks prev_draw_;
-  DISALLOW_COPY_AND_ASSIGN(RootWindow);
+  DISALLOW_COPY_AND_ASSIGN(WidgetHost);
 };
 }  // namespace ui
 }  // namespace azer

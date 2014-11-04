@@ -33,9 +33,11 @@ class AZER_EXPORT Widget : public TreeNode<Widget> {
 
   Canvas* GetCanvas() { return canvas_;}
   Context* GetContext() { return context_;}
+  int64 id() const { return id_;}
  protected:
   Widget(Context* context);  // root
 
+  int64 id_;
   gfx::Rect rect_;
   bool visible_;
   bool surface_dirty_;

@@ -2,9 +2,9 @@
 
 #include "azer/ui/widget/context.h"
 #include "azer/ui/widget/widget.h"
-#include "azer/ui/widget/control.h"
-#include "azer/ui/widget/label.h"
-#include "azer/ui/widget/panel.h"
+#include "azer/ui/widget/controls/control.h"
+#include "azer/ui/widget/controls/label.h"
+#include "azer/ui/widget/controls/panel.h"
 #include "azer/ui/widget/theme.h"
 #include "azer/ui/widget/root_window.h"
 

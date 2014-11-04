@@ -1,4 +1,4 @@
-#include "azer/ui/widget/root_window.h"
+#include "azer/ui/widget/widget_host.h"
 #include "azer/ui/widget/context.h"
 
 #include "SkCanvas.h"
@@ -11,8 +11,8 @@
 namespace azer {
 namespace ui {
 
-const float RootWindow::kMinDrawInterval = 0.00;
-void RootWindow::Redraw(bool force) {
+const float WidgetHost::kMinDrawInterval = 0.00;
+void WidgetHost::Redraw(bool force) {
   ::base::TimeTicks now = ::base::TimeTicks::HighResNow();
   ::base::TimeDelta delta = now - prev_draw_;
   if (delta.InSecondsF() > kMinDrawInterval) {
@@ -50,7 +50,7 @@ void RootWindow::Redraw(bool force) {
   }
 }
 
-bool RootWindow::Init() {
+bool WidgetHost::Init() {
   Redraw(true);
   return true;
 }
