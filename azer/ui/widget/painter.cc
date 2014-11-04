@@ -62,7 +62,7 @@ void Painter::DrawLabelText(const gfx::Rect& rect, const StringType& text,
   Canvas* canvas = canvas_;
   canvas->DrawStringRectWithFlags(text,
                                   *style->font_list(),
-                                  style->fgcolor(),
+                                  style->color(),
                                   rc,
                                   default_label_draw_flags);
 }

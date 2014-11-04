@@ -19,8 +19,7 @@ FrameStyle::FrameStyle()
 }
 
 TextStyle::TextStyle()
-    : bgcolor_((uint32)SkColorSetARGBInline(0, 0, 0, 0))
-    , fgcolor_((uint32)SkColorSetARGBInline(255, 192, 192, 192))
+    : color_((uint32)SkColorSetARGBInline(255, 192, 192, 192))
     , fontlist_(gfx::FontList("Arial, Bold 14px")) {
 }
 

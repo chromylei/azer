@@ -39,6 +39,8 @@ void DefaultTheme::InitLabelStyle() {
   fstyle->set_padding(Margin(5));
   fstyle->set_margin(Margin(5));
 
+  TextStyle* tstyle = label_style()->text_style();
+  tstyle->set_color((uint32)SkColorSetARGB(255, 238, 238, 238));
   BorderStyle* bstyle = fstyle->border_style();
   bstyle->set_color((uint32)SkColorSetARGB(alpha(), 0x0b, 0x0b, 0x0b));
 }

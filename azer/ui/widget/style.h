@@ -106,16 +106,13 @@ class AZER_WIDGET_EXPORT TextStyle {
   TextStyle();
 
   void SetFont(const std::string& fontstr);
-  void SetBgcolor(uint32 c) { bgcolor_ = c; }
-  void SetFgcolor(uint32 c) { fgcolor_ = c; }
+  void set_color(uint32 c) { color_ = c; }
 
-  uint32 bgcolor() const { return bgcolor_;}
-  uint32 fgcolor() const { return fgcolor_;}
+  uint32 color() const { return color_;}
   const gfx::FontList* font_list() const { return &fontlist_;}
   gfx::FontList* font_list() { return &fontlist_;}
  private:
-  uint32 bgcolor_;
-  uint32 fgcolor_;
+  uint32 color_;
   gfx::FontList fontlist_;
   DISALLOW_COPY_AND_ASSIGN(TextStyle);
 };
