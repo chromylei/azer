@@ -3,13 +3,13 @@
 #include <memory>
 
 #include "base/basictypes.h"
-#include "azer/base/render_export.h"
 #include "azer/render/overlay.h"
 #include "azer/render/effect.h"
 #include "azer/render/blending.h"
 #include "azer/render/skia/context.h"
 #include "azer/render/skia/canvas.h"
-#include "azer/ui/widget/root_window.h"
+#include "azer/ui/widget/export.h"
+#include "azer/ui/widget/widget_host.h"
 #include "base/logging.h"
 
 namespace gfx {
@@ -26,9 +26,9 @@ class Canvas;
 
 namespace ui {
 class Theme;
-class RootWindow;
+class WidgetHost;
 
-class AZER_EXPORT Context {
+class AZER_WIDGET_EXPORT Context {
  public:
   virtual ~Context();
   static Context* Create(RenderSystem* rs);
@@ -49,7 +49,7 @@ class AZER_EXPORT Context {
   
   OverlayPtr& GetOverlay();
   EffectPtr& GetOverlayEffect();
-  RootWindow* GetRootWindow();
+  WidgetHost* GetWidgetHost();
 
   Theme* GetTheme() { return theme_;}
 
@@ -68,7 +68,7 @@ class AZER_EXPORT Context {
   EffectPtr overlay_effect_;
   BlendingPtr blending_;
   std::unique_ptr<skia::Context> sk_context_;
-  std::unique_ptr<RootWindow> root_;
+  std::unique_ptr<WidgetHost> root_;
   skia::CanvasPtr ccanvas_;
   gfx::Canvas* canvas_;
   Theme* theme_;
@@ -96,7 +96,7 @@ inline EffectPtr& Context::GetOverlayEffect() {
   return overlay_->GetEffect();
 }
 
-inline RootWindow* Context::GetRootWindow() {
+inline WidgetHost* Context::GetWidgetHost() {
   DCHECK(root_.get() != NULL);
   return root_.get();
 }

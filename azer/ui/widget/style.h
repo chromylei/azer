@@ -7,14 +7,16 @@
 namespace azer {
 namespace ui {
 
-class AZER_EXPORT ShadowStyle {
+class AZER_WIDGET_EXPORT ShadowStyle {
  public:
  private:
   uint32 shadow_color_;
 };
 
-class AZER_EXPORT BorderStyle {
+class AZER_WIDGET_EXPORT BorderStyle {
  public:
+  BorderStyle();
+
   enum Style {
     kFlat = 1,
     kSucken,
@@ -24,9 +26,10 @@ class AZER_EXPORT BorderStyle {
  private:
   Style style_;
   ShadowStyle shadow_;
+  DISALLOW_COPY_AND_ASSIGN(BorderStyle);
 };
 
-class AZER_EXPORT TextStyle {
+class AZER_WIDGET_EXPORT TextStyle {
  public:
   enum Align {
     kLeftAlign,

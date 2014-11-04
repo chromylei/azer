@@ -3,14 +3,14 @@
 #include <memory>
 #include "base/basictypes.h"
 #include "ui/gfx/geometry/rect.h"
-#include "azer/ui/widget/control.h"
+#include "azer/ui/widget/controls/control.h"
 
 namespace azer {
 namespace ui {
 
 class Context;
 
-class PanelStyle {
+class AZER_WIDGET_EXPORT PanelStyle {
  public:
   PanelStyle()
       : bgcolor_(0)
@@ -27,7 +27,7 @@ class PanelStyle {
   void set_bgcolor(uint32 c) { bgcolor_ = c;}
   void set_frame_color(uint32 c) { frame_color_ = c;}
   void set_round_rect(bool b) { round_rect_ = b;}
-  int set_round_rect_radius(int32 v) { round_rect_radius_ = v;}
+  void set_round_rect_radius(int32 v) { round_rect_radius_ = v;}
  private:
   uint32 bgcolor_;
   uint32 frame_color_;
@@ -38,7 +38,7 @@ class PanelStyle {
 
 typedef std::shared_ptr<PanelStyle> PanelStylePtr;
 
-class AZER_EXPORT Panel : public Control {
+class AZER_WIDGET_EXPORT Panel : public Control {
  public:
   Panel(PanelStylePtr& style, const gfx::Rect& rect, Widget* parent);
   virtual ~Panel() {}

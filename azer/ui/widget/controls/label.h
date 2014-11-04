@@ -1,7 +1,7 @@
 #pragma once
 
-#include "azer/base/render_export.h"
-#include "azer/ui/widget/control.h"
+#include "azer/ui/widget/export.h"
+#include "azer/ui/widget/controls/control.h"
 #include "base/basictypes.h"
 #include "azer/base/string.h"
 
@@ -9,7 +9,7 @@ namespace azer {
 namespace ui {
 class Context;
 
-class AZER_EXPORT Label : public Control {
+class AZER_WIDGET_EXPORT Label : public Control {
  public:
   Label(const gfx::Rect& rect, Widget* parent);
   Label(const StringType& str, const gfx::Rect& rect, Widget* parent);

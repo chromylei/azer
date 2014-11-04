@@ -1,4 +1,4 @@
-#include "azer/ui/widget/panel.h"
+#include "azer/ui/widget/controls/panel.h"
 
 #include "azer/ui/widget/context.h"
 #include "azer/ui/widget/theme.h"
@@ -19,8 +19,8 @@ void Panel::Redraw(bool force) {
   Canvas* canvas = canvas_;
   canvas->begin();
   SkPaint paint;
-  paint.setColor(style_->frame_color);
-  if (style_->round_radius()) {
+  paint.setColor(style_->frame_color());
+  if (style_->round_rect_radius()) {
     canvas->DrawRoundRect(rect, style_->round_rect_radius(), paint);
   } else {
     canvas->DrawRect(rect, paint);

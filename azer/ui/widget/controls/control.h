@@ -1,6 +1,6 @@
 #pragma once
 
-#include "azer/base/render_export.h"
+#include "azer/ui/widget/export.h"
 #include "azer/ui/widget/widget.h"
 #include "base/basictypes.h"
 #include "ui/gfx/geometry/rect.h"
@@ -11,7 +11,7 @@ namespace ui {
 class Canvas;
 class Context;
 
-class AZER_EXPORT Control : public Widget {
+class AZER_WIDGET_EXPORT Control : public Widget {
  public:
   Control(const gfx::Rect& rect, Widget* parent);
   virtual ~Control();

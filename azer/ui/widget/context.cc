@@ -8,7 +8,7 @@
 #include "azer/render/skia/skia.h"
 #include "azer/render/skia/canvas.h"
 #include "azer/ui/window/window_host.h"
-#include "azer/ui/widget/root_window.h"
+#include "azer/ui/widget/widget_host.h"
 #include "azer/ui/widget/theme.h"
 #include "ui/gfx/geometry/rect.h"
 #include "ui/gfx/canvas.h"
@@ -80,7 +80,7 @@ bool Context::Init() {
     return false;
   }
 
-  root_.reset(new RootWindow(this));
+  root_.reset(new WidgetHost(this));
   if (!root_->Init()) {
     return false;
   }

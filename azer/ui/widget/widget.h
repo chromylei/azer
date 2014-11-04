@@ -3,7 +3,7 @@
 #include <memory>
 #include "base/basictypes.h"
 #include "azer/base/tree_node.h"
-#include "azer/base/render_export.h"
+#include "azer/ui/widget/export.h"
 #include "ui/gfx/geometry/rect.h"
 
 namespace azer {
@@ -11,7 +11,7 @@ namespace ui {
 
 class Canvas;
 class Context;
-class AZER_EXPORT Widget : public TreeNode<Widget> {
+class AZER_WIDGET_EXPORT Widget : public TreeNode<Widget> {
  public:
   Widget(const gfx::Rect& rect, Context* context);
   virtual ~Widget() {}

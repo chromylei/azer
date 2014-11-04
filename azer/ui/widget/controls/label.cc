@@ -1,4 +1,4 @@
-#include "azer/ui/widget/label.h"
+#include "azer/ui/widget/controls/label.h"
 
 #include "azer/ui/widget/context.h"
 #include "azer/ui/widget/widget.h"
