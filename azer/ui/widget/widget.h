@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "base/basictypes.h"
 #include "azer/base/tree_node.h"
 #include "azer/base/render_export.h"
@@ -45,5 +46,7 @@ class AZER_EXPORT Widget : public TreeNode<Widget> {
  private:
   DISALLOW_COPY_AND_ASSIGN(Widget);
 };
+
+typedef std::shared_ptr<Widget> WidgetPtr;
 }  // namespace ui
 }  // namespace azer
