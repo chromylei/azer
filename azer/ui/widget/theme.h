@@ -32,6 +32,8 @@ class AZER_WIDGET_EXPORT Theme {
 
   const LabelStyle* label_style() const { return &label_style_;}
   LabelStyle* label_style() { return &label_style_;}
+
+  virtual void DrawFrame(const gfx::Rect& rect, const BorderStyle* style) = 0;
  protected:
   LabelStyle label_style_;
   static Theme* theme_;

@@ -5,7 +5,13 @@
 
 namespace azer {
 namespace ui {
-BorderStyle::BorderStyle() {
+ShadowStyle::ShadowStyle() {
+}
+
+BorderStyle::BorderStyle()
+    : style_(kSingleLine)
+    , width_(1)
+    , color_((uint32)SkColorSetARGBInline(255, 192, 192, 192)) {
 }
 
 FrameStyle::FrameStyle()

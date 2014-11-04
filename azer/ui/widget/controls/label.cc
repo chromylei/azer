@@ -27,12 +27,18 @@ void Label::Redraw(bool force) {
   Theme* theme = Theme::Current();
   const LabelStyle* style = theme->label_style();
   canvas->FillRect(rect, SkColorSetARGBInline(64, 64, 64, 128));
-  canvas->DrawStringRectWithFlags(text_,
+  canvas->DrawStringRectWithFlags(text,
                                   *style->text_style()->font_list(),
                                   style->text_style()->fgcolor(),
                                   rect,
                                   default_label_draw_flags);
-  canvas->FillRect(rect_, (SkColor)style->frame_style()->bgcolor());
+  canvas->FillRect(rect, (SkColor)style->frame_style()->bgcolor());
+
+  const BorderStyle* bstyle = style->frame_style()->border_style();
+  Painter painter;
+  painter.begin(canvas);
+  painter.DrawFrame(rect, bstyle);
+  painter.end();
   canvas->end();
 }
 }  // namespace ui

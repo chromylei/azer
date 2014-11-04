@@ -8,10 +8,31 @@
 namespace azer {
 namespace ui {
 
+struct Margin {
+  int32 left;
+  int32 top;
+  int32 right;
+  int32 bottom;
+
+  Margin() : left(0), top(0), right(0), bottom(0) {}
+  Margin(int32 v) : left(v), top(v), right(v), bottom(v) {}
+  Margin(int32 v1, int32 v2) : left(v1), top(v2), right(v1), bottom(v2) {}
+  Margin(int32 l, int32 t, int32 r, int32 b)
+      : left(l), top(t), right(r), bottom(b) {
+  }
+};
+
 class AZER_WIDGET_EXPORT ShadowStyle {
  public:
+  ShadowStyle();
+  enum Style {
+  };
+  int32 width();
  private:
+  int32 width_;
   uint32 shadow_color_;
+  uint32 light_color_;
+  DISALLOW_COPY_AND_ASSIGN(ShadowStyle);
 };
 
 class AZER_WIDGET_EXPORT BorderStyle {
@@ -19,13 +40,21 @@ class AZER_WIDGET_EXPORT BorderStyle {
   BorderStyle();
 
   enum Style {
-    kFlat = 1,
+    kNone = 0,
+    kSingleLine = 1,
+    kFixed3D,
     kSucken,
   };
-  bool has_border();
+
+  
+
+  int32 width();  // border width
   Style style() const { return style_;}
+  uint32 color() const { return color_;}
  private:
   Style style_;
+  uint32 width_;
+  uint32 color_;
   ShadowStyle shadow_;
   DISALLOW_COPY_AND_ASSIGN(BorderStyle);
 };
@@ -38,7 +67,12 @@ class AZER_WIDGET_EXPORT FrameStyle {
 
   void SetBgcolor(uint32 c) { bgcolor_ = c; }
   uint32 bgcolor() const { return bgcolor_;}
+
+  const Margin& margin() { return margin_;}
+  const Margin& padding() { return padding_;}
  private:
+  Margin padding_;
+  Margin margin_;
   BorderStyle border_style_;
   uint32 bgcolor_;
   DISALLOW_COPY_AND_ASSIGN(FrameStyle);
