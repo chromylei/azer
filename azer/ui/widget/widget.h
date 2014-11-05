@@ -18,11 +18,7 @@ class AZER_WIDGET_EXPORT Widget : public TreeNode<Widget>
  public:
   Widget(const gfx::Rect& rect, Context* context);
   virtual ~Widget() {}
-
-  void Show();
-  void Hide();
   virtual void Redraw(bool force) = 0;
-  bool IsVisible() const { return visible_; }
 
   void SetBounds(const gfx::Rect& rect);
   const gfx::Rect& bounds() const { return rect_;}
@@ -46,7 +42,7 @@ class AZER_WIDGET_EXPORT Widget : public TreeNode<Widget>
   int64 id() const { return id_;}
 
   void SetVisible(bool visible);
-  boo visible() const { return visible_;}
+  bool visible() const { return visible_;}
   
   virtual void OnBoundsChanging(const gfx::Rect& newrect) = 0;
   virtual void OnBoundsChanged(const gfx::Rect& newrect) = 0;

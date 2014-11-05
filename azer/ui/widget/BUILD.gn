@@ -1,0 +1,53 @@
+
+
+source_set("azer_ui_widget") {
+  sources = [
+    "canvas.cc",
+    "canvas.h",
+    "controls/control.cc",
+    "controls/control.h",
+    "controls/label.cc",
+    "controls/label.h",
+    "controls/panel.cc",
+    "controls/panel.h",
+    "controls/tooltip.cc",
+    "controls/tooltip.h",
+    "coordinate_transform.h",
+    "context.cc",
+    "context.h",
+    "export.h"
+    "theme/border.cc",
+    "theme/border.h",
+    "theme/common_painter.cc",
+    "theme/common_painter.h",
+    "theme/frame_painter.cc",
+    "theme/frame_painter.h",
+    "theme/painter.h",
+    "theme/shadow_border.cc",
+    "theme/shadow_border.h",
+    "theme/style_group.cc",
+    "theme/style_group.h",
+    "theme/style.cc",
+    "theme/style.h",
+    "theme/theme.cc",
+    "theme/theme.h",
+    "theme/util.cc",
+    "theme/util.h",
+    "widget_host.cc",
+    "widget_host.h",
+    "widget_manager.cc",
+    "widget_manager.h",
+    "widget_property.cc",
+    "widget_property.h",
+    "widget.cc",
+    "widget.h",
+  ]
+
+  deps = [
+    "//third_party/skia/gn:skia"
+  ]
+
+  configs += ["//build/config/win:d3d11",]
+  defines = ["BUILD_AZER_RENDER", "SK_ANGLE", "BUILD_AZER_WIDGET"]
+  include_dirs = ["//third_party/skia/src/gpu", ]
+}

@@ -36,9 +36,5 @@ gfx::Rect Widget::ConvertRectToSurface(const gfx::Rect& rc) {
   return r;
 }
 
-void Widget::Hide() {
-}
-void Widget::Show() {
-}
 }  // namespace ui
 }  // namespace azer

@@ -23,12 +23,6 @@ Control::~Control() {
   }
 }
 
-void Control::OnHide() {
-}
-
-void Control::OnShow() {
-}
-
 void Control::OnBoundsChanging(const gfx::Rect& r) {
 }
 

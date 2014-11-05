@@ -1,0 +1,9 @@
+
+
+source_set("azer_ui_event") {
+  sources = [
+  ]
+
+  defines = ["BUILD_AZER_EVENT"]
+  include_dirs = ["//third_party/skia/src/gpu", ]
+}

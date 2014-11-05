@@ -28,8 +28,6 @@ class AZER_EXPORT WidgetHost : public Widget {
   bool Init();
   virtual void Redraw(bool force) OVERRIDE;
 
-  virtual void OnHide() OVERRIDE;
-  virtual void OnShow() OVERRIDE;
   virtual void OnBoundsChanging(const gfx::Rect& newrect) OVERRIDE;
   virtual void OnBoundsChanged(const gfx::Rect& newrect) OVERRIDE;
  protected:

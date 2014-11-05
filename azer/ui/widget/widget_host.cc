@@ -55,12 +55,6 @@ bool WidgetHost::Init() {
   return true;
 }
 
-void WidgetHost::OnHide() {
-}
-
-void WidgetHost::OnShow() {
-}
-
 void WidgetHost::OnBoundsChanging(const gfx::Rect& r) {
 }
 

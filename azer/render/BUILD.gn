@@ -32,58 +32,6 @@ source_set("azer_skia") {
   include_dirs = ["//third_party/skia/src/gpu", ]
 }
 
-source_set("azer_ui_widget") {
-  sources = [
-    "../ui/widget/canvas.cc",
-    "../ui/widget/canvas.h",
-    "../ui/widget/controls/control.cc",
-    "../ui/widget/controls/control.h",
-    "../ui/widget/controls/label.cc",
-    "../ui/widget/controls/label.h",
-    "../ui/widget/controls/panel.cc",
-    "../ui/widget/controls/panel.h",
-    "../ui/widget/controls/tooltip.cc",
-    "../ui/widget/controls/tooltip.h",
-    "../ui/widget/coordinate_transform.h",
-    "../ui/widget/context.cc",
-    "../ui/widget/context.h",
-    "../ui/widget/export.h"
-    "../ui/widget/theme/border.cc",
-    "../ui/widget/theme/border.h",
-    "../ui/widget/theme/common_painter.cc",
-    "../ui/widget/theme/common_painter.h",
-    "../ui/widget/theme/frame_painter.cc",
-    "../ui/widget/theme/frame_painter.h",
-    "../ui/widget/theme/painter.h",
-    "../ui/widget/theme/shadow_border.cc",
-    "../ui/widget/theme/shadow_border.h",
-    "../ui/widget/theme/style_group.cc",
-    "../ui/widget/theme/style_group.h",
-    "../ui/widget/theme/style.cc",
-    "../ui/widget/theme/style.h",
-    "../ui/widget/theme/theme.cc",
-    "../ui/widget/theme/theme.h",
-    "../ui/widget/theme/util.cc",
-    "../ui/widget/theme/util.h",
-    "../ui/widget/widget_host.cc",
-    "../ui/widget/widget_host.h",
-    "../ui/widget/widget_manager.cc",
-    "../ui/widget/widget_manager.h",
-    "../ui/widget/widget_property.cc",
-    "../ui/widget/widget_property.h",
-    "../ui/widget/widget.cc",
-    "../ui/widget/widget.h",
-  ]
-
-  deps = [
-    "//third_party/skia/gn:skia"
-  ]
-
-  configs += ["//build/config/win:d3d11",]
-  defines = ["BUILD_AZER_RENDER", "SK_ANGLE", "BUILD_AZER_WIDGET"]
-  include_dirs = ["//third_party/skia/src/gpu", ]
-}
-
 shared_library("render") {
   sources = [
     "../animation/bone.cc",
@@ -180,11 +128,11 @@ shared_library("render") {
 
   deps = [
     "//azer/math:math",
+    "//azer/ui/widget:azer_ui_widget",
     "//ui/gfx:gfx",
     "//base:base",
     ":azer_devil_util",
     ":azer_skia",
-    ":azer_ui_widget",
   ]
 
   defines = ["BUILD_AZER_RENDER"]
