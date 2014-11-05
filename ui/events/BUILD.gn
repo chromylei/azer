@@ -1,0 +1,54 @@
+shared_library("events_base") {
+  sources = [
+    "event_constants.h",
+    "event_switches.cc",
+    "event_switches.h",
+    "events_base_export.h",
+    "input_device.cc",
+    "input_device.h",
+    "input_device_event_observer.h",
+    "keyboard_device.cc",
+    "keyboard_device.h",
+    "latency_info.h",
+    "latency_info.cc",
+  ]
+
+  defines = [ "EVENTS_BASE_IMPLEMENTATION" ]
+  deps = [
+    "//base/third_party/dynamic_annotations",
+    "//skia:skia_ext"
+    "//base",
+  ]
+}
+
+shared_library("events") {
+  sources = [
+    "event.cc",
+    "event.h",
+    "event_dispatcher.cc",
+    "event_dispatcher.h",
+    "event_handler.cc",
+    "event_handler.h",
+    "event_processor.cc",
+    "event_processor.h",
+    "event_rewriter.h",
+    "event_source.cc",
+    "event_source.h",
+    "event_target.cc",
+    "event_target.h",
+    "event_target_iterator.h",
+    "event_targeter.cc",
+    "event_targeter.h",
+    "event_utils.cc",
+    "event_utils.h",
+    "events_export.h",
+    "win/events_win.cc",
+  ]
+
+  deps = [
+    "//ui/gfx:gfx",
+    ":events_base",
+    "//third_party/skia/gn:skia",
+  ]
+  defines = [ "EVENTS_IMPLEMENTATION" ]
+}

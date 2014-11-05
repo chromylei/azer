@@ -10,7 +10,7 @@ namespace ui {
 // tree of EventTargets.
 class EVENTS_EXPORT EventProcessor : public EventDispatcherDelegate {
  public:
-  ~EventProcessor() override {}
+  ~EventProcessor() {}
   // Returns the root of the tree this event processor owns.
   virtual EventTarget* GetRootTarget() = 0;
   // Dispatches an event received from the EventSource to the tree of

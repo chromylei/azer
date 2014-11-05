@@ -216,11 +216,11 @@ class EVENTS_EXPORT Event {
 class EVENTS_EXPORT CancelModeEvent : public Event {
  public:
   CancelModeEvent();
-  ~CancelModeEvent() override;
+  ~CancelModeEvent();
 };
 class EVENTS_EXPORT LocatedEvent : public Event {
  public:
-  ~LocatedEvent() override;
+  ~LocatedEvent();
   float x() const { return location_.x(); }
   float y() const { return location_.y(); }
   void set_location(const gfx::PointF& location) { location_ = location; }
@@ -424,7 +424,7 @@ class EVENTS_EXPORT TouchEvent : public LocatedEvent {
              float radius_y,
              float angle,
              float force);
-  ~TouchEvent() override;
+  ~TouchEvent();
   int touch_id() const { return touch_id_; }
   float radius_x() const { return radius_x_; }
   float radius_y() const { return radius_y_; }
@@ -511,7 +511,7 @@ class EVENTS_EXPORT KeyEvent : public Event {
            int flags);
   KeyEvent(const KeyEvent& rhs);
   KeyEvent& operator=(const KeyEvent& rhs);
-  ~KeyEvent() override;
+  ~KeyEvent();
   // TODO(erg): While we transition to mojo, we have to hack around a mismatch
   // in our event types. Our ui::Events don't really have all the data we need
   // to process key events, and we instead do per-platform conversions with
@@ -664,7 +664,7 @@ class EVENTS_EXPORT GestureEvent : public LocatedEvent {
       : LocatedEvent(model, source, target),
         details_(model.details_) {
   }
-  ~GestureEvent() override;
+  ~GestureEvent();
   const GestureEventDetails& details() const { return details_; }
  private:
   GestureEventDetails details_;
