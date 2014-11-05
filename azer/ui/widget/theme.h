@@ -1,9 +1,9 @@
 #pragma once
 
 #include "azer/ui/widget/export.h"
-#include "azer/ui/widget/style.h"
 #include "azer/ui/widget/controls/label.h"
 #include "azer/ui/widget/controls/tooltip.h"
+#include "azer/ui/widget/views/style.h"
 #include "base/basictypes.h"
 
 namespace gfx {

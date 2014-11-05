@@ -47,10 +47,9 @@ source_set("azer_ui_widget") {
     "../ui/widget/coordinate_transform.h",
     "../ui/widget/context.cc",
     "../ui/widget/context.h",
+    "../ui/widget/export.h"
     "../ui/widget/painter.cc",
     "../ui/widget/painter.h",
-    "../ui/widget/style.cc",
-    "../ui/widget/style.h",
     "../ui/widget/theme.cc",
     "../ui/widget/theme.h",
     "../ui/widget/widget_host.cc",
@@ -61,7 +60,11 @@ source_set("azer_ui_widget") {
     "../ui/widget/widget_property.h",
     "../ui/widget/widget.cc",
     "../ui/widget/widget.h",
-    "../ui/widget/export.h"
+    "../ui/widget/views/style.cc",
+    "../ui/widget/views/style.h",
+    "../ui/widget/views/border.h",
+    "../ui/widget/views/shadow_border.cc",
+    "../ui/widget/views/shadow_border.h",
   ]
 
   deps = [

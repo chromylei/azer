@@ -2,7 +2,7 @@
 
 #include "azer/ui/widget/export.h"
 #include "azer/ui/widget/controls/control.h"
-#include "azer/ui/widget/style.h"
+#include "azer/ui/widget/views/style.h"
 #include "base/basictypes.h"
 #include "azer/base/string.h"
 

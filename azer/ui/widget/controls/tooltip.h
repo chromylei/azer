@@ -2,8 +2,8 @@
 
 #include "base/basictypes.h"
 #include "azer/base/string.h"
-#include "azer/ui/widget/style.h"
 #include "azer/ui/widget/export.h"
+#include "azer/ui/widget/views/style.h"
 #include "azer/ui/widget/controls/control.h"
 
 namespace azer {

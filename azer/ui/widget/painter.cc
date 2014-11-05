@@ -1,8 +1,9 @@
 #include "azer/ui/widget/painter.h"
 
 #include "azer/ui/widget/canvas.h"
-#include "azer/ui/widget/style.h"
 #include "azer/ui/widget/controls/label.h"
+#include "azer/ui/widget/views/style.h"
+
 
 namespace azer {
 namespace ui {
