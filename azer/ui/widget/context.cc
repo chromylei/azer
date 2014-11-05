@@ -9,7 +9,7 @@
 #include "azer/render/skia/canvas.h"
 #include "azer/ui/window/window_host.h"
 #include "azer/ui/widget/widget_host.h"
-#include "azer/ui/widget/theme.h"
+#include "azer/ui/widget/theme/theme.h"
 #include "ui/gfx/geometry/rect.h"
 #include "ui/gfx/canvas.h"
 

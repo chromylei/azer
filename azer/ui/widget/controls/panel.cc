@@ -1,7 +1,7 @@
 #include "azer/ui/widget/controls/panel.h"
 
 #include "azer/ui/widget/context.h"
-#include "azer/ui/widget/theme.h"
+#include "azer/ui/widget/theme/theme.h"
 #include "azer/ui/widget/canvas.h"
 #include "azer/render/skia/canvas.h"
 #include "base/logging.h"

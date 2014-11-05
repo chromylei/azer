@@ -1,9 +1,7 @@
 #pragma once
 
 #include "azer/ui/widget/export.h"
-#include "azer/ui/widget/controls/label.h"
-#include "azer/ui/widget/controls/tooltip.h"
-#include "azer/ui/widget/views/style.h"
+#include "azer/ui/widget/theme/style.h"
 #include "base/basictypes.h"
 
 namespace gfx {
@@ -16,11 +14,18 @@ namespace azer {
 namespace ui {
 
 class Canvas;
-class LabelStyle;
+class StyleGroup;
 /**
  * class Theme
  * Theme 帮助统一 UI 风格
  */
+
+class Theme;
+class AZER_WIDGET_EXPORT ThemeWidget {
+ public:
+  virtual void OnThemeChangeing(Theme* orgtheme, Theme* newtheme) = 0;
+  virtual void OnThemeChanged(Theme* theme) = 0;
+};
 
 class AZER_WIDGET_EXPORT Theme {
  public:
@@ -31,14 +36,7 @@ class AZER_WIDGET_EXPORT Theme {
   static Theme* Current();
   static void SetTheme(Theme* theme);
 
-  const LabelStyle* label_style() const { return &label_style_;}
-  LabelStyle* label_style() { return &label_style_;}
-
-  const TooltipStyle* tooltip_style() const { return &tooltip_style_;}
-  TooltipStyle* tooltip_style() { return &tooltip_style_;}
  protected:
-  LabelStyle label_style_;
-  TooltipStyle tooltip_style_;
   static Theme* theme_;
   DISALLOW_COPY_AND_ASSIGN(Theme);
 };
@@ -49,11 +47,12 @@ class AZER_EXPORT DefaultTheme : public Theme {
   virtual ~DefaultTheme();
   virtual bool Init() OVERRIDE;
 
+  StyleGroup* control_group() { return control_group_.get();}
+
   uint32 alpha() const { return alpha_;}
  private:
-  void InitLabelStyle();
-  void InitTooltipStyle();
   uint32 alpha_;
+  std::unique_ptr<StyleGroup> control_group_;
   DISALLOW_COPY_AND_ASSIGN(DefaultTheme);
 };
 }  // namespace ui

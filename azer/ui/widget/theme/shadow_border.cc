@@ -1,4 +1,4 @@
-#include "azer/ui/widget/views/shadow_border.h"
+#include "azer/ui/widget/theme/shadow_border.h"
 #include "azer/ui/widget/canvas.h"
 
 #include "ui/gfx/shadow_value.h"
@@ -24,8 +24,7 @@ gfx::Insets ShadowBorder::GetInsets() const {
                       blur_ / 2 + horizontal_offset_);
 }
 
-void ShadowBorder::Paint(Widget* widget) {
-  const gfx::Rect& rect = widget->GetBounds();
+void ShadowBorder::Paint(Widget* widget, const gfx::Rect& rect, Context* ctx) {
   Canvas* canvas = widget->GetCanvas();
   SkPaint paint;
   gfx::ShadowValues shadows;

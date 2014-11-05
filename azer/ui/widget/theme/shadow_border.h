@@ -2,17 +2,17 @@
 
 #include "base/basictypes.h"
 #include "azer/ui/widget/export.h"
-#include "azer/ui/widget/views/border.h"
+#include "azer/ui/widget/theme/border.h"
 
 namespace azer {
 namespace ui {
 
-class AZER_WIDGET_EXPORT ShadowBorder : public Border {
+class AZER_WIDGET_EXPORT ShadowBorder : public BorderPainter {
  public:
   ShadowBorder(int32 blur, uint32 argb, int32 vertical_offset,
                int32 horizontal_offset);
   ~ShadowBorder();
-  virtual void Paint(Widget* widget) OVERRIDE;
+  virtual void Paint(Widget* widget, const gfx::Rect& rect, Context* ctx) OVERRIDE;
   gfx::Insets GetInsets() const;
  private:
   // blur amount of pixel

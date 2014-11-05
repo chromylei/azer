@@ -5,6 +5,7 @@
 #include "azer/base/tree_node.h"
 #include "azer/ui/widget/export.h"
 #include "azer/ui/widget/widget_property.h"
+#include "azer/ui/widget/theme/style_group.h"
 #include "ui/gfx/geometry/rect.h"
 
 namespace azer {
@@ -12,7 +13,8 @@ namespace ui {
 
 class Canvas;
 class Context;
-class AZER_WIDGET_EXPORT Widget : public TreeNode<Widget> {
+class AZER_WIDGET_EXPORT Widget : public TreeNode<Widget>
+                                , public StyleGroupItem {
  public:
   Widget(const gfx::Rect& rect, Context* context);
   virtual ~Widget() {}
@@ -23,8 +25,15 @@ class AZER_WIDGET_EXPORT Widget : public TreeNode<Widget> {
   bool IsVisible() const { return visible_; }
 
   void SetBounds(const gfx::Rect& rect);
-  const gfx::Rect& GetBounds() const { return rect_;}
-  const gfx::Point& origin() const { return GetBounds().origin();}
+  const gfx::Rect& bounds() const { return rect_;}
+  const gfx::Point& origin() const { return bounds().origin();}
+  int x() const { return bounds().x(); }
+  int y() const { return bounds().y(); }
+  int width() const { return bounds().width(); }
+  int height() const { return bounds().height(); }
+  const gfx::Size& size() const { return bounds().size(); }
+
+  gfx::Rect GetVisibleBounds() const;
 
   //
   // transform point from top window position to local window position
@@ -36,10 +45,12 @@ class AZER_WIDGET_EXPORT Widget : public TreeNode<Widget> {
   Context* GetContext() { return context_;}
   int64 id() const { return id_;}
 
-  virtual void OnHide() = 0;
-  virtual void OnShow() = 0;
+  void SetVisible(bool visible);
+  boo visible() const { return visible_;}
+  
   virtual void OnBoundsChanging(const gfx::Rect& newrect) = 0;
   virtual void OnBoundsChanged(const gfx::Rect& newrect) = 0;
+  virtual void OnStyleChangled(StyleGroup* group) {}
  protected:
   Widget(Context* context);  // root
 

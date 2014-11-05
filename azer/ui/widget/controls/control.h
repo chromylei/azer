@@ -24,10 +24,17 @@ class AZER_WIDGET_EXPORT Control : public Widget {
   virtual void OnShow() OVERRIDE;
   virtual void OnBoundsChanging(const gfx::Rect& newrect) OVERRIDE;
   virtual void OnBoundsChanged(const gfx::Rect& newrect) OVERRIDE;
+
+  static const std::string kTextPainterName;
+  static const std::string kBorderPainterName;
+  static const std::string kFramePainterName;
+  static const std::string kBackgroundPainterName;
  protected:
   Widget* parent_;
   gfx::Rect absolute_rect_;
   DISALLOW_COPY_AND_ASSIGN(Control);
 };
+
 }  // namespace ui
 }  // namespace azer
+
